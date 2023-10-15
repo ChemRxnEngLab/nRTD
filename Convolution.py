@@ -1,12 +1,24 @@
 import torch.nn as nn
 
-class Convolution(nn.Module):
-    def __init__(self, in_channels, out_channels, kernel_size):
-        super(Convolution, self).__init__()
-        self.E = nn.Parameter(torch.randn(out_channels, in_channels, kernel_size, kernel_size))
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size)
+class RTD_Fitter(nn.Module):
+    def __init__(self, kernel_size, padding_mode = "replicate"):
+        super(RTD_Fitter, self).__init__()
+        self.kernel_size = kernel_size
+        self.padding_mode = padding_mode
+        self.conv = nn.Conv1D(
+            in_channels=1,
+            out_channels=1,
+            kernel_size=kernel_size,
+            bias=False, # no offset
+            padding=self.kernel_size, # we append n_kernel values to the left and right of the input to make sure the convolution is causal/full
+            padding_mode=self.padding_mode
+        )
 
     def forward(self, x):
-        conv_E = nn.functional.conv2d(x, self.E)
         conv_out = self.conv(x)
-        return conv_E + conv_out
+        t_out = 
+        return conv_out
+
+    @property
+    def E(self):
+        return self.conv.weight[0,0,:].flip(0).detach().numpy()
