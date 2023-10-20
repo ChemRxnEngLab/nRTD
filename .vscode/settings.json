@@ -1,0 +1,15 @@
+{
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/lib/"
+    ],
+    "python.formatting.provider": "none",
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#306998",
+        "statusBar.background": "#a18520",
+    },
+    "python.analysis.typeCheckingMode": "basic",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "editor.defaultFormatter": "ms-python.black-formatter"
+}
