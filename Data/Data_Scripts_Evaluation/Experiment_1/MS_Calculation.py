@@ -29,17 +29,17 @@ class Calibration:
     ):
         self.cal_files = cal_files
         self.components = components
-        self.reference_ion = reference_ion
+        self._reference_ion = reference_ion
         self._ion_ref = self.PI[reference_ion]
         self.RSF = self.calc_RSF()
 
     @property
-    def ion_ref(self):
-        return self._ion_ref
+    def reference_ion(self):
+        return self._reference_ion
 
-    @ion_ref.setter
-    def ion_ref(self, ion: str):
-        self._ion_ref = self.PI["ion"]
+    @reference_ion.setter
+    def reference_ion(self, ion: str):
+        self._reference_ion = ion
 
     def get_xi_ref(self, path_cal):
         # template for titling the ms calibration files
@@ -147,18 +147,18 @@ class Calibration:
         # non_calib = np.full((len(comp)),True) # uncomment to show the literatur data
         if non_calib[self.components == "Ar"]:  # Ar not calibrated
             RSF[self.components == "Ar", self.ms_header_cal == "Mass 20"] = (
-                1 * self.PI["Ar"] / self.ion_ref
+                1 * self.PI["Ar"] / self.PI[self.reference_ion]
             )  # Ar,20
             RSF[self.components == "Ar", self.ms_header_cal == "Mass 40"] = (
-                0.1 * self.PI["Ar"] / self.ion_ref
+                0.1 * self.PI["Ar"] / self.PI[self.reference_ion]
             )  # Ar,40
         if non_calib[self.components == "He"]:  # He not calibrated
             RSF[self.components == "He", self.ms_header_cal == "Mass 4"] = (
-                1 * self.PI["He"] / self.ion_ref
+                1 * self.PI["He"] / self.PI[self.reference_ion]
             )
         if non_calib[self.components == "H2"]:  # H2 not calibrated
             RSF[self.components == "H2", self.ms_header_cal == "Mass 2"] = (
-                1 * self.PI["H2"] / self.ion_ref
+                1 * self.PI["H2"] / self.PI[self.reference_ion]
             )
 
         print()
