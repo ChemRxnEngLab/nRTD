@@ -10,7 +10,14 @@ def main():
     folder = WD.parent / "C_001" / "H_185_C1" / "S_007_C1"
     print(folder.is_dir())
     calibration_file = folder / "005_0Ar_010_0He_185_0H2_otherdescription.txt"
-    print(calibration_file.is_file())
+
+    calib_files = list(folder.glob("*_*Ar_*_*He_*_*H2_*.txt"))
+
+    print("The following calibration files were found:\n")
+    for calib_file in calib_files:
+        print(calib_file)
+
+    # print(calibration_file.is_file())
 
     # data_file = folder / "TOA_MGA_20231013_007_000004.txt"
     # print(data_file.is_file())
@@ -21,7 +28,7 @@ def main():
     # np.save(folder / (data_filename + "_x.npy"), x_i)
     # np.save(folder / (data_filename + "_t.npy"), t)
 
-    RSF, cal_header = calc_calibration([calibration_file])
+    RSF, cal_header = calc_calibration(calib_files)
 
     for data_file in folder.glob("TOA_MGA_*.txt"):
         data_filename = data_file.stem
