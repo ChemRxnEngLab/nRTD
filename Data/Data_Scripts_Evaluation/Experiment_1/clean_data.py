@@ -2,14 +2,15 @@ from pathlib import Path
 from MS_Calculation import cal_compostion, calc_calibration
 import numpy as np
 
-WD = Path.cwd()
+WD = Path("/Users/tuanaoyuncu/Documents/GitHub/nRTD")
 DATA = WD / "Data"
 
 
 def main():
-    folder = WD.parent / "C_001" / "H_185_C1" / "S_007_C1"
+    folder = DATA / "C_001" / "H_185_C1" / "S_007_C1"
+    print(folder)
     print(folder.is_dir())
-    calibration_file = folder / "005_0Ar_010_0He_185_0H2_otherdescription.txt"
+    #calibration_file = folder / "005_0Ar_010_0He_185_0H2_otherdescription"
 
     calib_files = list(folder.glob("*_*Ar_*_*He_*_*H2_*.txt"))
 

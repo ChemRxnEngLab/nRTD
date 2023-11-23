@@ -1,14 +1,15 @@
 from pathlib import Path
-from MS_Calculation_2 import cal_compostion, calc_calibration
+from MS_Calculation import cal_compostion, calc_calibration
 import numpy as np
 
 WD = Path.cwd()
 DATA = WD / "Data"
 
+
 def main():
-    folder = WD.parent / "C_002" / "H_085_C2" / "S_012ls _C2"
+    folder = WD.parent / "C_001" / "H_185_C1" / "S_007_C1"
     print(folder.is_dir())
-    calibration_file = folder / "005_0Ar_010_0He_085_0H2_otherdescription2.txt"
+    calibration_file = folder / "005_0Ar_010_0He_185_0H2_otherdescription2.txt"
     print(calibration_file.is_file())
 
     # data_file = folder / "TOA_MGA_20231013_007_000004.txt"
@@ -31,4 +32,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
