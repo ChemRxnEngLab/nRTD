@@ -249,6 +249,8 @@ class MSData:
 
 
 def calc_calibration(cal_files):
+    if not bool(cal_files):
+            raise ValueError("No calibration file")
     for path_cal in cal_files:
         print("Used calibraion file:", path_cal)
         ms_header_cal = np.loadtxt(

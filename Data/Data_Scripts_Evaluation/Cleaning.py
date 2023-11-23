@@ -17,3 +17,4 @@ t_evel=np.linspace(t_b,t_n,500)
 t_pretty=t_evel-t_b
 x_evel=f(t_evel)
 print(x_evel)
+print(t_evel)
