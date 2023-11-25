@@ -15,10 +15,16 @@ comp = np.array(["time", "Ar", "He", "H2"])
 
 class Calibration:
     # Ionisierungswahrscheinlichkeiten aus der Literatur
-    PI = {
+    ion_prob = {
         "He": 0.14,
         "Ar": 1.2,
         "H2": 0.44,
+    }
+
+    ref_ion_mass = {
+        "He": "Mass 4",
+        "Ar": "Mass 40",
+        "H2": "Mass 2",
     }
 
     def __init__(
@@ -30,7 +36,7 @@ class Calibration:
         self.cal_files = cal_files
         self.components = components
         self._reference_ion = reference_ion
-        self._ion_ref = self.PI[reference_ion]
+        self._ion_ref = self.ion_prob[reference_ion]
         self.RSF = self.calc_RSF()
 
     @property
@@ -49,24 +55,24 @@ class Calibration:
         Vdot = np.zeros_like(self.components, dtype=float)
         print("\nVolume flows during calibration:")
         for i, comp in enumerate(self.components):
-            ind_i = filename.find(
-                comp + "_"
-            )  # search for the component i in the filename
-            if (
-                ind_i != -1
-            ):  # if ind_i equals -1, the component is not included in the file
-                if filename[ind_i - 2] == "_":  # one dezimal given
-                    Vdot[i] = (
-                        float(filename[ind_i - 5 : ind_i - 2])
-                        + float(filename[ind_i - 1]) / 10
-                    )  # read the volumeflows from the filename
-                    print(comp[i], ":", Vdot[i])
-                elif filename[ind_i - 3] == "_":  # two dezimals given
-                    Vdot[i] = (
-                        float(filename[ind_i - 6 : ind_i - 3])
-                        + float(filename[ind_i - 2 : ind_i]) / 100
-                    )  # read the volumeflows from the filename
-                    print(comp, ":", Vdot[i])
+            if comp not in filename:
+                # skip the evaluatuion if the component is not included in the filename
+                continue
+            # search for the component i in the filename
+            ind_i = filename.find(comp + "_")
+            # if ind_i equals -1, the component is not included in the file
+            if filename[ind_i - 2] == "_":  # one dezimal given
+                Vdot[i] = (
+                    float(filename[ind_i - 5 : ind_i - 2])
+                    + float(filename[ind_i - 1]) / 10
+                )  # read the volumeflows from the filename
+                print(comp[i], ":", Vdot[i])
+            elif filename[ind_i - 3] == "_":  # two dezimals given
+                Vdot[i] = (
+                    float(filename[ind_i - 6 : ind_i - 3])
+                    + float(filename[ind_i - 2 : ind_i]) / 100
+                )  # read the volumeflows from the filename
+                print(comp, ":", Vdot[i])
 
         x_i_cal = Vdot / sum(Vdot)  # mol/mol
         return x_i_cal
@@ -100,7 +106,9 @@ class Calibration:
             x_i_cal = self.get_xi_ref(path_cal)
 
             # Choose reference He
-            x_ref = x_i_cal[self.components == "He"]  # x_ref = x_He as reference
+            x_ref = x_i_cal[
+                self.components == self.reference_ion
+            ]  # x_ref = x_He as reference
             Idot_ref = ms_data_avg_cal[ms_header_cal == "Mass 4"]  # Idot_ref = Mass 4
 
             # Choose where to evaluate the RSF values
@@ -147,18 +155,18 @@ class Calibration:
         # non_calib = np.full((len(comp)),True) # uncomment to show the literatur data
         if non_calib[self.components == "Ar"]:  # Ar not calibrated
             RSF[self.components == "Ar", self.ms_header_cal == "Mass 20"] = (
-                1 * self.PI["Ar"] / self.PI[self.reference_ion]
+                1 * self.ion_prob["Ar"] / self.ion_prob[self.reference_ion]
             )  # Ar,20
             RSF[self.components == "Ar", self.ms_header_cal == "Mass 40"] = (
-                0.1 * self.PI["Ar"] / self.PI[self.reference_ion]
+                0.1 * self.ion_prob["Ar"] / self.ion_prob[self.reference_ion]
             )  # Ar,40
         if non_calib[self.components == "He"]:  # He not calibrated
             RSF[self.components == "He", self.ms_header_cal == "Mass 4"] = (
-                1 * self.PI["He"] / self.PI[self.reference_ion]
+                1 * self.ion_prob["He"] / self.ion_prob[self.reference_ion]
             )
         if non_calib[self.components == "H2"]:  # H2 not calibrated
             RSF[self.components == "H2", self.ms_header_cal == "Mass 2"] = (
-                1 * self.PI["H2"] / self.PI[self.reference_ion]
+                1 * self.ion_prob["H2"] / self.ion_prob[self.reference_ion]
             )
 
         print()
