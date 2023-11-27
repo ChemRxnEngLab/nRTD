@@ -16,8 +16,8 @@ DATA = WD / "Data"
 
 def process_data(file_num):
     # Construct file paths for _x.npy and _t.npy
-    x_file_path = DATA / "C_002" / "H_085_C2" / "S_012_C2" / f"TOA_MGA_20231020_012_{file_num:06d}_x.npy"
-    t_file_path = DATA / "C_002" / "H_085_C2" / "S_012_C2" / f"TOA_MGA_20231020_012_{file_num:06d}_t.npy"
+    x_file_path = DATA / "C_001" / "H_085_C1" / "S_009_C1" / f"TOA_MGA_20231020_009_{file_num:06d}_x.npy"
+    t_file_path = DATA / "C_001" / "H_085_C1" / "S_009_C1" / f"TOA_MGA_20231020_009_{file_num:06d}_t.npy"
 
     # Load _x.npy and _t.npy
     x = np.load(x_file_path)
@@ -32,8 +32,8 @@ def process_data(file_num):
     x_evel = f(t_evel)
 
     # Save processed data
-    np.save(DATA / "C_002" / "H_085_C2" / "S_012_C2" / f"TOA_MGA_20231020_012_{file_num:06d}_t_processed.npy", t_pretty)
-    np.save(DATA / "C_002" / "H_085_C2" / "S_012_C2" / f"TOA_MGA_20231020_012_{file_num:06d}_x_processed.npy", x_evel)
+    np.save(DATA / "C_001" / "H_085_C1" / "S_009_C1" / f"TOA_MGA_20231020_009_{file_num:06d}_t_processed.npy", t_pretty)
+    np.save(DATA / "C_001" / "H_085_C1" / "S_009_C1" / f"TOA_MGA_20231020_009_{file_num:06d}_x_processed.npy", x_evel)
 
     # Plot results
     plt.plot(t_pretty, x_evel)

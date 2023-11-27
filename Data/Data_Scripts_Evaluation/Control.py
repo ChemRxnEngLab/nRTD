@@ -7,5 +7,11 @@ Created on Sat Nov 25 21:57:07 2023
 """
 
 import numpy as np
-x=np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_000001_t_processed.npy")
+import matplotlib.pyplot as plt
+t=np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/C_002/H_085_C2/S_012_C2/TOA_MGA_20231020_012_000001_t.npy")
+x=np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/C_002/H_085_C2/S_012_C2/TOA_MGA_20231020_012_000001_x.npy")
 print(x)
+plt.plot(t,x[0,:])
+plt.legend()
+plt.show()
+
