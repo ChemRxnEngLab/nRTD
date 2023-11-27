@@ -54,7 +54,7 @@ def main():
     plt.legend()
     plt.xlabel("t/s")
     plt.ylabel("x/1")
-    #plt.savefig("s_014.png")
+    plt.savefig("s_010.png")
     plt.show()
 
 if __name__ == "__main__":
