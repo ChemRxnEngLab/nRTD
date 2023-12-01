@@ -1,3 +1,4 @@
+from typing import Any
 import torch
 import lightning.pytorch as pl
 from . import rtd_net
@@ -13,7 +14,17 @@ class RTDModule(pl.LightningModule):
         super().__init__()
         self.kernel_size = kernel_size
         self.padding_mode = padding_mode
-        self.net = rtd_net.RTDNet(kernel_size, padding_mode, n_compartements)
+        self.net = rtd_net.RTDNet(
+            kernel_size=kernel_size,
+            padding_mode=padding_mode,
+            n_compartements=n_compartements,
+        )
+
+        self.save_hyperparameters(
+            ignore=[
+                "padding_mode",
+            ],
+        )
 
     def forward(self, X: torch.Tensor) -> torch.Tensor:
         return self.net(X)
@@ -24,3 +35,9 @@ class RTDModule(pl.LightningModule):
         loss = torch.nn.functional.mse_loss(y_hat, y)
         self.log("train_loss", loss)
         return loss
+
+    def configure_optimizers(self) -> dict[str, Any]:
+        ret_dict = {
+            "optimizer": torch.optim.Adam(self.parameters(), lr=1e-5),
+        }
+        return ret_dict
