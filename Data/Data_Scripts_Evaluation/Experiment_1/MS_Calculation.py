@@ -1,5 +1,6 @@
 # Calculate the RSF matrix for given MS data
 
+import warnings
 import numpy as np
 from tkinter import filedialog
 import os
@@ -31,7 +32,7 @@ class Calibration:
         self,
         components: list[str],
         cal_files: list[Path],
-        reference_ion="He",
+        reference_ion: str = "He",
     ):
         self.cal_files = cal_files
         self.components = components
@@ -40,14 +41,14 @@ class Calibration:
         self.RSF = self.calc_RSF()
 
     @property
-    def reference_ion(self):
+    def reference_ion(self) -> str:
         return self._reference_ion
 
     @reference_ion.setter
-    def reference_ion(self, ion: str):
+    def reference_ion(self, ion: str) -> None:
         self._reference_ion = ion
 
-    def get_xi_ref(self, path_cal):
+    def _get_xi_ref(self, path_cal: Path) -> npt.NDArray:
         # template for titling the ms calibration files
         # 000_0Ar_000_0He_000_0H2_otherdescription.txt
         # not included components can be omitted
@@ -55,90 +56,98 @@ class Calibration:
         Vdot = np.zeros_like(self.components, dtype=float)
         print("\nVolume flows during calibration:")
         for i, comp in enumerate(self.components):
+            # skip the evaluatuion if the component is not included in the filename
             if comp not in filename:
-                # skip the evaluatuion if the component is not included in the filename
+                warnings.warn(f"Component {comp} not included in calibration filename.")
                 continue
             # search for the component i in the filename
             ind_i = filename.find(comp + "_")
-            # if ind_i equals -1, the component is not included in the file
-            if filename[ind_i - 2] == "_":  # one dezimal given
+            if self._one_decimal_given(filename, ind_i):  # one dezimal given
+                # read the volumeflows from the filename
                 Vdot[i] = (
                     float(filename[ind_i - 5 : ind_i - 2])
                     + float(filename[ind_i - 1]) / 10
-                )  # read the volumeflows from the filename
-                print(comp[i], ":", Vdot[i])
-            elif filename[ind_i - 3] == "_":  # two dezimals given
+                )
+            elif self._two_decimals_given(filename, ind_i):  # two dezimals given
+                # read the volumeflows from the filename
                 Vdot[i] = (
                     float(filename[ind_i - 6 : ind_i - 3])
                     + float(filename[ind_i - 2 : ind_i]) / 100
-                )  # read the volumeflows from the filename
-                print(comp, ":", Vdot[i])
+                )
+            print(comp, ":", Vdot[i])
 
         x_i_cal = Vdot / sum(Vdot)  # mol/mol
         return x_i_cal
 
+    def _two_decimals_given(self, filename: str, ind_i: int) -> bool:
+        return filename[ind_i - 3] == "_"
+
+    def _one_decimal_given(self, filename: str, ind_i: int) -> bool:
+        return filename[ind_i - 2] == "_"
+
     def _calc_RSF_all(self) -> npt.NDArray:
         RSF_all = np.array([])
-        for path_cal in self.cal_files:
+        for i, path_cal in enumerate(self.cal_files):
             print("Used calibration file:", path_cal)
-            ms_header_cal = np.loadtxt(
-                path_cal,
-                delimiter="\t",
-                skiprows=2,
-                usecols=(1, 3, 5),
-                dtype=str,
-                max_rows=1,
-            )
-            self.ms_header_cal = np.char.replace(ms_header_cal, '"', "")
-
-            ms_data_cal = np.loadtxt(
-                path_cal,
-                delimiter="\t",
-                skiprows=3,
-                usecols=(1, 3, 5),
-            )
-            ms_data_avg_cal = np.mean(ms_data_cal, axis=0)
-            ms_data_std_cal = np.std(ms_data_cal, axis=0)
-
-            if len(self.ms_header_cal) != len(ms_data_avg_cal):
-                raise ValueError("Header and data don't fit!")
-
-            x_i_cal = self.get_xi_ref(path_cal)
-
-            # Choose reference He
-            x_ref = x_i_cal[
-                self.components == self.reference_ion
-            ]  # x_ref = x_He as reference
-            Idot_ref = ms_data_avg_cal[ms_header_cal == "Mass 4"]  # Idot_ref = Mass 4
-
-            # Choose where to evaluate the RSF values
-            eval_at = np.zeros(
-                (len(self.components), len(ms_data_avg_cal))
-            )  # if eval_at is one at a position this combination is evaluated regarding the RSF(component,mass)
-            # eval_at[np.where(comp=='Ar')[0][0],np.where(ms_header_cal=='Mass 20')[0][0]] = 1 # Ar,20
-            eval_at[self.components == "Ar", ms_header_cal == "Mass 40"] = 1  # Ar,40
-            eval_at[self.components == "He", ms_header_cal == "Mass 4"] = 1  # He,4
-            eval_at[self.components == "H2", ms_header_cal == "Mass 2"] = 1  # H2,2
-
-            # calculate RSF matrix
-            RSF_temp = np.zeros_like(eval_at)
-            for mm in range(eval_at.shape[1]):
-                for i in range(len(x_i_cal)):
-                    if (
-                        x_i_cal[i] != 0
-                    ):  # only calculate RSF if component is present in the calibration measurement
-                        RSF_temp[i, mm] = (
-                            x_ref
-                            / x_i_cal[i]
-                            * ms_data_avg_cal[mm]
-                            / Idot_ref
-                            * eval_at[i, mm]
-                        )
-            if path_cal == self.cal_files[0]:
+            RSF_temp = self._calc_RSF_temp(path_cal)
+            if i == 0:
                 RSF_all = np.array([RSF_temp]).copy()
             else:
                 RSF_all = np.concatenate((RSF_all, np.array([RSF_temp])), axis=0)
         return RSF_all
+
+    def _calc_RSF_temp(self, path_cal: Path) -> npt.NDArray:
+        ms_header_cal = np.loadtxt(
+            path_cal,
+            delimiter="\t",
+            skiprows=2,
+            usecols=(1, 3, 5),
+            dtype=str,
+            max_rows=1,
+        )
+        self.ms_header_cal = np.char.replace(ms_header_cal, '"', "")
+
+        ms_data_cal = np.loadtxt(
+            path_cal,
+            delimiter="\t",
+            skiprows=3,
+            usecols=(1, 3, 5),
+        )
+        ms_data_avg_cal = np.mean(ms_data_cal, axis=0)
+        ms_data_std_cal = np.std(ms_data_cal, axis=0)
+
+        if len(self.ms_header_cal) != len(ms_data_avg_cal):
+            raise ValueError("Header and data don't fit!")
+
+        x_i_cal = self._get_xi_ref(path_cal)
+
+        # Choose reference He
+        x_ref = x_i_cal[self.components == self.reference_ion]
+        Idot_ref = ms_data_avg_cal[ms_header_cal == "Mass 4"]  # Idot_ref = Mass 4
+
+        # Choose where to evaluate the RSF values
+        # # if eval_at is one at a position this combination is evaluated regarding the RSF(component,mass)
+        eval_at = np.zeros((len(self.components), len(ms_data_avg_cal)))
+        # eval_at[np.where(comp=='Ar')[0][0],np.where(ms_header_cal=='Mass 20')[0][0]] = 1 # Ar,20
+        eval_at[self.components == "Ar", ms_header_cal == "Mass 40"] = 1  # Ar,40
+        eval_at[self.components == "He", ms_header_cal == "Mass 4"] = 1  # He,4
+        eval_at[self.components == "H2", ms_header_cal == "Mass 2"] = 1  # H2,2
+
+        # calculate RSF matrix
+        RSF_temp = np.zeros_like(eval_at)
+        for mm in range(eval_at.shape[1]):
+            for i in range(len(x_i_cal)):
+                # only calculate RSF if component is present in the calibration measurement
+                if x_i_cal[i] != 0:
+                    RSF_temp[i, mm] = (
+                        x_ref
+                        / x_i_cal[i]
+                        * ms_data_avg_cal[mm]
+                        / Idot_ref
+                        * eval_at[i, mm]
+                    )
+
+        return RSF_temp
 
     def calc_RSF(self) -> npt.NDArray:
         # Calculate final RSF matrix
@@ -258,7 +267,7 @@ class MSData:
 
 def calc_calibration(cal_files):
     if not bool(cal_files):
-            raise ValueError("No calibration file")
+        raise ValueError("No calibration file")
     for path_cal in cal_files:
         print("Used calibraion file:", path_cal)
         ms_header_cal = np.loadtxt(
