@@ -46,16 +46,18 @@ def main():
     end_file_num = 20
 
     # Iterate over the file numbers and process each data file
-    #for file_num in range(start_file_num, end_file_num + 1):
-    for file_num in [7,17]:
+    for file_num in range(start_file_num, end_file_num + 1):
+        if file_num in [12,7]:
+            continue
+    #for file_num in [7,17]:
         process_data(file_num)
 
     # Show the legend and plot
     plt.legend()
     plt.xlabel("t/s")
     plt.ylabel("x/1")
-    plt.savefig("S_009_7_17.png")
-    #plt.savefig("S_009.png")
+    plt.savefig("S_009_processed.png")
+    plt.savefig("S_009_processed.png")
     plt.show()
 
 if __name__ == "__main__":
