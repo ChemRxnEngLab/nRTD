@@ -14,7 +14,6 @@ n_disc = 33
 t_input = torch.linspace(0, 2, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
 c_in[:, :, t_input > 1] = 1
-
 n_conv = 201
 t_conv = torch.linspace(0, 12, n_conv)
 
@@ -30,14 +29,17 @@ plt.show()
 
 model = RTDModule(
     kernel_size=167,
+    learning_rate=1e-3,
 )
 
 c_conv = model(c_in)
+E = model.net.E[0]
+t_E = torch.linspace(0, 10, model.kernel_size)
 
 plt.plot(t_input, c_in[0, 0, :].numpy())
 plt.plot(t_conv, c_out[0, 0, :].numpy())
 plt.plot(t_conv, c_conv[0, 0, :].detach().numpy())
-
+plt.plot(t_E, E, label="E")
 plt.show()
 
 ds = TensorDataset(c_in, c_out)

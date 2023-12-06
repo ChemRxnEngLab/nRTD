@@ -10,8 +10,10 @@ class RTDModule(pl.LightningModule):
         kernel_size: int,
         padding_mode: str = "replicate",
         n_compartements: int = 1,
+        learning_rate: float = 1e-3,
     ):
         super().__init__()
+        self.learning_rate = learning_rate
         self.kernel_size = kernel_size
         self.padding_mode = padding_mode
         self.net = rtd_net.RTDNet(
@@ -37,7 +39,17 @@ class RTDModule(pl.LightningModule):
         return loss
 
     def configure_optimizers(self) -> dict[str, Any]:
+        _optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
+        _scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            _optimizer,
+            patience=500,
+            factor=0.7,
+            verbose=False,
+        )
+
         ret_dict = {
-            "optimizer": torch.optim.Adam(self.parameters(), lr=1e-5),
+            "optimizer": _optimizer,
+            "scheduler": _scheduler,
+            "monitor": "train_loss",
         }
         return ret_dict
