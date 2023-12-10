@@ -38,7 +38,8 @@ def process_data(file_num):
 
     # Plot results
     plt.plot(t_pretty, x_evel, label=file_num)
-    #plt.vlines(1, 0,0.05)
+    plt.vlines(1.1, 0,0.05)
+    plt.hlines(0.0505, 0,55)
 
 def main():
     # Specify the range of file numbers you want to process
@@ -56,8 +57,9 @@ def main():
     plt.legend()
     plt.xlabel("t/s")
     plt.ylabel("x/1")
-    plt.savefig("S_009_processed.png")
-    plt.savefig("S_009_processed.png")
+    #plt.savefig("S_009_processed.png")
+    #plt.savefig("S_009_processed.png")
+    plt.savefig("S_009_max.png")
     plt.show()
 
 if __name__ == "__main__":
