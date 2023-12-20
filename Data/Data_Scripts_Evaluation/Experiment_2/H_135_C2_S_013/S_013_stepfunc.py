@@ -9,11 +9,11 @@ Created on Sun Dec 10 22:56:52 2023
 import matplotlib.pyplot as plt
 import numpy as np
 
-x = np.linspace(0, 3, 100)
-y = np.piecewise(x, [x < 1.1, x >= 1.1], [0, 0.034])#like a true/false
+x = np.linspace(0, 51, 500)
+y = np.piecewise(x, [x < 1, x >= 1], [0, 0.0333])#like a true/false
 plt.step(x, y, where='post')
 plt.xlabel('t/s')
 plt.ylabel('x/1')
-plt.xticks(np.arange(min(x), max(x) + 0.5, 0.5))#digits
-plt.yticks([0, 0.034])
+plt.xticks(np.arange(min(x), max(x) + 5, 5))#digits
+plt.yticks([0, 0.0333])
 plt.show()

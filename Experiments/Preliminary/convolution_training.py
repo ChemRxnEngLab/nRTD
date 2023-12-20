@@ -1,12 +1,12 @@
 import sys
 
-sys.path.append("lib")
+sys.path.append("/Users/tuanaoyuncu/Documents/GitHub/nRTD")
 
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import matplotlib.pyplot as plt
-from nRTD import RTDModule
+from nrtd import RTDModule
 
 ### dummy data
 
@@ -16,7 +16,6 @@ c_in = torch.zeros((1, 1, n_disc))
 c_in[:, :, t_input > 1] = 1
 n_conv = 201
 t_conv = torch.linspace(0, 12, n_conv)
-
 c_out = torch.zeros((1, 1, n_conv))
 c_out[:, :, t_conv > 4] = 1 / 3 * (t_conv[t_conv > 4] - 4)
 c_out[:, :, t_conv > 7] = 1

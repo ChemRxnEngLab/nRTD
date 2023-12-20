@@ -31,10 +31,11 @@ def process_data(file_num):
     t_evel = np.linspace(t_b, t_n, 500)
     t_pretty = t_evel - t_b
     x_evel = f(t_evel)
+    print(x_evel.shape)
 
     # Save processed data
-    np.save(PWD / f"TOA_MGA_20231020_014_{file_num:06d}_t_processed.npy", t_pretty)
-    np.save(PWD / f"TOA_MGA_20231020_014_{file_num:06d}_x_processed.npy", x_evel)
+    #np.save(PWD / f"TOA_MGA_20231020_014_{file_num:06d}_t_processed.npy", t_pretty)
+    #np.save(PWD / f"TOA_MGA_20231020_014_{file_num:06d}_x_processed.npy", x_evel)
 
     # Plot results
     plt.plot(t_pretty, x_evel, label=file_num)
@@ -57,7 +58,7 @@ def main():
     plt.legend()
     plt.xlabel("t/s")
     plt.ylabel("x/1")
-    plt.savefig("s_014_max.png")
+    #plt.savefig("s_014_max.png")
     #plt.savefig("s_014_processed.png")
     plt.show()
 

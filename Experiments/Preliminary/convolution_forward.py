@@ -1,10 +1,10 @@
 import sys
 
-sys.path.append("lib")
+sys.path.append("/Users/tuanaoyuncu/Documents/GitHub/nRTD/lib")
 
 import torch
 import matplotlib.pyplot as plt
-from nRTD import RTDNet
+from nrtd import RTDNet
 
 kernel_size = 100
 net = RTDNet(
