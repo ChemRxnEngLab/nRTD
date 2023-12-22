@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append("/Users/tuanaoyuncu/Documents/GitHub/nRTD")
+sys.path.append("/Users/tuanaoyuncu/Documents/GitHub/nRTD/lib")
 
 import torch
 from torch.utils.data import TensorDataset, DataLoader
@@ -16,13 +16,12 @@ c_in = torch.zeros((1, 1, n_disc))
 c_in[:, :, t_input > 1] = 1
 n_conv = 201
 t_conv = torch.linspace(0, 12, n_conv)
-c_out = torch.zeros((1, 1, n_conv))
+c_out = torch.zeros((1, 1, n_conv)) #target
 c_out[:, :, t_conv > 4] = 1 / 3 * (t_conv[t_conv > 4] - 4)
 c_out[:, :, t_conv > 7] = 1
 
 plt.plot(t_input, c_in[0, 0, :].numpy())
 plt.plot(t_conv, c_out[0, 0, :].numpy())
-
 plt.show()
 
 
