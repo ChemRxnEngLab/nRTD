@@ -7,19 +7,19 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import matplotlib.pyplot as plt
 from nrtd import RTDModule
+import numpy as np
+from RTDModule import t_conv, c_out
 
 ### dummy data
 
-n_disc = 33
-t_input = torch.linspace(0, 2, n_disc)
-c_in = torch.zeros((1, 1, n_disc))
-c_in[:, :, t_input > 1] = 1
-n_conv = 201
-t_conv = torch.linspace(0, 12, n_conv)
-c_out = torch.zeros((1, 1, n_conv)) #target
-c_out[:, :, t_conv > 4] = 1 / 3 * (t_conv[t_conv > 4] - 4)
-c_out[:, :, t_conv > 7] = 1
 
+n_disc = 33.333
+t_input = torch.linspace(0, 41, n_disc)
+c_in = torch.zeros((1, 1, n_disc))
+c_in[:, :, t_input > 1] = 0.05
+n_conv = 201
+t_conv = [torch.from_numpy(np.load(file_path)) for file_path in t_conv]
+c_out = [torch.from_numpy(np.load(file_path)) for file_path in c_out]
 plt.plot(t_input, c_in[0, 0, :].numpy())
 plt.plot(t_conv, c_out[0, 0, :].numpy())
 plt.show()

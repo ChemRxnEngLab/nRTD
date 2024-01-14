@@ -15,5 +15,5 @@ plt.ylabel('x/1')
 plt.xticks(np.arange(min(t), max(t) + 5, 5))  # digits
 plt.yticks([0, 0.05])
 plt.show()
-np.save('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/Data_Scripts_Evaluation/Experiment_1/H_085_C1_S_009/t_target.npy', t)
-np.save('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/Data_Scripts_Evaluation/Experiment_1/H_085_C1_S_009/x_target.npy', x)
+np.save('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/Data_Scripts_Evaluation/Experiment_1/H_085_C1_S_009/t_sf.npy', t)
+np.save('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/Data_Scripts_Evaluation/Experiment_1/H_085_C1_S_009/x_sf.npy', x)

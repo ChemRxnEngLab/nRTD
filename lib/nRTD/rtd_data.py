@@ -32,13 +32,13 @@ class RTDDataModule(pl.LightningDataModule):
         self.data_folder = data_folder
 
     def prepare_data(self):
-        x_files = sorted(glob.glob('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/C_001/H_085_C1/S_009_C1_TOA_MGA_20231020_009_000001_x_*.npy'))
-        t_files = sorted(glob.glob('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/C_001/H_085_C1/S_009_C1_TOA_MGA_20231020_009_000001_t_*.npy'))
+        c_out = sorted(glob.glob('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/C_001/H_085_C1/S_009_C1_TOA_MGA_20231020_009_000001_x_*.npy'))
+        t_conv = sorted(glob.glob('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/C_001/H_085_C1/S_009_C1_TOA_MGA_20231020_009_000001_t_*.npy'))
         target_file_x = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/Data_Scripts_Evaluation/Experiment_1/H_085_C1_S_009/x_target.npy'
         target_file_t = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/Data_Scripts_Evaluation/Experiment_1/H_085_C1_S_009/t_target.npy'
 
-        x_tensors = [torch.from_numpy(np.load(file)) for file in x_files]
-        t_tensors = [torch.from_numpy(np.load(file)) for file in t_files]
+        x_tensors = [torch.from_numpy(np.load(file)) for file in c_out]
+        t_tensors = [torch.from_numpy(np.load(file)) for file in t_conv]
         target_tensors_x = torch.from_numpy(np.load(target_file_x))
         target_tensors_t = torch.from_numpy(np.load(target_file_t))
 

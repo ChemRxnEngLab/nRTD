@@ -13,7 +13,7 @@ net = RTDNet(
     n_compartements=1,
 )
 
-n_disc = 100
+n_disc = 33,333
 t_0, t_i_end = (0, 10)
 t = torch.linspace(t_0, t_i_end, n_disc)
 t_E = torch.linspace(0, 10, kernel_size)
