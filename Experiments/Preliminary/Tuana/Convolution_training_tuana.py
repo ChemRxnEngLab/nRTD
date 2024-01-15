@@ -15,11 +15,11 @@ import lightning.pytorch as pl
 import matplotlib.pyplot as plt
 from nrtd import RTDModule
 
-n_disc = 33  
-t_input = torch.linspace(0, 41, n_disc)
+n_disc = 377 
+t_input = torch.linspace(0, 31, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
 c_in[:, :, t_input > 1] = 0.05  
-n_conv = 201
+n_conv = 500
 t_conv = torch.linspace(0, 41, n_conv)
 c_out = torch.zeros((1, 1, n_conv))  
 c_out[:, :, t_conv > 1] = 0.05 
@@ -31,7 +31,7 @@ plt.ylim((0,0.2))
 plt.show()
 
 model = RTDModule(
-    kernel_size=167,
+    kernel_size=122,
     learning_rate=1e-3,
 )
 
