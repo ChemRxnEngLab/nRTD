@@ -30,7 +30,7 @@ class RTDNet(nn.Module):
             ]
         )
         if t_conv is None:
-            self.t_conv = [(0, 10) for i in range(n_compartements)]
+            self.t_conv = [(0.0, 10.0) for i in range(n_compartements)]
         else:
             self.t_conv = t_conv
 
@@ -38,32 +38,76 @@ class RTDNet(nn.Module):
         conv_out = self.fn(x)
         return conv_out
 
-    def freeze_conv(self, ind: int) -> None:
+    def _freeze_conv(self, ind: int) -> None:
+        """Utility function for freezing the weights of the convolutional layer.
+
+        Parameters
+        ----------
+        ind : int
+            index of the convolutional layer to freeze.
+        """
         for i, conv in enumerate(self.fn):
             if i == ind:
                 conv.weight.requires_grad = False
 
     @property
     def E(self) -> list[npt.NDArray]:
+        """RTD density functions for compartements.
+
+        Returns
+        -------
+        list[npt.NDArray]
+            RTD density functions for compartements
+        """
         return [
             conv.get_parameter("weight")[0, 0, :].flip(0).detach().numpy()
             for conv in self.fn
         ]
 
     def output_shape(self, c: torch.Tensor) -> int:
-        """
-        Returns the output shape of the convolutional layer
+        """The output shape (discretiozation) of the RTD convolution function if the input shape is 'c'.
+
+        Parameters
+        ----------
+        c : torch.Tensor
+            temporal input signal
+
+        Returns
+        -------
+        int
+            discretization (length) of the output signal
         """
         n_c = c.shape[2]
         return n_c + self.n_compartements * (self.kernel_size + 1)
 
-    def conv_t(self, t_input: torch.Tensor) -> torch.Tensor:
+    @property
+    def t_conv_end(self) -> float:
         """
-        Returns the timescale of the output signal if the input is on timescale `t_input`
+        The end time of the RTD Convolution function, as the sum of the end times of the individual compartments.
+
+        Returns
+        -------
+        float
+            end time of the RTD Convolution function
+        """
+        t_conv_end = [t[-1] for t in self.t_conv]
+        return sum(t_conv_end)
+
+    def conv_t(self, t_input: torch.Tensor) -> torch.Tensor:
+        """The Output time scale of the RTD convolution function if the input time scale is 't_input'.
+
+        Parameters
+        ----------
+        t_input : torch.Tensor
+            time scale of the input signal.
+
+        Returns
+        -------
+        torch.Tensor
+            time scale of the convoluted (output) signal.
         """
         t_i_end = float(t_input[-1])
-        t_conv_end = [t[-1] for t in self.t_conv]
-        t_c_end = t_i_end + sum(t_conv_end)
+        t_c_end = t_i_end + self.t_conv_end
         return torch.linspace(0, t_c_end, self.output_shape(t_input))
 
 
