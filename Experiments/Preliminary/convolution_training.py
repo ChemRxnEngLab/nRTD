@@ -26,7 +26,7 @@ plt.show()
 
 
 model = RTDModule(
-    kernel_size=167,
+    kernel_size=122,
     learning_rate=1e-3,
 )
 

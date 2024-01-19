@@ -12,6 +12,8 @@ def process_data(file_num, ax):
     x = np.load(x_file_path)
     t = np.load(t_file_path)
     ax.plot(t, x, label=f"File {file_num}")
+    num_samples = len(x)  
+    print(f"{file_num}: {num_samples}")
 
 def main():
     file_numbers = range(1, 20, 2)
@@ -19,7 +21,7 @@ def main():
     for i, file_num in enumerate(file_numbers):
         ax = axes[i]
         process_data(file_num, ax)
-        process_data(file_num + 1, ax)
+        process_data(file_num + 1, ax)  
         ax.legend()
         ax.set_xlabel("t/s")
         ax.set_ylabel("x/1")
