@@ -80,9 +80,10 @@ import numpy as np
 
 n_disc = 377
 t_input = torch.linspace(0, 31, n_disc)
-c_in = torch.zeros((10, 1, n_disc))
-c_in[:, :, t_input > 1] = 0.05
-file_numbers = range(1, 20, 2)
+c_in = torch.zeros((20, 1, n_disc))
+c_in[::2, :, t_input > 1] = 0.05
+c_in[1::2, :, t_input < 1] = 0.05
+file_numbers = range(1, 21)
 c_out_list = []
 t_conv_list = []
 
@@ -117,21 +118,22 @@ model = RTDModule(
 c_conv = model(c_in)
 E = model.net.E[0]
 t_E = torch.linspace(0, 10, model.kernel_size)
+j = 2
 
 plt.figure()
-plt.plot(t_input, c_in[0, 0, :].numpy(), label="SF", color="blue")
+plt.plot(t_input, c_in[j, 0, :].numpy(), label="SF", color="blue")
 
 for i in range(c_out.size(1)):
     plt.plot(
-        t_conv[0, i, :].numpy(),
-        c_out[0, i, :].numpy(),
+        t_conv[j, i, :].numpy(),
+        c_out[j, i, :].numpy(),
         label=f"Exp_{file_numbers[i]}",
         color="green",
     )
 
 plt.plot(
-    t_conv[0, 0, :].numpy(),
-    c_conv[0, 0, :].detach().numpy(),
+    t_conv[j, 0, :].numpy(),
+    c_conv[j, 0, :].detach().numpy(),
     label="Predicted",
     color="red",
 )
@@ -142,6 +144,7 @@ plt.ylim((0, 0.2))
 plt.show()
 
 print(model(c_in).size())
+# exit()
 
 ds = TensorDataset(c_in, c_out)
 # split the dataset into train and test
