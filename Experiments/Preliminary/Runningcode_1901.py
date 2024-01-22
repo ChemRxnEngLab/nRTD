@@ -13,6 +13,7 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import matplotlib.pyplot as plt
 from nrtd import RTDModule
+
 n_disc = 377 
 t_input = torch.linspace(0, 31, n_disc)
 c_in = torch.zeros((1, 1, n_disc))

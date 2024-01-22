@@ -18,6 +18,9 @@
 # t_conv = t_conv.unsqueeze(0).expand(500, -1)
 
 # plt.show()
+# print(f"c_in size: {c_in.size()}")
+# print(f"c_out size: {c_out.size()}")
+# print(f"t_conv size: {t_conv.size()}")
 
 # model = RTDModule(
 #     kernel_size=122,
@@ -89,8 +92,8 @@ for i, file_num in enumerate(file_numbers):
     t_conv_list.append(t_conv)
 c_out = torch.cat(c_out_list, dim=0)
 t_conv = torch.cat(t_conv_list, dim=0)
-c_out = c_out.unsqueeze(2).expand(-1, -1, 1, -1)
-t_conv = t_conv.unsqueeze(2).expand(-1, -1, 1, -1)
+# c_out = c_out.unsqueeze(2).expand(-1, -1, 1, -1)
+# t_conv = t_conv.unsqueeze(2).expand(-1, -1, 1, -1)
 plt.show()
 print(f"c_in size: {c_in.size()}")
 print(f"c_out size: {c_out.size()}")
@@ -107,22 +110,24 @@ t_E = torch.linspace(0, 10, model.kernel_size)
 plt.figure()
 plt.plot(t_input, c_in[0, 0, :].numpy(), label="SF", color="blue")
 
-for i in range(c_out.size(2)):
-    plt.plot(t_conv[0, 0, i, :].numpy(), c_out[0, 0, i, :].numpy(), label=f"Exp_{file_numbers[i]}", color="green")
+for i in range(c_out.size(1)):
+    plt.plot(t_conv[0, i, :].numpy(), c_out[ 0, i, :].numpy(), label=f"Exp_{file_numbers[i]}", color="green")
 
-plt.plot(t_conv[0, 0, 0, :].numpy(), c_conv[0, 0, :].detach().numpy(), label="Predicted", color="red")
+plt.plot(t_conv[ 0, 0, :].numpy(), c_conv[0, 0, :].detach().numpy(), label="Predicted", color="red")
 plt.plot(t_E, E, label="E", color="orange")
 plt.legend()
 plt.xlim((0, 10))
 plt.ylim((0, 0.2))
 plt.show()
 
+print(model(c_in).size())
+
 ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=1)
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=100, ####if I will change the epoch then the load is also changing ???HEEH now its different?
+    max_epochs=1000, ####if I will change the epoch then the load is also changing ???HEEH now its different?
 )
 trainer.fit(model, dl)
 
@@ -134,10 +139,10 @@ plt.figure()
 plt.plot(t_input, c_in[0, 0, :].numpy(), label="SF", color="blue")
 
 # Iterate over the loaded files and plot them
-for i in range(c_out.size(2)):
-    plt.plot(t_conv[0, 0, i, :].numpy(), c_out[0, 0, i, :].numpy(), label=f"Exp_{file_numbers[i]}", color="green")
+for i in range(c_out.size(1)):
+    plt.plot(t_conv[ 0, i, :].numpy(), c_out[ 0, i, :].numpy(), label=f"Exp_{file_numbers[i]}", color="green")
 
-plt.plot(t_conv[0, 0, 0, :].numpy(), c_conv[0, 0, :].detach().numpy(), label="Predicted", color="red")
+plt.plot(t_conv[ 0, 0, :].numpy(), c_conv[0, 0, :].detach().numpy(), label="Predicted", color="red")
 plt.plot(t_E, E, label="E", color="orange")
 plt.xlim((0, 10))
 plt.ylim((0, 0.2))
