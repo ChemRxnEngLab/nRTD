@@ -8,7 +8,7 @@ import lightning.pytorch as pl
 import matplotlib.pyplot as plt
 from nrtd import RTDModule
 import numpy as np
-from RTDModule import t_conv, c_out
+#from RTDModule import t_conv, c_out
 
 ### dummy data
 
@@ -18,15 +18,15 @@ t_input = torch.linspace(0, 41, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
 c_in[:, :, t_input > 1] = 0.05
 n_conv = 201
-t_conv = [torch.from_numpy(np.load(file_path)) for file_path in t_conv]
-c_out = [torch.from_numpy(np.load(file_path)) for file_path in c_out]
+c_out = sorted(glob.glob('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/C_001/H_085_C1/S_009_C1_TOA_MGA_20231020_009_000001_x_*.npy'))
+t_conv = sorted(glob.glob('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/C_001/H_085_C1/S_009_C1_TOA_MGA_20231020_009_000001_t_*.npy'))
 plt.plot(t_input, c_in[0, 0, :].numpy())
 plt.plot(t_conv, c_out[0, 0, :].numpy())
 plt.show()
 
 
 model = RTDModule(
-    kernel_size=167,
+    kernel_size=122,
     learning_rate=1e-3,
 )
 
