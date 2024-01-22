@@ -35,8 +35,22 @@ class RTDModule(pl.LightningModule):
         X, y = batch
         y_hat = self(X)
         loss = torch.nn.functional.mse_loss(y_hat, y)
-        self.log("train_loss", loss)
+        self.log("train/loss", loss)
         return loss
+
+    def validation_step(self, batch, batch_idx):
+        X, y = batch
+        y_hat = self(X)
+        loss = torch.nn.functional.mse_loss(y_hat, y)
+        self.log("val/loss", loss)
+        # return loss
+
+    def test_step(self, batch, batch_idx):
+        X, y = batch
+        y_hat = self(X)
+        loss = torch.nn.functional.mse_loss(y_hat, y)
+        self.log("test/loss", loss)
+        # return loss
 
     def configure_optimizers(self) -> dict[str, Any]:
         _optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
@@ -50,6 +64,6 @@ class RTDModule(pl.LightningModule):
         ret_dict = {
             "optimizer": _optimizer,
             "scheduler": _scheduler,
-            "monitor": "train_loss",
+            "monitor": "train/loss",
         }
         return ret_dict

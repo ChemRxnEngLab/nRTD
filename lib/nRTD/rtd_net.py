@@ -1,10 +1,18 @@
+from typing import Optional
 import torch.nn as nn
 import torch
 import numpy.typing as npt
-from typing import Optional
 
 
 class RTDNet(nn.Module):
+    """_summary_
+
+    Parameters
+    ----------
+    nn : _type_
+        _description_
+    """
+
     def __init__(
         self,
         kernel_size: int,
@@ -12,7 +20,7 @@ class RTDNet(nn.Module):
         n_compartements: int = 1,
         t_conv: Optional[list[tuple[float, float]]] = None,
     ):
-        super(RTDNet, self).__init__()
+        super().__init__()
         self.n_compartements = n_compartements
         self.kernel_size = kernel_size
         self.padding_mode = padding_mode
@@ -35,6 +43,18 @@ class RTDNet(nn.Module):
             self.t_conv = t_conv
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """forward method of the RTDNet class.
+
+        Parameters
+        ----------
+        x : torch.Tensor
+            input data
+
+        Returns
+        -------
+        torch.Tensor
+            output
+        """
         conv_out = self.fn(x)
         return conv_out
 
@@ -64,8 +84,8 @@ class RTDNet(nn.Module):
             for conv in self.fn
         ]
 
-    def output_shape(self, c: torch.Tensor) -> int:
-        """The output shape (discretiozation) of the RTD convolution function if the input shape is 'c'.
+    def output_shape(self, c_in: torch.Tensor) -> int:
+        """The output shape (discretiozation) of the RTD convolution function if the input shape is 'c_in'.
 
         Parameters
         ----------
@@ -77,7 +97,7 @@ class RTDNet(nn.Module):
         int
             discretization (length) of the output signal
         """
-        n_c = c.shape[2]
+        n_c = c_in.shape[2]
         return n_c + self.n_compartements * (self.kernel_size + 1)
 
     @property
@@ -112,9 +132,8 @@ class RTDNet(nn.Module):
 
 
 if __name__ == "__main__":
-    import torch
-
     fitter = RTDNet(kernel_size=100, padding_mode="replicate", n_compartements=1)
+    print(fitter.output_shape)
     print(fitter.E)
 
     # forward pass
