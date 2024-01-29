@@ -67,15 +67,16 @@
 
 import sys
 
-# sys.path.append("/Users/tuanaoyuncu/Documents/GitHub/nRTD/lib")
-sys.path.append("lib")
+sys.path.append("/Users/tuanaoyuncu/Documents/GitHub/nRTD/lib")
+#sys.path.append("lib")
 import torch
 from torch.utils.data import TensorDataset, DataLoader, random_split
 import lightning.pytorch as pl
 from lightning.pytorch import loggers as pl_loggers
 import matplotlib.pyplot as plt
-from nRTD import RTDModule
+from nrtd import RTDModule
 import numpy as np
+import wandb
 
 
 n_disc = 377
@@ -88,10 +89,10 @@ c_out_list = []
 t_conv_list = []
 
 for i, file_num in enumerate(file_numbers):
-    # t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_t_processed.npy"
-    t_conv_path = f"Data/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_t_processed.npy"
-    # c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_x_processed.npy"
-    c_out_path = f"Data/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_x_processed.npy"
+    t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_t_processed.npy"
+   # t_conv_path = f"Data/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_t_processed.npy"
+    c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_x_processed.npy"
+   # c_out_path = f"Data/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_x_processed.npy"
     t_conv = (
         torch.tensor(np.load(t_conv_path), dtype=torch.float32)
         .unsqueeze(0)
@@ -161,13 +162,14 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=1000,  ####if I will change the epoch then the load is also changing ???HEEH now its different?
+    max_epochs=100,  ####if I will change the epoch then the load is also changing ???HEEH now its different?
     logger=wandb_logger,
 )
 
 trainer.fit(model, train_dl)
 # adds an epoch at the end to calculate the final loss at the traineing end
 trainer.test(model, test_dl)
+wandb.finish()
 
 ##################
 # Postprocessing #
