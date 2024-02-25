@@ -112,7 +112,7 @@ print(f"t_conv size: {t_conv.size()}")
 
 model = RTDModule(
     kernel_size=122,
-    learning_rate=1e-3,
+    learning_rate=1e-2,
 )
 c_conv = model(c_in)
 E = model.net.E[0]
@@ -150,7 +150,7 @@ ds = TensorDataset(c_in, c_out)
 train_ds, test_ds = random_split(ds, [0.8, 0.2])
 
 train_dl = DataLoader(train_ds, batch_size=1)
-test_dl = DataLoader(test_ds, batch_size=1, shuffle=False)
+test_dl = DataLoader(test_ds, batch_size=1, shuffle=True)
 
 # set up the logger
 wandb_logger = pl_loggers.WandbLogger(
@@ -160,7 +160,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=100,  
+    max_epochs=1000,  
     logger=wandb_logger,
 )
 
