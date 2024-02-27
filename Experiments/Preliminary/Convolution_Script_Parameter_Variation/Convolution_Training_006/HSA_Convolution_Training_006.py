@@ -51,7 +51,7 @@ model = RTDModule(
     kernel_size=122,
     learning_rate=1e-2,
     use_scheduler=True,
-    scheduler_kwargs={"factor": 0.5, "patience": 10},
+    scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
 c_conv = model(c_in)
 E = model.net.E[0]
