@@ -109,7 +109,6 @@ trainer.fit(model, dl)
 # adds an epoch at the end to calculate the final loss at the traineing end
 # trainer.test(model, test_dl)
 trainer.test(model, dl)  ### check it maybe you will see changes??
-wandb.finish()
 
 ##################
 # Postprocessing #
@@ -140,6 +139,14 @@ plt.plot(
 plt.plot(t_E, E, label="E", color="orange")
 plt.xlim((0, 10))
 plt.ylim((0, 0.2))
-plt.savefig("Figure_006_002_False")
 plt.legend()
+
+fig = plt.gcf()
+wandb.log({"RTD_Plot": fig})
+# wandb.log({"RTD_Plot": wandb.Image(fig)})
+
+
+wandb.finish()
+
+plt.savefig("Figure_006_002_False")
 plt.show()
