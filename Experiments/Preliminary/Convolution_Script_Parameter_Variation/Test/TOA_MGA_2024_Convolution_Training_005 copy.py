@@ -84,7 +84,7 @@ ds = TensorDataset(c_in, c_out)
 # train_dl = DataLoader(train_ds, batch_size=1)
 # test_dl = DataLoader(test_ds, batch_size=1, shuffle=True)
 
-dl = DataLoader(ds, batch_size=1, shuffle=False)
+dl = DataLoader(ds, batch_size=20, shuffle=False)
 
 # set up the logger
 wandb_logger = pl_loggers.WandbLogger(
