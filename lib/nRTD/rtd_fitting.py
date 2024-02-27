@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 import torch
 import lightning.pytorch as pl
 from . import rtd_net
@@ -11,6 +11,8 @@ class RTDModule(pl.LightningModule):
         padding_mode: str = "replicate",
         n_compartements: int = 1,
         learning_rate: float = 1e-3,
+        use_scheduler: bool = False,
+        scheduler_kwargs: Optional[dict[str, Any]] = None,
     ):
         super().__init__()
         self.learning_rate = learning_rate
@@ -21,6 +23,14 @@ class RTDModule(pl.LightningModule):
             padding_mode=padding_mode,
             n_compartements=n_compartements,
         )
+
+        if use_scheduler and scheduler_kwargs is None:
+            raise ValueError(
+                "scheduler_kwargs must be provided when use_scheduler is True."
+            )
+
+        self.use_scheduler = use_scheduler
+        self.scheduler_kwargs: dict[str, Any] = scheduler_kwargs  # type: ignore
 
         self.save_hyperparameters(
             ignore=[
@@ -52,18 +62,18 @@ class RTDModule(pl.LightningModule):
         self.log("test/loss", loss)
         # return loss
 
-    def configure_optimizers(self) -> dict[str, Any]:
+    def configure_optimizers(self) -> dict[str, Any]:  # type: ignore
         _optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
-        _scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-            _optimizer,
-            patience=500,
-            factor=0.7,
-            verbose=False,
-        )
-
-        ret_dict = {
-            "optimizer": _optimizer,
-            "scheduler": _scheduler,
-            "monitor": "train/loss",
-        }
+        if not self.use_scheduler:
+            ret_dict = {"optimizer": _optimizer}
+        else:
+            _scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+                _optimizer,
+                **self.scheduler_kwargs,
+            )
+            ret_dict = {
+                "optimizer": _optimizer,
+                "lr_scheduler": _scheduler,
+                "monitor": "train/loss",
+            }
         return ret_dict
