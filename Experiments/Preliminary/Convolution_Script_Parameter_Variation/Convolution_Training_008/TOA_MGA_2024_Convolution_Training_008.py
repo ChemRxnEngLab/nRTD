@@ -49,7 +49,7 @@ print(f"t_conv size: {t_conv.size()}")
 
 model = RTDModule(
     kernel_size=122,
-    learning_rate=1e-2,
+    learning_rate=1e-1,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
@@ -90,18 +90,17 @@ ds = TensorDataset(c_in, c_out)
 # train_dl = DataLoader(train_ds, batch_size=1)
 # test_dl = DataLoader(test_ds, batch_size=1, shuffle=True)
 
-dl = DataLoader(ds, batch_size=1, shuffle=False)
+dl = DataLoader(ds, batch_size=20, shuffle=True)
 
 # set up the logger
 wandb_logger = pl_loggers.WandbLogger(
     project="nRTD",
-    log_model=True,
-)
+    log_model=True)
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=1000,
-    logger=wandb_logger,
+    max_epochs=10000,
+    logger=wandb_logger, deterministic=True
 )
 
 # trainer.fit(model, train_dl)
@@ -141,12 +140,12 @@ plt.xlim((0, 10))
 plt.ylim((0, 0.2))
 plt.legend()
 
-fig = plt.gcf()
-wandb.log({"RTD_Plot": fig})
+# fig = plt.gcf()
+# wandb.log({"RTD_Plot": fig})
 # wandb.log({"RTD_Plot": wandb.Image(fig)})
 
 
-wandb.finish()
+#wandb.finish()
 
-plt.savefig("Figure_006_002_False")
+plt.savefig("Figure_008_002_True")
 plt.show()
