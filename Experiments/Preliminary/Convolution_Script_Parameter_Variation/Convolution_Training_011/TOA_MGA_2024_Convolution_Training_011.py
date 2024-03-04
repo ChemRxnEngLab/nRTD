@@ -99,7 +99,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=10000,
+    max_epochs=1000,
     logger=wandb_logger, deterministic=True
 )
 
@@ -140,12 +140,12 @@ plt.xlim((0, 10))
 plt.ylim((0, 0.2))
 plt.legend()
 
-# fig = plt.gcf()
-# wandb.log({"RTD_Plot": fig})
-# wandb.log({"RTD_Plot": wandb.Image(fig)})
+fig = plt.gcf()
+wandb.log({"RTD_Plot": fig})
+wandb.log({"RTD_Plot": wandb.Image(fig)})
 
 
-#wandb.finish()
+wandb.finish()
 
 plt.savefig("Figure_011_002_True")
 plt.show()
