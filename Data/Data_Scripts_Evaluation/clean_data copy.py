@@ -1,5 +1,5 @@
 from pathlib import Path
-from MS_Calculation import cal_compostion, calc_calibration
+from MS_Calculation_002 import cal_compostion, calc_calibration
 import numpy as np
 
 WD = Path.cwd()

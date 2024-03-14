@@ -10,8 +10,8 @@ from pathlib import Path
 import numpy.typing as npt
 
 ## Bestimmung der Konzentrationen aus Kaibrierdatei
-comp = np.array(["time", "Ar", "He", "H2"])
-# indx =        [0,     1,    2,   3] # component indices
+comp = np.array(["time", "Ar", "He", "H2","CO"])
+# indx =        [0,     1,    2,   3,  4] # component indices
 
 
 class Calibration:
@@ -20,12 +20,14 @@ class Calibration:
         "He": 0.14,
         "Ar": 1.2,
         "H2": 0.44,
+        "CO": 1.05,
     }
 
     ref_ion_mass = {
         "He": "He",
         "Ar": "Ar",
         "H2": "H2",
+        "CO": "CO",
     }
 
     def __init__(
@@ -101,7 +103,7 @@ class Calibration:
             path_cal,
             delimiter="\t",
             skiprows=6,
-            usecols=(1, 3, 5),
+            usecols=(2,8,14,20),
             dtype=str,
             max_rows=1,
         )
@@ -111,7 +113,7 @@ class Calibration:
             path_cal,
             delimiter="\t",
             skiprows=8,
-            usecols=(1, 3, 5),
+            usecols=(2,8,14,20),
         )
         ms_data_avg_cal = np.mean(ms_data_cal, axis=0)
         ms_data_std_cal = np.std(ms_data_cal, axis=0)
@@ -132,6 +134,7 @@ class Calibration:
         eval_at[self.components == "Ar", ms_header_cal == "Ar"] = 1  # Ar,40
         eval_at[self.components == "He", ms_header_cal == "He"] = 1  # He,4
         eval_at[self.components == "H2", ms_header_cal == "H2"] = 1  # H2,2
+        eval_at[self.components == "CO", ms_header_cal == "CO"] = 1  # CO,28
 
         # calculate RSF matrix
         RSF_temp = np.zeros_like(eval_at)
@@ -178,6 +181,11 @@ class Calibration:
                 1 * self.ion_prob["H2"] / self.ion_prob[self.reference_ion]
             )
 
+        if non_calib[self.components == "CO"]:  # H2 not calibrated
+          RSF[self.components == "CO", self.ms_header_cal == "CO"] = (
+              1 * self.ion_prob["CO"] / self.ion_prob[self.reference_ion]
+          )
+
         print()
         print("RSF final in %:\n", np.array(RSF * 100, dtype=int), "\n")
         print("RSF matrix calculation finished!")
@@ -219,7 +227,7 @@ class MSData:
             self.path_exp,
             delimiter="\t",
             skiprows=6,
-            usecols=(1, 2, 3, 4, 5, 6),
+            usecols=(2,5,8,11,14,17,20,23),
             dtype=str,
             max_rows=1,
         )
@@ -229,7 +237,7 @@ class MSData:
             self.path_exp,
             delimiter="\t",
             skiprows=8,
-            usecols=(1, 2, 3, 4, 5, 6),
+            usecols=(2,5,8,11,14,17,20,23),
         )
 
         # Caclulate each component
@@ -255,7 +263,15 @@ class MSData:
             ]
         )
 
-        nt_all = np.array([nt_Ar, nt_He, nt_H2])
+        # Carbonmonoxide
+        nt_CO = (
+            ms_data_exp[:, ms_header_exp == "CO"]
+            / self.calib.RSF[
+                self.calib.components == "CO", self.calib.ms_header_cal == "CO"
+            ]
+        )
+        
+        nt_all = np.array([nt_Ar, nt_He, nt_H2, nt_CO])
 
         return nt_all
 
@@ -274,13 +290,13 @@ def calc_calibration(cal_files):
             path_cal,
             delimiter="\t",
             skiprows=6,
-            usecols=(1, 3, 5),
+            usecols=(2,8,14,20),
             dtype=str,
             max_rows=1,
         )
         ms_header_cal = np.char.replace(ms_header_cal, '"', "")
         ms_data_cal = np.loadtxt(
-            path_cal, delimiter="\t", skiprows=8, usecols=(1, 3, 5)
+            path_cal, delimiter="\t", skiprows=8, usecols=(2,8,14,20)
         )
         ms_data_avg_cal = np.mean(ms_data_cal, axis=0)
         ms_data_std_cal = np.std(ms_data_cal, axis=0)
@@ -319,6 +335,7 @@ def calc_calibration(cal_files):
         He_ion = 0.14
         Ar_ion = 1.2
         H2_ion = 0.44
+        CO_ion = 1.05
 
         # Choose reference
         print("\nHe as reference")
@@ -336,11 +353,11 @@ def calc_calibration(cal_files):
         eval_at[
             np.where(comp == "Ar")[0][0], np.where(ms_header_cal == "Ar")[0][0]] = 1  # Ar,40
         eval_at[
-            np.where(comp == "He")[0][0], np.where(ms_header_cal == "He")[0][0]
-        ] = 1  # He,4
+            np.where(comp == "He")[0][0], np.where(ms_header_cal == "He")[0][0]] = 1  # He,4
         eval_at[
-            np.where(comp == "H2")[0][0], np.where(ms_header_cal == "H2")[0][0]
-        ] = 1  # H2,2
+            np.where(comp == "H2")[0][0], np.where(ms_header_cal == "H2")[0][0]] = 1  # H2,2
+        eval_at[
+            np.where(comp == "CO")[0][0], np.where(ms_header_cal == "CO")[0][0]] = 1  # CO,28
 
         # calculate RSF matrix
         RSF_temp = np.zeros_like(eval_at)
@@ -391,6 +408,10 @@ def calc_calibration(cal_files):
         RSF[np.where(comp == "H2")[0][0], np.where(ms_header_cal == "H2")[0][0]] = (
             1 * H2_ion / ion_ref
         )
+    if non_calib[np.where(comp == "CO")[0][0]]:  # H2 not calibrated
+            RSF[np.where(comp == "CO")[0][0], np.where(ms_header_cal == "CO")[0][0]] = (
+                1 * H2_ion / ion_ref
+            )
 
     print()
     print("RSF final in %:\n", np.array(RSF * 100, dtype=int), "\n")
@@ -405,13 +426,13 @@ def cal_compostion(path_exp, RSF, ms_header_cal):
         path_exp,
         delimiter="\t",
         skiprows=6,
-        usecols=(1, 2, 3, 4, 5, 6),
+        usecols=(2,5,8,11,14,17,20,23),
         dtype=str,
         max_rows=1,
     )
     ms_header_exp = np.char.replace(ms_header_exp, '"', "")
     ms_data_exp = np.loadtxt(
-        path_exp, delimiter="\t", skiprows=8, usecols=(1, 2, 3, 4, 5, 6)
+        path_exp, delimiter="\t", skiprows=8, usecols=(2,5,8,11,14,17,20,23)
     )
     # read the measurement time
     print("Reading the measurement time...")
@@ -420,8 +441,8 @@ def cal_compostion(path_exp, RSF, ms_header_cal):
     )
 
     # extract evaluated times
-    ms_time_exp = np.loadtxt(path_exp,delimiter='\t',skiprows=8,usecols=(0,3,6,9,12,15,18,21,24,27,30),dtype=str)
-    ms_time_elap = np.loadtxt(path_exp,delimiter='\t',skiprows=8,usecols=(1,4,7,10,13,16,19,22,25,28,31))
+    ms_time_exp = np.loadtxt(path_exp,delimiter='\t',skiprows=8,usecols=(0,3,6,9,12,15,18),dtype=str)
+    ms_time_elap = np.loadtxt(path_exp,delimiter='\t',skiprows=8,usecols=(1,4,7,10,13,16,19))
     ms_time_exp = np.char.strip(np.char.add('0',ms_time_exp))
     pd_times = pd.to_datetime(ms_time_exp[:,0],format='%m.%d.%Y %H:%M:%S.%f')
     ms_times = np.array(pd_times,dtype=np.datetime64)
@@ -442,9 +463,14 @@ def cal_compostion(path_exp, RSF, ms_header_cal):
         ms_data_exp[:, np.where(ms_header_exp == "H2")[0][0]]
         / RSF[np.where(comp == "H2")[0][0], np.where(ms_header_cal == "H2")[0][0]]
     )
+    # Carbonmonoxide
+    nt_CO = (
+        ms_data_exp[:, np.where(ms_header_exp == "CO")[0][0]]
+        / RSF[np.where(comp == "CO")[0][0], np.where(ms_header_cal == "CO")[0][0]]
+    )
 
     nt_all = np.array(
-        [nt_Ar, nt_He, nt_H2]
+        [nt_Ar, nt_He, nt_H2, nt_CO]
     )
     # Composition
     x_i = nt_all / np.sum(nt_all, axis=0)
