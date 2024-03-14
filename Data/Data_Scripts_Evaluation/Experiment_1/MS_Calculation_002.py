@@ -103,7 +103,7 @@ class Calibration:
             path_cal,
             delimiter="\t",
             skiprows=6,
-            usecols=(2,8,14,20),
+            usecols=(2,5,8,11),
             dtype=str,
             max_rows=1,
         )
@@ -113,7 +113,7 @@ class Calibration:
             path_cal,
             delimiter="\t",
             skiprows=8,
-            usecols=(2,8,14,20),
+            usecols=(2,5,8,11),
         )
         ms_data_avg_cal = np.mean(ms_data_cal, axis=0)
         ms_data_std_cal = np.std(ms_data_cal, axis=0)
@@ -209,10 +209,26 @@ class MSData:
             skiprows=8,
             usecols=(0),
             dtype=str,
-        )
-        _t = pd.to_datetime(_t[:,0], format='%m.%d.%Y %H:%M:%S.%f')
+    )
+        _t = pd.to_datetime(_t, format='%d.%m.%Y %H:%M:%S.%f')
         _t = np.array(_t, dtype=np.datetime64)
         return _t
+    
+    # def ms_time(self) -> npt.NDArray:
+    #     _t = np.loadtxt(
+    #         self.path_exp,
+    #         delimiter="\t",
+    #         skiprows=8,
+    #         usecols=(0),
+    #         dtype=str,
+    #     )
+    #     _t = pd.to_datetime(_t, format='%d.%m.%Y %H:%M:%S.%f', dayfirst=True)
+    #     _t = np.array(_t, dtype=np.datetime64)
+    #     return _t
+        
+        # _t = pd.to_datetime(_t[:,0], format='%d.%m.%Y %H:%M:%S.%f')
+        # _t = np.array(_t, dtype=np.datetime64)
+        # return _t
 
     @property
     def ms_time_elap(self) -> npt.NDArray:
@@ -227,7 +243,7 @@ class MSData:
             self.path_exp,
             delimiter="\t",
             skiprows=6,
-            usecols=(2,5,8,11,14,17,20,23),
+            usecols=(2,5,8,11),
             dtype=str,
             max_rows=1,
         )
@@ -237,7 +253,7 @@ class MSData:
             self.path_exp,
             delimiter="\t",
             skiprows=8,
-            usecols=(2,5,8,11,14,17,20,23),
+            usecols=(2,5,8,11),
         )
 
         # Caclulate each component
@@ -290,13 +306,13 @@ def calc_calibration(cal_files):
             path_cal,
             delimiter="\t",
             skiprows=6,
-            usecols=(2,8,14,20),
+            usecols=(2,5,8,11),
             dtype=str,
             max_rows=1,
         )
         ms_header_cal = np.char.replace(ms_header_cal, '"', "")
         ms_data_cal = np.loadtxt(
-            path_cal, delimiter="\t", skiprows=8, usecols=(2,8,14,20)
+            path_cal, delimiter="\t", skiprows=8, usecols=(2,5,8,11)
         )
         ms_data_avg_cal = np.mean(ms_data_cal, axis=0)
         ms_data_std_cal = np.std(ms_data_cal, axis=0)
@@ -426,13 +442,13 @@ def cal_compostion(path_exp, RSF, ms_header_cal):
         path_exp,
         delimiter="\t",
         skiprows=6,
-        usecols=(2,5,8,11,14,17,20,23),
+        usecols=(2,5,8,11),
         dtype=str,
         max_rows=1,
     )
     ms_header_exp = np.char.replace(ms_header_exp, '"', "")
     ms_data_exp = np.loadtxt(
-        path_exp, delimiter="\t", skiprows=8, usecols=(2,5,8,11,14,17,20,23)
+        path_exp, delimiter="\t", skiprows=8, usecols=(2,5,8,11)
     )
     # read the measurement time
     print("Reading the measurement time...")
@@ -441,8 +457,8 @@ def cal_compostion(path_exp, RSF, ms_header_cal):
     )
 
     # extract evaluated times
-    ms_time_exp = np.loadtxt(path_exp,delimiter='\t',skiprows=8,usecols=(0,3,6,9,12,15,18),dtype=str)
-    ms_time_elap = np.loadtxt(path_exp,delimiter='\t',skiprows=8,usecols=(1,4,7,10,13,16,19))
+    ms_time_exp = np.loadtxt(path_exp,delimiter='\t',skiprows=8,usecols=(0,3,6,9),dtype=str)
+    ms_time_elap = np.loadtxt(path_exp,delimiter='\t',skiprows=8,usecols=(1,4,7,10))
     ms_time_exp = np.char.strip(np.char.add('0',ms_time_exp))
     pd_times = pd.to_datetime(ms_time_exp[:,0],format='%m.%d.%Y %H:%M:%S.%f')
     ms_times = np.array(pd_times,dtype=np.datetime64)
