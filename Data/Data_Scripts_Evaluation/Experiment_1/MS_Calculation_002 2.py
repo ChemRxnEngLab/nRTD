@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import numpy.typing as npt
 
+
 ## Bestimmung der Konzentrationen aus Kaibrierdatei
 comp = np.array(["time", "Ar", "He", "H2","CO"])
 # indx =        [0,     1,    2,   3,  4] # component indices
@@ -51,6 +52,9 @@ class Calibration:
         self._reference_ion = ion
 
     def _get_xi_ref(self, path_cal: Path) -> npt.NDArray:
+        # template for titling the ms calibration files
+        # 000_0Ar_000_0He_000_0H2_otherdescription.txt
+        # not included components can be omitted
         filename = os.path.basename(path_cal)
         Vdot = np.zeros_like(self.components, dtype=float)
         print("\nVolume flows during calibration:")
@@ -96,62 +100,60 @@ class Calibration:
         return RSF_all
 
     def _calc_RSF_temp(self, path_cal: Path) -> npt.NDArray:
-            with open(path_cal) as f:        
-                num_rows = sum(1 for _ in f)  
-        
+            with open(path_cal) as f:
+                num_rows = sum(1 for _ in f)
             ms_header_cal = np.loadtxt(
                 path_cal,
                 delimiter="\t",
                 skiprows=6,
-                usecols=(2, 5, 8, 11),
+                usecols=(2,5,8,11),
                 dtype=str,
-                max_rows=1,  
+                max_rows=num_rows - 1,
             )
             self.ms_header_cal = np.char.replace(ms_header_cal, '"', "")
-        
-            ms_data_cal = np.loadtxt(
-                path_cal,
-                delimiter="\t",
-                skiprows=8,  
-                max_rows=num_rows - 9,
-                usecols=(2, 5, 8, 11),
-            )
-            ms_data_avg_cal = np.mean(ms_data_cal, axis=0)
-            ms_data_std_cal = np.std(ms_data_cal, axis=0) 
-            
-            if len(self.ms_header_cal) != len(ms_data_avg_cal):
-                raise ValueError("Header and data don't fit!")
 
-            x_i_cal = self._get_xi_ref(path_cal)
-    
-            # Choose reference He
-            x_ref = x_i_cal[self.components == self.reference_ion]
-            Idot_ref = ms_data_avg_cal[ms_header_cal == "He"]  # Idot_ref = Mass 4
-    
-            # Choose where to evaluate the RSF values
-            # # if eval_at is one at a position this combination is evaluated regarding the RSF(component,mass)
-            eval_at = np.zeros((len(self.components), len(ms_data_avg_cal)))
-            # eval_at[np.where(comp=='Ar')[0][0],np.where(ms_header_cal=='Mass 20')[0][0]] = 1 # Ar,20
-            eval_at[self.components == "Ar", ms_header_cal == "Ar"] = 1  # Ar,40
-            eval_at[self.components == "He", ms_header_cal == "He"] = 1  # He,4
-            eval_at[self.components == "H2", ms_header_cal == "H2"] = 1  # H2,2
-            eval_at[self.components == "CO", ms_header_cal == "CO"] = 1  # CO,28
-    
-            # calculate RSF matrix
-            RSF_temp = np.zeros_like(eval_at)
-            for mm in range(eval_at.shape[1]):
-                for i in range(len(x_i_cal)):
-                    # only calculate RSF if component is present in the calibration measurement
-                    if x_i_cal[i] != 0:
-                        RSF_temp[i, mm] = (
-                            x_ref
-                            / x_i_cal[i]
-                            * ms_data_avg_cal[mm]
-                            / Idot_ref
-                            * eval_at[i, mm]
-                        )
-    
-            return RSF_temp
+        ms_data_cal = np.loadtxt(
+            path_cal,
+            delimiter="\t",
+            max_rows=num_rows - 1,
+            usecols=(2,5,8,11),
+        )
+        ms_data_avg_cal = np.mean(ms_data_cal, axis=0)
+        ms_data_std_cal = np.std(ms_data_cal, axis=0)
+
+        if len(self.ms_header_cal) != len(ms_data_avg_cal):
+            raise ValueError("Header and data don't fit!")
+
+        x_i_cal = self._get_xi_ref(path_cal)
+
+        # Choose reference He
+        x_ref = x_i_cal[self.components == self.reference_ion]
+        Idot_ref = ms_data_avg_cal[ms_header_cal == "He"]  # Idot_ref = Mass 4
+
+        # Choose where to evaluate the RSF values
+        # # if eval_at is one at a position this combination is evaluated regarding the RSF(component,mass)
+        eval_at = np.zeros((len(self.components), len(ms_data_avg_cal)))
+        # eval_at[np.where(comp=='Ar')[0][0],np.where(ms_header_cal=='Mass 20')[0][0]] = 1 # Ar,20
+        eval_at[self.components == "Ar", ms_header_cal == "Ar"] = 1  # Ar,40
+        eval_at[self.components == "He", ms_header_cal == "He"] = 1  # He,4
+        eval_at[self.components == "H2", ms_header_cal == "H2"] = 1  # H2,2
+        eval_at[self.components == "CO", ms_header_cal == "CO"] = 1  # CO,28
+
+        # calculate RSF matrix
+        RSF_temp = np.zeros_like(eval_at)
+        for mm in range(eval_at.shape[1]):
+            for i in range(len(x_i_cal)):
+                # only calculate RSF if component is present in the calibration measurement
+                if x_i_cal[i] != 0:
+                    RSF_temp[i, mm] = (
+                        x_ref
+                        / x_i_cal[i]
+                        * ms_data_avg_cal[mm]
+                        / Idot_ref
+                        * eval_at[i, mm]
+                    )
+
+        return RSF_temp
 
     def calc_RSF(self) -> npt.NDArray:
         # Calculate final RSF matrix
@@ -204,21 +206,33 @@ class MSData:
 
     @property
     def ms_time(self) -> npt.NDArray:
-        with open(path_cal) as f:
-            num_rows = sum(1 for _ in f)  
-        
         _t = np.loadtxt(
             self.path_exp,
             delimiter="\t",
             skiprows=8,
-            max_rows=num_rows - 9,##added
             usecols=(0),
             dtype=str,
-        )
+    )
         _t = pd.to_datetime(ms_time_exp[:,0],format='%d.%m.%Y %H:%M:%S.%f')
         _t = np.array(_t, dtype=np.datetime64)
         return _t
     
+    # def ms_time(self) -> npt.NDArray:
+    #     _t = np.loadtxt(
+    #         self.path_exp,
+    #         delimiter="\t",
+    #         skiprows=8,
+    #         usecols=(0),
+    #         dtype=str,
+    #     )
+    #     _t = pd.to_datetime(_t, format='%d.%m.%Y %H:%M:%S.%f', dayfirst=True)
+    #     _t = np.array(_t, dtype=np.datetime64)
+    #     return _t
+        
+        # _t = pd.to_datetime(_t[:,0], format='%d.%m.%Y %H:%M:%S.%f')
+        # _t = np.array(_t, dtype=np.datetime64)
+        # return _t
+
     @property
     def ms_time_elap(self) -> npt.NDArray:
         t = self.ms_time
@@ -227,17 +241,15 @@ class MSData:
 
     def cal_amount(self):
         print("Calculating the compositions of the given experiment...")
-    
-        with open(self.path_exp) as f:
-            num_rows = sum(1 for _ in f)  # Count total number of rows
-    
+        with open(path_cal) as f:
+            num_rows = sum(1 for _ in f)
         ms_header_exp = np.loadtxt(
             self.path_exp,
             delimiter="\t",
             skiprows=6,
-            usecols=(2, 5, 8, 11),
+            usecols=(2,5,8,11),
             dtype=str,
-            max_rows=1,
+            max_rows=num_rows - 1,
         )
         ms_header_exp = np.char.replace(ms_header_exp, '"', "")
 
@@ -245,7 +257,6 @@ class MSData:
             self.path_exp,
             delimiter="\t",
             skiprows=8,
-            max_rows=num_rows - 9,
             usecols=(2,5,8,11),
         )
 
@@ -293,38 +304,30 @@ class MSData:
 def calc_calibration(cal_files):
     if not bool(cal_files):
         raise ValueError("No calibration file")
-    
     for path_cal in cal_files:
-        print("Used calibration file:", path_cal)
+        print("Used calibraion file:", path_cal)
         with open(path_cal) as f:
             num_rows = sum(1 for _ in f)
-
         ms_header_cal = np.loadtxt(
             path_cal,
             delimiter="\t",
             skiprows=6,
-            usecols=(2, 5, 8, 11),
+            usecols=(2,5,8,11),
             dtype=str,
-            max_rows=1,  
+            max_rows=num_rows - 1,
         )
         ms_header_cal = np.char.replace(ms_header_cal, '"', "")
-        
         ms_data_cal = np.loadtxt(
-            path_cal,
-            delimiter="\t",
-            skiprows=8,
-            usecols=(2, 5, 8, 11),
-            max_rows=num_rows - 9,
+            path_cal, delimiter="\t", skiprows=8, usecols=(2,5,8,11)
         )
         ms_data_avg_cal = np.mean(ms_data_cal, axis=0)
         ms_data_std_cal = np.std(ms_data_cal, axis=0)
-        
         if len(ms_header_cal) != len(ms_data_avg_cal):
-            raise ValueError("Header and data don't fit!")
+            raise ValueError("Header and data don´t fit!")
 
-    # template for titling the ms calibration files
-    # 000_0Ar_000_0He_000_0H2_otherdescription.txt
-    # not included components can be omitted
+        # template for titling the ms calibration files
+        # 000_0Ar_000_0He_000_0H2_otherdescription.txt
+        # not included components can be omitted
         filename = os.path.basename(path_cal)
         Vdot = np.zeros_like(comp, dtype=float)
         print("\nVolume flows during calibration:")
@@ -410,63 +413,59 @@ def calc_calibration(cal_files):
     # non_calib = np.full((len(comp)),True) # uncomment to show the literatur data
     if non_calib[np.where(comp == "Ar")[0][0]]:  # Ar not calibrated
         RSF[
-            np.where(comp == "Ar")[0][0], np.where(ms_header_cal == "Ne")[0][0]] = (1 * Ar_ion / ion_ref)  # Ar,20
+            np.where(comp == "Ar")[0][0], np.where(ms_header_cal == "Ne")[0][0]
+        ] = (
+            1 * Ar_ion / ion_ref
+        )  # Ar,20
         RSF[
-            np.where(comp == "Ar")[0][0], np.where(ms_header_cal == "Ar")[0][0]] = (0.1 * Ar_ion / ion_ref)  # Ar,40
+            np.where(comp == "Ar")[0][0], np.where(ms_header_cal == "Ar")[0][0]
+        ] = (
+            0.1 * Ar_ion / ion_ref
+        )  # Ar,40
     if non_calib[np.where(comp == "He")[0][0]]:  # He not calibrated
         RSF[np.where(comp == "He")[0][0], np.where(ms_header_cal == "He")[0][0]] = (
-            1 * He_ion / ion_ref)
+            1 * He_ion / ion_ref
+        )
     if non_calib[np.where(comp == "H2")[0][0]]:  # H2 not calibrated
         RSF[np.where(comp == "H2")[0][0], np.where(ms_header_cal == "H2")[0][0]] = (
-            1 * H2_ion / ion_ref)
+            1 * H2_ion / ion_ref
+        )
     if non_calib[np.where(comp == "CO")[0][0]]:  # H2 not calibrated
             RSF[np.where(comp == "CO")[0][0], np.where(ms_header_cal == "CO")[0][0]] = (
-                1 * H2_ion / ion_ref)
+                1 * H2_ion / ion_ref
+            )
 
     print()
     print("RSF final in %:\n", np.array(RSF * 100, dtype=int), "\n")
     print("RSF matrix calculation finished!")
     return (RSF, ms_header_cal)
 
-def cal_composition(path_exp, RSF, ms_header_cal):
+
+def cal_compostion(path_exp, RSF, ms_header_cal):
     print("Calculating the compositions of the given experiment...")
-
-    with open(path_exp) as f:
-        num_rows = sum(1 for _ in f)  
-
+        with open(path_cal) as f:
+            num_rows = sum(1 for _ in f)
     ms_header_exp = np.loadtxt(
         path_exp,
         delimiter="\t",
         skiprows=6,
-        usecols=(2, 5, 8, 11),
+        usecols=(2,5,8,11),
         dtype=str,
-        max_rows=1,
+        max_rows=num_rows - 1,
     )
     ms_header_exp = np.char.replace(ms_header_exp, '"', "")
-
     ms_data_exp = np.loadtxt(
-        path_exp,
-        delimiter="\t",
-        skiprows=8,
-        usecols=(2, 5, 8, 11),
-        max_rows=num_rows - 9, 
+        path_exp, delimiter="\t", skiprows=8, usecols=(2,5,8,11)
     )
-
     # read the measurement time
     print("Reading the measurement time...")
     ms_time_exp = np.loadtxt(
-        path_exp,
-        delimiter="\t",
-        skiprows=8,
-        usecols=(0,3,6,9),
-        dtype=str,
-        max_rows=num_rows - 9,  
+        path_exp, delimiter="\t", skiprows=8, usecols=(0), dtype=str
     )
-    
 
     # extract evaluated times
-    #ms_time_exp = np.loadtxt(path_exp,delimiter='\t',skiprows=8,usecols=(0,3,6,9),dtype=str)
-    ms_time_elap = np.loadtxt(path_exp,delimiter='\t',skiprows=8,usecols=(1,4,7,10),max_rows=num_rows - 9)
+    ms_time_exp = np.loadtxt(path_exp,delimiter='\t',skiprows=8,usecols=(0,3,6,9),dtype=str)
+    ms_time_elap = np.loadtxt(path_exp,delimiter='\t',skiprows=8,usecols=(1,4,7,10))
     ms_time_exp = np.char.strip(ms_time_exp)
     pd_times = pd.to_datetime(ms_time_exp[:,0],format='%d.%m.%Y %H:%M:%S.%f')
     ms_times = np.array(pd_times,dtype=np.datetime64)
@@ -506,15 +505,13 @@ def cal_composition(path_exp, RSF, ms_header_cal):
 def main():
     print("Calculating the RSF matrix...")
     input_filepaths = filedialog.askopenfilenames(
-        initialdir=r"/Users/tuanaoyuncu/Documents",
+        initialdir=r"/Users/tuanaoyuncu/Desktop/RI_Data_ExpSet1",
         title="Select Calibration Files",
     )
 
-    print("I live")
     # calculate the composition
     path_exp = filedialog.askopenfilename(
-        initialdir=r"/Users/tuanaoyuncu/Documents",
-        title="Select MS File"
+        initialdir=r"C:\Users\MaxGäßler\Documents\Rohdaten\MS", title="Select MS File"
     )
     print(path_exp)
 
