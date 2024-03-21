@@ -23,6 +23,9 @@ def process_data(file_num):
     # Load _x.npy and _t.npy
     x = np.load(x_file_path)
     t = np.load(t_file_path)
+    
+    print("Dimensions of x:", x.shape)
+    print("Dimensions of t:", t.shape)
 
     # Interpolate data
     f = sc.interpolate.interp1d(t, x[0, :])
@@ -48,8 +51,8 @@ def main():
 
     # Iterate over the file numbers and process each data file
     for file_num in range(start_file_num, end_file_num + 1):
-        if file_num in [12,7]:
-            continue
+        # if file_num in [12,7]:
+        #     continue
     #for file_num in [7,17]:
         process_data(file_num)
 
@@ -59,7 +62,7 @@ def main():
     plt.ylabel("x/1")
     #plt.savefig("S_009_processed.png")
     #plt.savefig("S_009_processed.png")
-    plt.savefig("S_009_max.png")
+    #plt.savefig("S_009_max.png")
     plt.show()
 
 if __name__ == "__main__":
