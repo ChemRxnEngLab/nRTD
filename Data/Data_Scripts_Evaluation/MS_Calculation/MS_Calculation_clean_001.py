@@ -7,7 +7,7 @@ DATA = WD / "Data"
 
 
 def main():
-    folder = DATA / "C_001" / "H_135_C1" / "S_010_C1"
+    folder = DATA /"0001"/ "C_001" / "H_085_C1" / "S_009_C1"
     print(folder)
     print(folder.is_dir())
     #calibration_file = folder / "005_0Ar_010_0He_185_0H2_otherdescription"

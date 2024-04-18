@@ -39,17 +39,17 @@ def main():
     start_file_num = 1
     end_file_num = 20
 
-    #for file_num in range(start_file_num, end_file_num+1):
-    for file_num in range(start_file_num, end_file_num):
-         if file_num in [9,5]:
-            continue
+    for file_num in range(start_file_num, end_file_num+1):
+    # for file_num in range(start_file_num, end_file_num):
+    #      if file_num in [9,5]:
+    #         continue
          process_data(file_num)
 
 
     plt.legend()
     plt.xlabel("t/s")
     plt.ylabel("x/1")
-    plt.savefig("S_0040_processed_eliminated.png")
+    #plt.savefig("S_0040_processed_eliminated.png")
     plt.show()
 
 if __name__ == "__main__":
