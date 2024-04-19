@@ -13,7 +13,7 @@ from pathlib import Path
 
 WD = Path("/Users/tuanaoyuncu/Documents/GitHub/nRTD")
 DATA = WD / "Data"
-PWD=DATA / "0001"/ "C_002" / "H_135_C2" / "S_013_C2" 
+PWD=DATA / "0001"/ "C_002" / "H_135_C2" / "S_013_C2_001" 
 
 def process_data(file_num):
     # Construct file paths for _x.npy and _t.npy
@@ -27,7 +27,7 @@ def process_data(file_num):
     # Interpolate data
     f = sc.interpolate.interp1d(t, x[0, :])
     t_n = t[-1]
-    t_b = t_n - 51
+    t_b = t_n - 51.7
     t_evel = np.linspace(t_b, t_n, 500)
     t_pretty = t_evel - t_b
     x_evel = f(t_evel)

@@ -23,8 +23,8 @@ import wandb
 n_disc = 377
 t_input = torch.linspace(0, 31, n_disc)
 c_in = torch.zeros((20, 1, n_disc))
-c_in[::2, :, t_input > 2] = 0.0333
-c_in[1::2, :, t_input < 2] = 0.0333
+c_in[::2, :, t_input > 1] = 0.0333
+c_in[1::2, :, t_input < 1] = 0.0333
 file_numbers = range(1, 21)
 c_out_list = []
 t_conv_list = []
@@ -163,5 +163,5 @@ plt.legend()
 
 # wandb.finish()
 
-plt.savefig("Figure_001_S_013_51s")
+#plt.savefig("Figure_001_S_013_51_7s")
 plt.show()
