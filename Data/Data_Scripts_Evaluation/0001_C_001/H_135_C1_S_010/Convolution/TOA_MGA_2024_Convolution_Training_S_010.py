@@ -14,7 +14,7 @@ import wandb
 
 n_disc = 377
 t_input = torch.linspace(0, 31, n_disc)
-c_in = torch.zeros((20, 1, n_disc))
+c_in = torch.zeros((16, 1, n_disc))
 c_in[::2, :, t_input > 1] = 0.03333
 c_in[1::2, :, t_input < 1] = 0.03333
 file_numbers = range(1, 21)
@@ -22,7 +22,9 @@ c_out_list = []
 t_conv_list = []
 # file_numbers = range(1, 21, 2)
 
-for i, file_num in enumerate(file_numbers):
+for file_num in file_numbers:
+    if file_num in (9,10,13,14):
+          continue
     t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1_001/TOA_MGA_20231020_010_{file_num:06d}_t_processed.npy"
     # t_conv_path = f"Data/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_t_processed.npy"
     c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1_001/TOA_MGA_20231020_010_{file_num:06d}_x_processed.npy"
@@ -107,7 +109,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=10000,
+    max_epochs=15000,
     logger=wandb_logger, deterministic=True
 )
 
@@ -155,5 +157,5 @@ plt.legend()
 
 # wandb.finish()
 
-plt.savefig("Figure_001_S_010")
+plt.savefig("Figure_001_S_015000_epoch10")
 plt.show()

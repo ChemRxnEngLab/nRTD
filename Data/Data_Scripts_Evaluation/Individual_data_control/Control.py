@@ -6,72 +6,89 @@ Created on Sat Nov 25 21:57:07 2023
 @author: tuanaoyuncu
 """
 
-# import numpy as np
-# import matplotlib.pyplot as plt
-# t=np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_185_C1/S_007_C1/TOA_MGA_20231013_007_000001_t.npy")
-# x=np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_185_C1/S_007_C1/TOA_MGA_20231013_007_000001_x.npy")
+import numpy as np
+import matplotlib.pyplot as plt
+# t = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1_001/TOA_MGA_20231020_010_000001_t_processed.npy")
+# x = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1_001/TOA_MGA_20231020_010_000001_x_processed.npy")
 # print(t)
-# plt.plot(t,x[0,:])
+# plt.plot(t,x)
 # plt.legend()
 # plt.show()
 
-# def find_point_of_increase(file_path, target_x):
-#     # Read the file and extract x and y values
-#     with open(file_path, '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_185_C1/S_007_C1/TOA_MGA_20231013_007_000001_t.npy') as file:
-#         lines = file.readlines()
-#         x_values = []
-#         y_values = []
-#         for line in lines:
-#             x, y = map(float, line.strip().split())  # Assuming x and y are space-separated
-#             x_values.append(x)
-#             y_values.append(y)
 
-#     # Iterate through x and y values to find the point of increase
-#     for i in range(1, len(x_values)):
-#         if x_values[i] >= target_x and y_values[i] > y_values[i - 1]:
-#             return x_values[i], y_values[i]  # Found the point of increase
-
-#     # If no increase is found
-#     return None, None
-
-# # Example usage:
-# file_path = "your_file.txt"
-# target_x = 0.002  # Specify the target x value
-# x_increase, y_increase = find_point_of_increase(file_path, target_x)
-# if x_increase is not None:
-#     print(f"The y value starts to increase at x = {x_increase}, y = {y_increase}")
-# else:
-#     print("No increase found for the given x value.")
-
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Load data
-t = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0003/C_004_0003/H_080_C4_0003/S_038/TOA_MGA_20240228_0038_001_t.npy")
-x = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0003/C_004_0003/H_080_C4_0003/S_038/TOA_MGA_20240228_0038_001_x.npy")
-
-# Plot data
-plt.plot(t, x[0, :])
+t1 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1_001/TOA_MGA_20231020_009_000001_t_processed.npy")
+x1 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1_001/TOA_MGA_20231020_009_000001_x_processed.npy")
+x1 /= 0.05
+t2 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1_001/TOA_MGA_20231020_010_000001_t_processed.npy")
+x2 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1_001/TOA_MGA_20231020_010_000001_x_processed.npy")
+x2 /= 0.0333
+t3 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_185_C1/S_007_C1_001/TOA_MGA_20231013_007_000001_t_processed.npy")
+x3 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_185_C1/S_007_C1_001/TOA_MGA_20231013_007_000001_x_processed.npy")
+x3 /= 0.025
+plt.plot(t1, x1, label='100', color='red')
+plt.plot(t2, x2, label='150', color='black')
+plt.plot(t3, x3, label='200', color='green')
 plt.xlabel('t')
-plt.ylabel('x')
-plt.vlines(1, 0,0.05)
-print(x)
+plt.ylabel('x / (corresponding values)')
 plt.legend()
 plt.show()
 
-def find_point_of_increase(t_values, x_values, target_x):
-    # Iterate through x and y values to find the point of increase
-    for i in range(1, len(t_values)):
-        if t_values[i] >= target_x and x_values[i] > x_values[i - 1]:
-            return t_values[i], x_values[i]  # Found the point of increase
+t4 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2_001/TOA_MGA_20231020_012_000001_t_processed.npy")
+x4 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2_001/TOA_MGA_20231020_012_000001_x_processed.npy")
+x4 /= 0.05
 
-    # If no increase is found
-    return None, None
+t5 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2_001/TOA_MGA_20231020_013_000001_t_processed.npy")
+x5 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2_001/TOA_MGA_20231020_013_000001_x_processed.npy")
+x5 /= 0.0333
 
-# Example usage:
-target_x = 4
-x_increase, y_increase = find_point_of_increase(t, x[0, :], target_x)
-if x_increase is not None:
-    print(f"The x value starts to increase at t = {x_increase}, x = {y_increase}")
-else:
-    print("No increase found for the given x value.")
+t6 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_185_C2/S_014_C2_001/TOA_MGA_20231020_014_000001_t_processed.npy")
+x6 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_185_C2/S_014_C2_001/TOA_MGA_20231020_014_000001_x_processed.npy")
+x6 /= 0.025
+
+
+plt.plot(t4, x4, label='100', color='red')
+plt.plot(t5, x5, label='150', color='black')
+plt.plot(t6, x6, label='200', color='green')
+plt.xlabel('t')
+plt.ylabel('x / (corresponding values)')
+plt.legend()
+plt.show()
+
+t7 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0003/C_004_0003/H_080_C4_0003/S_038/TOA_MGA_20240228_0038_001_t_processed.npy")
+x7 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0003/C_004_0003/H_080_C4_0003/S_038/TOA_MGA_20240228_0038_001_x_processed.npy")
+x7 /= 0.1
+
+t8 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0003/C_004_0003/H_130_C4_0003/S_039/TOA_MGA_20240228_0039_001_t_processed.npy")
+x8 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0003/C_004_0003/H_130_C4_0003/S_039/TOA_MGA_20240228_0039_001_x_processed.npy")
+x8 /= 0.066
+
+t9 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0003/C_004_0003/H_180_C4_0003/S_040/TOA_MGA_20240228_0040_001_t_processed.npy")
+x9 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0003/C_004_0003/H_180_C4_0003/S_040/TOA_MGA_20240228_0040_001_x_processed.npy")
+x9 /= 0.05
+
+plt.plot(t4, x7, label='100', color='red')
+plt.plot(t5, x8, label='150', color='black')
+plt.plot(t6, x9, label='200', color='green')
+plt.xlabel('t')
+plt.ylabel('x / (corresponding values)')
+plt.legend()
+plt.show()
+
+
+t10 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1_001/TOA_MGA_20231020_009_000001_t_processed.npy")
+x10 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1_001/TOA_MGA_20231020_009_000001_x_processed.npy")
+x10 /= 0.05
+t11 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2_001/TOA_MGA_20231020_012_000001_t_processed.npy")
+x11 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2_001/TOA_MGA_20231020_012_000001_x_processed.npy")
+x11 /= 0.05
+t12 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0003/C_004_0003/H_080_C4_0003/S_038/TOA_MGA_20240228_0038_001_t_processed.npy")
+x12 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0003/C_004_0003/H_080_C4_0003/S_038/TOA_MGA_20240228_0038_001_x_processed.npy")
+x12 /= 0.1
+plt.plot(t4, x10, label='1st', color='red')
+plt.plot(t5, x11, label='2nd', color='black')
+plt.plot(t6, x12, label='4th', color='green')
+plt.xlabel('t')
+plt.ylabel('x [1]')
+plt.legend()
+plt.show()
+
