@@ -20,8 +20,8 @@ import numpy as np
 import wandb
 
 
-n_disc = 352
-t_input = torch.linspace(0, 36, n_disc)
+n_disc = 364
+t_input = torch.linspace(0, 41, n_disc)
 c_in = torch.zeros((20, 1, n_disc))
 c_in[::2, :, t_input > 1] = 0.05
 c_in[1::2, :, t_input < 1] = 0.05
@@ -64,7 +64,7 @@ else:
 # print(f"t_conv size: {t_conv.size()}")
 
 model = RTDModule(
-    kernel_size=147,
+    kernel_size=135,
     learning_rate=10e-3,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
@@ -93,8 +93,8 @@ plt.plot(
 )
 plt.plot(t_E, E, label="E", color="orange")
 plt.legend()
-plt.xlim((0, 15))
-plt.ylim((0, 0.2))
+plt.xlim((0, 20))
+plt.ylim((0, 0.1))
 plt.show()
 
 print(model(c_in).size())
@@ -154,8 +154,8 @@ plt.plot(
     color="red",
 )
 plt.plot(t_E, E, label="E", color="orange")
-plt.xlim((0, 15))
-plt.ylim((0, 0.2))
+plt.xlim((0, 20))
+plt.ylim((0, 0.1))
 plt.legend()
 
 # fig = plt.gcf()
@@ -165,5 +165,5 @@ plt.legend()
 
 # wandb.finish()
 
-plt.savefig("Figure_002_S_012_ks")
+plt.savefig("Figure_005_S_012_15")
 plt.show()

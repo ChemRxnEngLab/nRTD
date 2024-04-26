@@ -72,7 +72,7 @@ model = RTDModule(
 c_conv = model(c_in)
 E = model.net.E[0]
 t_E = torch.linspace(0, 25, model.kernel_size)
-j = 2
+j = 4
 
 plt.figure()
 plt.plot(t_input, c_in[j, 0, :].numpy(), label="SF", color="blue")
@@ -117,7 +117,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=10000,
+    max_epochs=15000,
     logger=wandb_logger, deterministic=True
 )
 
@@ -154,7 +154,7 @@ plt.plot(
     color="red",
 )
 plt.plot(t_E, E, label="E", color="orange")
-plt.xlim((0, 25))
+plt.xlim((0, 35))
 plt.ylim((0, 0.2))
 plt.legend()
 
@@ -165,5 +165,5 @@ plt.legend()
 
 # wandb.finish()
 
-plt.savefig("Figure_002_S_038_25ste")
+plt.savefig("Figure_007_S_038")
 plt.show()

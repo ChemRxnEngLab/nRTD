@@ -85,7 +85,7 @@ plt.plot(
 )
 plt.plot(t_E, E, label="E", color="orange")
 plt.legend()
-plt.xlim((0, 10))
+plt.xlim((0, 15))
 plt.ylim((0, 0.2))
 plt.show()
 
@@ -109,7 +109,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=15000,
+    max_epochs=10000,
     logger=wandb_logger, deterministic=True
 )
 
@@ -146,7 +146,7 @@ plt.plot(
     color="red",
 )
 plt.plot(t_E, E, label="E", color="orange")
-plt.xlim((0, 10))
+plt.xlim((0, 15))
 plt.ylim((0, 0.2))
 plt.legend()
 

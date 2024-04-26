@@ -103,14 +103,19 @@ ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=20, shuffle=True)
 
 # set up the logger
-wandb_logger = pl_loggers.WandbLogger(
-    project="nRTD",
-    log_model=True)
+# wandb_logger = pl_loggers.WandbLogger(
+#     project="nRTD",
+#     log_model=True)
+
+# trainer = pl.Trainer(
+#     accelerator="auto",
+#     max_epochs=10000,
+#     logger=wandb_logger, deterministic=True
+# )
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=10000,
-    logger=wandb_logger, deterministic=True
+    max_epochs=10000,deterministic=True
 )
 
 # trainer.fit(model, train_dl)
@@ -118,7 +123,7 @@ trainer.fit(model, dl)
 # adds an epoch at the end to calculate the final loss at the traineing end
 # trainer.test(model, test_dl)
 trainer.test(model, dl)  ### check it maybe you will see changes??
-wandb.finish()
+# wandb.finish()
 ##################
 # Postprocessing #
 ##################

@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Apr 24 21:50:14 2024
+
+@author: tuanaoyuncu
+"""
+
 from typing import Any, Optional
 import torch
 import lightning.pytorch as pl
@@ -41,12 +49,24 @@ class RTDModule(pl.LightningModule):
     def forward(self, X: torch.Tensor) -> torch.Tensor:
         return self.net(X)
 
+    # def training_step(self, batch, batch_idx):
+    #     X, y = batch
+    #     y_hat = self(X)
+    #     loss = torch.nn.functional.mse_loss(y_hat, y)
+    #     self.log("train/loss", loss)
+    #     return loss
     def training_step(self, batch, batch_idx):
         X, y = batch
-        y_hat = self(X)
-        loss = torch.nn.functional.mse_loss(y_hat, y)
+        X_arranged = X[:, :, :50]
+        y_arranged = y[:, :, :50]
+        y_hat_arranged = self(X_arranged)
+        y_hat_arranged = y_hat_arranged[:, :, :50]
+        loss = torch.nn.functional.mse_loss(y_hat_arranged, y_arranged)
         self.log("train/loss", loss)
         return loss
+
+
+
 
     def validation_step(self, batch, batch_idx):
         X, y = batch
