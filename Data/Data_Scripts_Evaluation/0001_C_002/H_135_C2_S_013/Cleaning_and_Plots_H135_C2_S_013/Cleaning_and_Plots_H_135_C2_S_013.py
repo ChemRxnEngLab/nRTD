@@ -13,7 +13,7 @@ from pathlib import Path
 
 WD = Path("/Users/tuanaoyuncu/Documents/GitHub/nRTD")
 DATA = WD / "Data"
-PWD=DATA / "0001"/ "C_002" / "H_135_C2" / "S_013_C2_001" 
+PWD=DATA / "0001"/ "C_002" / "H_135_C2" / "S_013_C2" 
 
 def process_data(file_num):
     # Construct file paths for _x.npy and _t.npy

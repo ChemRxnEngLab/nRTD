@@ -49,21 +49,21 @@ class RTDModule(pl.LightningModule):
     def forward(self, X: torch.Tensor) -> torch.Tensor:
         return self.net(X)
 
-    # def training_step(self, batch, batch_idx):
-    #     X, y = batch
-    #     y_hat = self(X)
-    #     loss = torch.nn.functional.mse_loss(y_hat, y)
-    #     self.log("train/loss", loss)
-    #     return loss
     def training_step(self, batch, batch_idx):
         X, y = batch
-        X_arranged = X[:, :, :50]
-        y_arranged = y[:, :, :50]
-        y_hat_arranged = self(X_arranged)
-        y_hat_arranged = y_hat_arranged[:, :, :50]
-        loss = torch.nn.functional.mse_loss(y_hat_arranged, y_arranged)
+        y_hat = self(X)
+        loss = torch.nn.functional.mse_loss(y_hat, y)
         self.log("train/loss", loss)
         return loss
+    # def training_step(self, batch, batch_idx):
+    #     X, y = batch
+    #     X_arranged = X[:, :, :50]
+    #     y_arranged = y[:, :, :50]
+    #     y_hat_arranged = self(X_arranged)
+    #     y_hat_arranged = y_hat_arranged[:, :, :50]
+    #     loss = torch.nn.functional.mse_loss(y_hat_arranged, y_arranged)
+    #     self.log("train/loss", loss)
+    #     return loss
 
 
 

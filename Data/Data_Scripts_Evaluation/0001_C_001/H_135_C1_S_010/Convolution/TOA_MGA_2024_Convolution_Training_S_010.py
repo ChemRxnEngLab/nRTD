@@ -15,8 +15,8 @@ import wandb
 n_disc = 377
 t_input = torch.linspace(0, 31, n_disc)
 c_in = torch.zeros((16, 1, n_disc))
-c_in[::2, :, t_input > 1] = 0.03333
-c_in[1::2, :, t_input < 1] = 0.03333
+c_in[::2, :, t_input > 1] = 0.00143*1006
+c_in[1::2, :, t_input < 1] = 0.00143*1006
 file_numbers = range(1, 21)
 c_out_list = []
 t_conv_list = []
@@ -31,7 +31,7 @@ for file_num in file_numbers:
     # c_out_path = f"Data/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_x_processed.npy"
     try:
         t_conv = torch.tensor(np.load(t_conv_path), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-        c_out = torch.tensor(np.load(c_out_path), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+        c_out = torch.tensor(np.load(c_out_path), dtype=torch.float32).unsqueeze(0).unsqueeze(0)*42.73
         c_out_list.append(c_out)
         t_conv_list.append(t_conv)
         print(f"Loaded file: {t_conv_path}, {c_out_path}")
@@ -62,7 +62,7 @@ model = RTDModule(
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
 c_conv = model(c_in)
-E = model.net.E[0]
+E = model.net.E[0]*42.73
 t_E = torch.linspace(0, 10, model.kernel_size)
 j = 2
 
@@ -86,7 +86,7 @@ plt.plot(
 plt.plot(t_E, E, label="E", color="orange")
 plt.legend()
 plt.xlim((0, 15))
-plt.ylim((0, 0.2))
+plt.ylim((0, 5))
 plt.show()
 
 print(model(c_in).size())
@@ -124,38 +124,35 @@ wandb.finish()
 ##################
 
 c_conv = model(c_in)
-E = model.net.E[0]
+E = model.net.E[0]*42.73
 t_E = torch.linspace(0, 10, model.kernel_size)
 
-plt.figure()
-plt.plot(t_input, c_in[0, 0, :].numpy(), label="SF", color="blue")
+plt.figure(figsize=(10, 6))
+plt.plot(t_input, c_in[0, 0, :].numpy(), label="$C_{in,1}$", color="blue")
 
 # Iterate over the loaded files and plot them
 for i in range(c_out.size(1)):
     plt.plot(
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
-        label=f"Exp_{file_numbers[i]}",
+        label="$C_{\mathrm{out},1}$",
         color="green",
     )
 
 plt.plot(
     t_conv[0, 0, :].numpy(),
     c_conv[0, 0, :].detach().numpy(),
-    label="Predicted",
+    label="$C_{\mathrm{predicted},1}$",
     color="red",
 )
-plt.plot(t_E, E, label="E", color="orange")
-plt.xlim((0, 15))
-plt.ylim((0, 0.2))
+plt.axhline(y=0, color='purple', linestyle='--')
+plt.plot(t_E, E, label="E(t)", color="orange")
+plt.xlim((0, 10))
+plt.ylim((-1, 5))
+plt.xlabel("t / s")
+#plt.ylabel("$C/molm^{-,3}$ ")
+plt.ylabel("$C / \mathrm{mol} \, \mathrm{m}^{-3}$")
 plt.legend()
+#plt.subplots_adjust(left=0.1)
 
-# fig = plt.gcf()
-# wandb.log({"RTD_Plot": fig})
-# wandb.log({"RTD_Plot": wandb.Image(fig)})
-
-
-# wandb.finish()
-
-plt.savefig("Figure_001_S_015000_epoch10")
-plt.show()
+plt.savefig("Figure_001_S_010_REPORT_001", dpi=300)

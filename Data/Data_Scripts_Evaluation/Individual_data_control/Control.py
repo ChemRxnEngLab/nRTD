@@ -84,11 +84,23 @@ x11 /= 0.05
 t12 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0003/C_004_0003/H_080_C4_0003/S_038/TOA_MGA_20240228_0038_001_t_processed.npy")
 x12 = np.load("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0003/C_004_0003/H_080_C4_0003/S_038/TOA_MGA_20240228_0038_001_x_processed.npy")
 x12 /= 0.1
-plt.plot(t4, x10, label='1st', color='red')
-plt.plot(t5, x11, label='2nd', color='black')
-plt.plot(t6, x12, label='4th', color='green')
-plt.xlabel('t')
-plt.ylabel('x [1]')
+plt.rcParams.update({
+    'font.family': 'Times New Roman',
+    'font.size': 16,
+    'axes.titlesize': 16,
+    'axes.labelsize': 16,
+    'xtick.labelsize': 16,
+    'ytick.labelsize': 16,
+    'legend.fontsize': 16,
+    'figure.titlesize': 16
+})
+plt.plot(t4, x10, label='(1)', color='red')
+plt.plot(t5, x11, label='(2)', color='black')
+plt.plot(t6, x12, label='(4)', color='green')
+plt.xlabel('t/s')
+plt.ylabel('x/1')
 plt.legend()
+# Save the plot
+plt.savefig("Figure_alll.png", dpi=300, bbox_inches='tight')  # Use bbox_inches='tight' to prevent cutting off the figure
 plt.show()
 
