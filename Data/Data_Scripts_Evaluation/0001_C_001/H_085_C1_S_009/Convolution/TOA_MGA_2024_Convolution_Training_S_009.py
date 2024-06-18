@@ -16,8 +16,8 @@ import glob
 n_disc = 377
 t_input = torch.linspace(0, 31, n_disc)
 c_in = torch.zeros((20, 1, n_disc))
-c_in[::2, :, t_input > 1] = 0.05*44.6
-c_in[1::2, :, t_input < 1] = 0.05*44.6
+c_in[::2, :, t_input > 1] = 2.23
+c_in[1::2, :, t_input < 1] = 2.23
 file_numbers = range(1, 21)
 c_out_list = []
 t_conv_list = []
@@ -65,7 +65,7 @@ model = RTDModule(
 c_conv = model(c_in)
 E = model.net.E[0]*44.6
 t_E = torch.linspace(0, 10, model.kernel_size)
-j = 6
+j = 2
 
 plt.figure()
 plt.plot(t_input, c_in[j, 0, :].numpy(), label="SF", color="blue")
@@ -128,6 +128,16 @@ c_conv = model(c_in)
 E = model.net.E[0]*44.6
 t_E = torch.linspace(0, 10, model.kernel_size)
 
+plt.rcParams.update({
+    'font.family': 'Times New Roman',
+    'font.size': 16,
+    'axes.titlesize': 16,
+    'axes.labelsize': 16,
+    'xtick.labelsize': 16,
+    'ytick.labelsize': 16,
+    'legend.fontsize': 16,
+})
+
 plt.figure(figsize=(10, 6))
 plt.plot(t_input, c_in[0, 0, :].numpy(), label="$C_{in,1}$", color="blue")
 
@@ -156,4 +166,4 @@ plt.ylabel("$C / \mathrm{mol} \, \mathrm{m}^{-3}$")
 plt.legend()
 #plt.subplots_adjust(left=0.1)
 
-#plt.savefig("Figure_001_S_009_REPORT_005", dpi=300)
+plt.savefig("Figure_001_S_009_REPORT_007", dpi=300)

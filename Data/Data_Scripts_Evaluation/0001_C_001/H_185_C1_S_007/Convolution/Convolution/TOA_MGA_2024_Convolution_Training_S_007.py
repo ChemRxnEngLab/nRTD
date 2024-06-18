@@ -132,6 +132,16 @@ c_conv = model(c_in)
 E = model.net.E[0]*44.8
 t_E = torch.linspace(0, 10, model.kernel_size)
 
+plt.rcParams.update({
+    'font.family': 'Times New Roman',
+    'font.size': 16,
+    'axes.titlesize': 16,
+    'axes.labelsize': 16,
+    'xtick.labelsize': 16,
+    'ytick.labelsize': 16,
+    'legend.fontsize': 16,
+})
+
 plt.figure(figsize=(10, 6))
 plt.plot(t_input, c_in[0, 0, :].numpy(), label="$C_{in,1}$", color="blue")
 
@@ -160,4 +170,4 @@ plt.ylabel("$C / \mathrm{mol} \, \mathrm{m}^{-3}$")
 plt.legend()
 #plt.subplots_adjust(left=0.1)
 
-plt.savefig("Figure_001_S_007_REPORT_001", dpi=300)
+plt.savefig("Figure_001_S_007_REPORT_002", dpi=300)

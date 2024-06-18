@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Nov 25 21:25:12 2023
-
-@author: tuanaoyuncu
-"""
-
 import numpy as np
 import scipy as sc
 import matplotlib.pyplot as plt
@@ -16,46 +8,45 @@ DATA = WD / "Data"
 PWD=DATA /"0001"/ "C_001" / "H_185_C1" / "S_007_C1_001"
 
 def process_data(file_num):
-    # Construct file paths for _x.npy and _t.npy
     x_file_path = PWD / f"TOA_MGA_20231013_007_{file_num:06d}_x.npy"
     t_file_path = PWD / f"TOA_MGA_20231013_007_{file_num:06d}_t.npy"
-
-    # Load _x.npy and _t.npy
     x = np.load(x_file_path)
     t = np.load(t_file_path)
-
-    # Interpolate data
     f = sc.interpolate.interp1d(t, x[0, :])
     t_n = t[-1]
-    t_b = t_n - 41
+    t_b = t_n - 40.75
     t_evel = np.linspace(t_b, t_n, 500)
     t_pretty = t_evel - t_b
     x_evel = f(t_evel)
 
-    # Save processed data
-    np.save(PWD / f"TOA_MGA_20231013_007_{file_num:06d}_t_processed.npy", t_pretty)
-    np.save(PWD / f"TOA_MGA_20231013_007_{file_num:06d}_x_processed.npy", x_evel)
+    #np.save(PWD / f"TOA_MGA_20231013_007_{file_num:06d}_t_processed.npy", t_pretty)
+    #np.save(PWD / f"TOA_MGA_20231013_007_{file_num:06d}_x_processed.npy", x_evel)
 
-    # Plot results
+    plt.rcParams.update({
+        'font.family': 'Times New Roman',
+        'font.size': 16,
+        'axes.titlesize': 16,
+        'axes.labelsize': 16,
+        'xtick.labelsize': 16,
+        'ytick.labelsize': 16,
+        'legend.fontsize': 16,
+    })
     plt.plot(t_pretty, x_evel, label=file_num)
-    plt.vlines(1.1, 0,0.03)
+    #plt.vlines(1.1, 0,0.03)
     #plt.hlines(0.0252, 0,55)
 
 def main():
-    # Specify the range of file numbers you want to process
     start_file_num = 1
     end_file_num = 20
-
-    # Iterate over the file numbers and process each data file
     for file_num in range(start_file_num, end_file_num + 1):
     #for file_num in [9,19]:
         process_data(file_num)
 
     # Show the legend and plot
-    plt.legend()
+    #plt.legend()
     plt.xlabel("t/s")
     plt.ylabel("x/1")
-    #plt.savefig("s_007.png")
+    plt.savefig("s_007_noice.png")
     #plt.savefig("s_007_max.png")
     plt.show()
 

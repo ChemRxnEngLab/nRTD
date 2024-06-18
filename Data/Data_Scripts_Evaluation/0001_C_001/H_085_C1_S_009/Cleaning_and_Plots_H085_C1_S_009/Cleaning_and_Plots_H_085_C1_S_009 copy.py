@@ -13,7 +13,7 @@ from pathlib import Path
 
 WD = Path("/Users/tuanaoyuncu/Documents/GitHub/nRTD")
 DATA = WD / "Data"
-PWD=DATA / "C_001" / "H_085_C1" / "S_009_C1" 
+PWD=DATA / "C_001" / "H_085_C1" / "S_009_C1_001" 
 
 def process_data(file_num):
     # Construct file paths for _x.npy and _t.npy
@@ -33,8 +33,8 @@ def process_data(file_num):
     x_evel = f(t_evel)
 
     # Save processed data
-    np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_t_processed.npy", t_pretty)
-    np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_x_processed.npy", x_evel)
+    # np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_t_processed.npy", t_pretty)
+    # np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_x_processed.npy", x_evel)
 
     # Plot results
     plt.plot(t_pretty, x_evel, label=file_num)
