@@ -16,8 +16,8 @@ DATA = WD / "Data"
 
 def process_data(file_num):
     # Construct file paths for _x.npy and _t.npy
-    x_file_path = DATA / "0003" / "C_001_0003" / "H_080_C1_0003" / "S_035" / f"TOA_MGA_20240228_0035_{file_num:03d}_x.npy"
-    t_file_path = DATA / "0003" / "C_001_0003" / "H_080_C1_0003" / "S_035" / f"TOA_MGA_20240228_0035_{file_num:03d}_t.npy"
+    x_file_path = DATA / "0004" / "C_001" / "H_080_C1" / "S_051_C1" / f"TOA_MGA_20240626_0051_{file_num:06d}_x.npy"
+    t_file_path = DATA / "0004" / "C_001" / "H_080_C1" / "S_051_C1" / f"TOA_MGA_20240626_0051_{file_num:06d}_t.npy"
 
     # Load _x.npy and _t.npy
     x = np.load(x_file_path)
@@ -35,11 +35,10 @@ def process_data(file_num):
     x_evel = f(t_evel)
 
     # Save processed data
-    np.save(DATA / "0003" / "C_001_0003" / "H_080_C1_0003" / "S_035" / f"TOA_MGA_20240228_0035_{file_num:03d}_t_processed.npy", t_pretty)
-    np.save(DATA / "0003" / "C_001_0003" / "H_080_C1_0003" / "S_035" / f"TOA_MGA_20240228_0035_{file_num:03d}_x_processed.npy", x_evel)
+    np.save(DATA / "0004" / "C_001" / "H_080_C1" / "S_051_C1" / f"TOA_MGA_20240626_0051_{file_num:06d}_t_processed.npy", t_pretty)
+    np.save(DATA / "0004" / "C_001" / "H_080_C1" / "S_051_C1" / f"TOA_MGA_20240626_0051_{file_num:06d}_x_processed.npy", x_evel)
 
-    # Plot results
-    plt.plot(t_pretty, x_evel)
+    plt.plot(t_pretty, x_evel, label=f"File {file_num}")
 
 def main():
     # Specify the range of file numbers you want to process
@@ -50,10 +49,10 @@ def main():
     for file_num in range(start_file_num, end_file_num + 1):
         process_data(file_num)
 
-    # Show the legend and plot
     plt.legend()
-    plt.xlabel.t_pretty
-    plt.ylabel.x_evel
+    # plt.xlabel()
+    # plt.ylabel()
+    plt.savefig("Figure_001_S_051", dpi=300)
     plt.show()
 
 if __name__ == "__main__":
