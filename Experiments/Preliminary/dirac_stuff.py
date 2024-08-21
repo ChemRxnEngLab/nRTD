@@ -5,7 +5,7 @@ from scipy.signal import unit_impulse
 import matplotlib.pyplot as plt
 from typing import Literal
 
-plt.style.use("ICIWstyle")
+#plt.style.use("ICIWstyle")
 
 
 # %%
@@ -48,7 +48,7 @@ def tank_system(t: npt.NDArray, a: float, b: float, tau: float) -> npt.NDArray:
 
 
 # %%
-t = np.linspace(0, 20, 1000, endpoint=True)
+t = np.linspace(0, 20, 100, endpoint=True)
 c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 fig_1, axs = plt.subplots(2)
@@ -66,7 +66,7 @@ for i in np.linspace(0, 1, 11, endpoint=True):
     )
 
 ax_1.set(
-    ylim=(0, 1.1),
+    ylim=(0, 10),
 )
 
 fig_2, axs = plt.subplots(2)
