@@ -9,10 +9,11 @@ def compute_inverse_laplace(coefficients, t_values):
     for J_val in coefficients['J']: # Loop for each combination
         for tau_val in coefficients['tau']:
             for alpha_val in coefficients['alpha']:
-                F_s = 1 / (1 + (1/J_val) * (tau_val * s + alpha_val - alpha_val / (1 + tau_val * s))) # G function
+                F_s = 1/(((1 + (1/J_val) * (tau_val * s + alpha_val - alpha_val / (1 + tau_val * s))))**(J_val)) # G function
                 f_t = sp.inverse_laplace_transform(F_s, s, t)
                 f_t_numeric = sp.lambdify(t, f_t, modules="numpy")
                 E_t = f_t_numeric(t_values)
+                E_t[0]=2*E_t[0]
                 results.append({
                     'J': J_val,
                     'tau': tau_val,
@@ -24,12 +25,12 @@ def compute_inverse_laplace(coefficients, t_values):
     return results
 
 coefficients = {
-    'J': np.array([1,1.5]),   
-    'tau': np.array([1, 3]), 
-    'alpha': np.array([0.3, 0.5]) 
+    'J': np.array([1,5]),   
+    'tau': np.array([1,2]), 
+    'alpha': np.array([0.5]) 
 }
 
-t_values = np.linspace(0, 45, 500, endpoint=True)
+t_values = np.linspace(0, 5, 500, endpoint=True)
 results = compute_inverse_laplace(coefficients, t_values)
 c_0 = np.zeros_like(t_values)
 c_0[t_values > 5] = 1
@@ -61,7 +62,7 @@ ax1.set_ylabel('E(t)')
 ax1.legend()
 
 ax2.plot(t_values, c_0, label='c_0', linestyle='--', color='black')
-ax2.set_xlim(0, 120)
+ax2.set_xlim(0,5)
 ax2.set_ylim(0, 1.1)
 ax2.set_xlabel('t')
 ax2.set_ylabel('C')

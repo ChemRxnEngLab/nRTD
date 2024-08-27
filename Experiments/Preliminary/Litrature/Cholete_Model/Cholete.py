@@ -9,14 +9,15 @@ def Cholete(t: npt.NDArray[np.float64], alpha: float, beta: float, tau: float, g
     print(f"beta = {beta}")
     print(f"g = {g}")
     
-    H = np.where(t < g, 0, 5)
+    H = np.where(t < g, 0,1)
     k = ((1 - alpha) / (beta * tau))
     exp_term = (1 - alpha) * np.exp(k * (g - t))
     E = alpha * H - exp_term + (1 - alpha)
+    E[E<0]=0
     E /= np.trapz(E, t)
     return E
 
-t = np.linspace(0, 100, 500, endpoint=True)
+t = np.linspace(0, 10, 500, endpoint=True)
 c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 
