@@ -90,11 +90,14 @@ print(model(c_in).size())
 ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=20, shuffle=True)
 
+wandb_logger = pl_loggers.WandbLogger(
+    project="nRTD",
+    log_model=True)
 
 trainer = pl.Trainer(
     accelerator="auto",
     max_epochs=15000,
-    deterministic=True
+    logger=wandb_logger, deterministic=True
 )
 trainer.fit(model, dl)
 trainer.test(model, dl)
@@ -127,5 +130,12 @@ plt.xlim((0, 40))
 plt.ylim((0, 1.1))
 plt.legend()
 
-plt.savefig("Figure_conv_laminar")
+# fig = plt.gcf()
+# wandb.log({"RTD_Plot": fig})
+# wandb.log({"RTD_Plot": wandb.Image(fig)})
+
+
+#wandb.finish()
+
+#plt.savefig("Figure_conv_laminar")
 plt.show()

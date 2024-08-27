@@ -11,14 +11,14 @@ import numpy as np
 import wandb
 from nrtd import RTDModule
 
-tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo10'
+tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_2_tau_p_val_2_tau_m_val_1.0_beta_val_0.3'
 
 t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
 
-n_disc = 200
-t_input = torch.linspace(0, 60, n_disc)
+n_disc = 277
+t_input = torch.linspace(0, 20, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
 c_in[::2, :, t_input > 1] = 1
 c_in[1::2, :, t_input < 1] = 1
@@ -45,14 +45,14 @@ print(f"c_out size: {c_out.size()}")
 print(f"t_conv size: {t_conv.size()}")
 
 model = RTDModule(
-    kernel_size=299,
+    kernel_size=222,
     learning_rate=10e-3,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(0, 40, model.kernel_size)
+t_E = torch.linspace(0, 25, model.kernel_size)
 E = E / E.max()
 j = 0  
 
@@ -90,14 +90,11 @@ print(model(c_in).size())
 ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=20, shuffle=True)
 
-wandb_logger = pl_loggers.WandbLogger(
-    project="nRTD",
-    log_model=True)
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=15000,
-    logger=wandb_logger, deterministic=True,
+    max_epochs=10000,
+    deterministic=True
 )
 trainer.fit(model, dl)
 trainer.test(model, dl)
@@ -105,7 +102,7 @@ trainer.test(model, dl)
 
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(0, 40, model.kernel_size)
+t_E = torch.linspace(0, 25, model.kernel_size)
 E = E / E.max()
 
 plt.figure()
@@ -126,9 +123,9 @@ plt.plot(
     color="red",
 )
 plt.plot(t_E, E, label="E", color="orange")
-plt.xlim((0, 100))
+plt.xlim((0, 50))
 plt.ylim((0, 1.1))
 plt.legend()
 
-#plt.savefig("Figure_conv_dispersion_Bo10")
+plt.savefig("Figure_Adler_havarka_Model_001")
 plt.show()

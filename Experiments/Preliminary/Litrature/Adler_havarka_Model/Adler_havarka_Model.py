@@ -6,28 +6,30 @@ import os
 def compute_inverse_laplace(coefficients, t_values):
     s, t = sp.symbols('s t')
     results = []  
-    for J_val in coefficients['J']: # Loop for each combination
-        for tau_val in coefficients['tau']:
-            for alpha_val in coefficients['alpha']:
-                F_s = 1 / (1 + (1/J_val) * (tau_val * s + alpha_val - alpha_val / (1 + tau_val * s))) # G function
-                f_t = sp.inverse_laplace_transform(F_s, s, t)
-                f_t_numeric = sp.lambdify(t, f_t, modules="numpy")
-                E_t = f_t_numeric(t_values)
-                results.append({
-                    'J': J_val,
-                    'tau': tau_val,
-                    'alpha': alpha_val,
-                    'E_t': E_t
-                })
-                integral_E_t = np.trapz(E_t, t_values)
-                print(f"integral E: {integral_E_t}") #print
+    for tau_a_val in coefficients['tau_a_val']: # Loop for each combination
+        for tau_p_val in coefficients['tau_p_val']:
+            for tau_m_val in coefficients['tau_m_val']:
+                for beta_val in coefficients['beta_val']:
+                    F_s = (sp.exp(-tau_p_val * s)) / (1 + beta_val + tau_a_val * s - (beta_val/(1+tau_m_val*s))) # G function
+                    f_t = sp.inverse_laplace_transform(F_s, s, t)
+                    f_t_numeric = sp.lambdify(t, f_t, modules="numpy")
+                    E_t = f_t_numeric(t_values)
+                    results.append({
+                        'tau_a_val': tau_a_val,
+                        'tau_p_val': tau_p_val,
+                        'tau_m_val': tau_m_val,
+                        'beta_val': beta_val,
+                        'E_t': E_t
+                    })
+                    integral_E_t = np.trapz(E_t, t_values)
+                    print(f"integral E: {integral_E_t}") #print
     return results
 
 coefficients = {
-    'J': np.array([1,1.5]),   
-    'tau': np.array([1, 3]), 
-    'alpha': np.array([0.3, 0.5]) 
-}
+    'tau_a_val': np.array([1,2]),   
+    'tau_p_val': np.array([1,2]), 
+    'tau_m_val': np.array([0.5,1]),
+    'beta_val': np.array([0.1, 0.3])}
 
 t_values = np.linspace(0, 45, 500, endpoint=True)
 results = compute_inverse_laplace(coefficients, t_values)
@@ -35,12 +37,13 @@ c_0 = np.zeros_like(t_values)
 c_0[t_values > 5] = 1
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
 
-base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/unified_time_delay'
+base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model'
 
 for result in results:
-    J_val = result['J']
-    tau_val = result['tau']
-    alpha_val = result['alpha']
+    tau_a_val = result['tau_a_val']
+    tau_p_val = result['tau_p_val']
+    tau_m_val = result['tau_m_val']
+    beta_val = result['beta_val']
     E_t = result['E_t']
     E_t_normalized = E_t / np.sum(E_t)
     c_out_full = np.convolve(c_0, E_t_normalized, mode="full")
@@ -48,13 +51,13 @@ for result in results:
     valid_indices = t_conv_full <= 45
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
-    unified_dir = os.path.join(base_dir, f'J_{J_val}_tau_{tau_val}_alpha_{alpha_val}')
+    unified_dir = os.path.join(base_dir, f'tau_a_val_{tau_a_val}_tau_p_val_{tau_p_val}_tau_m_val_{tau_m_val}_beta_val_{beta_val}')
     os.makedirs(unified_dir, exist_ok=True)
     np.save(os.path.join(unified_dir, 'time.npy'), t_conv)
     np.save(os.path.join(unified_dir, 'concentration.npy'), c_out)
 
-    ax1.plot(t_values, E_t, label=f'J={J_val}, tau={tau_val}, alpha={alpha_val}')
-    ax2.plot(t_conv, c_out, label=f'J={J_val}, tau={tau_val}, alpha={alpha_val}')
+    ax1.plot(t_values, E_t, label=f'tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m_={tau_m_val},beta={beta_val}')
+    ax2.plot(t_conv, c_out, label=f'tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m_={tau_m_val},beta={beta_val}')
 
 ax1.set_xlabel('t')
 ax1.set_ylabel('E(t)')
@@ -72,13 +75,14 @@ plt.savefig('unified_time_delay_001.png', dpi=300)
 plt.show()
 
 for result in results:
-    J_val = result['J']
-    tau_val = result['tau']
-    alpha_val = result['alpha']
-    Bo_dir = os.path.join(base_dir, f'J_{J_val}_tau_{tau_val}_alpha_{alpha_val}')
-    t_conv = np.load(os.path.join(Bo_dir, 'time.npy'))
-    c_out = np.load(os.path.join(Bo_dir, 'concentration.npy'))
-    print(f"Results for J={J_val}, tau={tau_val}, alpha={alpha_val}:")
+    tau_a_val = result['tau_a_val']
+    tau_p_val = result['tau_p_val']
+    tau_m_val = result['tau_m_val']
+    beta_val=results['beta_val']
+    Adler_havarka_dir = os.path.join(base_dir, f'tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m_={tau_m_val},beta={beta_val}')
+    t_conv = np.load(os.path.join(Adler_havarka_dir, 'time.npy'))
+    c_out = np.load(os.path.join(Adler_havarka_dir, 'concentration.npy'))
+    print(f"Results for tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m_={tau_m_val},beta={beta_val}:")
     print(f"Time: {t_conv[:10]}...")
     print(f"Concentration: {c_out[:10]}...")
 
