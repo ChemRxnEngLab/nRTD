@@ -9,7 +9,7 @@ def compute_inverse_laplace(coefficients, t_values):
     for J_val in coefficients['J']: # Loop for each combination
         for tau_val in coefficients['tau']:
             for alpha_val in coefficients['alpha']:
-                F_s = 1/(((1 + (1/J_val) * (tau_val * s + alpha_val - alpha_val / (1 + tau_val * s))))**(J_val)) # G function
+                F_s = ((1 + (1/J_val) * (tau_val * s + alpha_val - alpha_val / (1 + tau_val * s))))**(-J_val) # G function
                 f_t = sp.inverse_laplace_transform(F_s, s, t)
                 f_t_numeric = sp.lambdify(t, f_t, modules="numpy")
                 E_t = f_t_numeric(t_values)

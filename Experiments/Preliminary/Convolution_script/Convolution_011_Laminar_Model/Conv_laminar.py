@@ -5,7 +5,6 @@ sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
-from lightning.pytorch import loggers as pl_loggers
 import matplotlib.pyplot as plt
 import numpy as np
 import wandb
@@ -17,11 +16,11 @@ t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=to
 c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
 
-n_disc = 166
+n_disc = 239
 t_input = torch.linspace(0, 30, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
-c_in[::2, :, t_input > 1] = 1
-c_in[1::2, :, t_input < 1] = 1
+c_in[::2, :, t_input > 5] = 1
+c_in[1::2, :, t_input < 5] = 1
 
 #file_numbers = range(1, 21)
 c_out_list = []
@@ -45,7 +44,7 @@ print(f"c_out size: {c_out.size()}")
 print(f"t_conv size: {t_conv.size()}")
 
 model = RTDModule(
-    kernel_size=333,
+    kernel_size=60,
     learning_rate=10e-4,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
@@ -127,5 +126,5 @@ plt.xlim((0, 20))
 plt.ylim((0, 1.1))
 plt.legend()
 
-#plt.savefig("Figure_conv_laminar")
+plt.savefig("Figure_conv_laminar_dis300")
 plt.show()

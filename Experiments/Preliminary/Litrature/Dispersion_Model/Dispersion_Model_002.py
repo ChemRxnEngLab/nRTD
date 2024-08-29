@@ -31,7 +31,7 @@ for Bo in Bo_values:
     valid_indices = t_conv_full <= 100
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
-    Bo_dir = os.path.join(base_dir, f'Bo{Bo}')
+    Bo_dir = os.path.join(base_dir, f'Bo{Bo}_500')
     os.makedirs(Bo_dir, exist_ok=True)
     
     np.save(os.path.join(Bo_dir, 'time.npy'), t_conv)
