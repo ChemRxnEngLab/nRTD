@@ -13,7 +13,7 @@ def tank_recycle(t: npt.NDArray[np.float64], beta: float, R: float, tau: float) 
         np.exp((2 * t * zeta * sqrt_term )/ tau) - np.exp((-2 * t * zeta * sqrt_term )/ tau))
     return E
 
-t = np.linspace(0, 20, 1000, endpoint=True)
+t = np.linspace(0, 60, 1000, endpoint=True)
 c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
@@ -34,8 +34,8 @@ for beta in beta_values:
     Bo_dir = os.path.join(base_dir, f'beta{beta}')
     os.makedirs(Bo_dir, exist_ok=True)
     
-    np.save(os.path.join(Bo_dir, 'time.npy'), t_conv)
-    np.save(os.path.join(Bo_dir, 'concentration.npy'), c_out)
+    # np.save(os.path.join(Bo_dir, 'time.npy'), t_conv)
+    # np.save(os.path.join(Bo_dir, 'concentration.npy'), c_out)
 
     ax1.plot(t, E, label=f'beta {beta:}')
     ax2.plot(
@@ -55,7 +55,7 @@ ax2.set_ylabel('C')
 ax2.legend()
 
 plt.tight_layout()
-plt.savefig('tank_recyce_model_001.png', dpi=300)
+#plt.savefig('tank_recyce_model_001.png', dpi=300)
 plt.show()
 
 t_conv = np.load(os.path.join(Bo_dir, 'time.npy'))

@@ -26,10 +26,10 @@ def compute_inverse_laplace(coefficients, t_values):
     return results
 
 coefficients = {
-    'tau_a_val': np.array([1,2]),   
-    'tau_p_val': np.array([1,2]), 
+    'tau_a_val': np.array([3]),   
+    'tau_p_val': np.array([2]), 
     'tau_m_val': np.array([0.5,1]),
-    'beta_val': np.array([0.1, 0.3])}
+    'beta_val': np.array([0.1])}
 
 t_values = np.linspace(0, 45, 500, endpoint=True)
 results = compute_inverse_laplace(coefficients, t_values)
