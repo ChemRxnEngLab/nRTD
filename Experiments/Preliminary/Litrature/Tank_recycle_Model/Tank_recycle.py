@@ -11,15 +11,14 @@ def tank_recycle(t: npt.NDArray[np.float64], beta: float, R: float, tau: float) 
     sqrt_term = np.sqrt((zeta**2) - 1)
     E = (zeta / sqrt_term) * (exponential_term / tau) * (
         np.exp((2 * t * zeta * sqrt_term )/ tau) - np.exp((-2 * t * zeta * sqrt_term )/ tau))
+    E /= np.trapz(E, t)
     return E
 
-t = np.linspace(0, 60, 1000, endpoint=True)
+t = np.linspace(0, 120, 500, endpoint=True)
 c_0 = np.zeros_like(t)
-c_0[t > 5] = 1
+c_0[t > 10] = 1
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
-
-beta_values = np.array([0.3,0.55,0.7])
-
+beta_values = np.array([0.1,0.7])
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Tank_recycle_Model'
 
 for beta in beta_values:
@@ -27,8 +26,9 @@ for beta in beta_values:
     print(f"beta: {beta}, E= {np.trapz(E, t)}")
 
     c_out_full = np.convolve(c_0, E / np.sum(E), mode="full")
-    t_conv_full = np.linspace(t[0] + t[0], t[-1] + t[-1], len(c_out_full))
-    valid_indices = t_conv_full <= 100
+    t_conv_full = np.linspace(t[0], t[-1] + t[-1], len(c_out_full))
+
+    valid_indices = t_conv_full <= 120
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
     Bo_dir = os.path.join(base_dir, f'beta{beta}')
@@ -39,7 +39,7 @@ for beta in beta_values:
 
     ax1.plot(t, E, label=f'beta {beta:}')
     ax2.plot(
-        np.linspace(0, 100, len(c_out)),
+        np.linspace(0, 120, len(c_out)),
         c_out,
         label=f'beta {beta:}'
     )
@@ -48,7 +48,7 @@ ax1.set_ylabel('E')
 ax1.legend()
 
 ax2.plot(t, c_0, label='c_0', linestyle='--', color='black')
-ax2.set_xlim(0,120)
+ax2.set_xlim(0,150)
 ax2.set_ylim(0, 1.1)
 ax2.set_xlabel('t')
 ax2.set_ylabel('C')
@@ -65,12 +65,12 @@ for beta in beta_values:
     Bo_dir = os.path.join(base_dir, f'beta{beta}')
     t_conv = np.load(os.path.join(Bo_dir, 'time.npy'))
     c_out = np.load(os.path.join(Bo_dir, 'concentration.npy'))
-    print(f"Time array shape: {t_conv.shape}")
-    print(f"Concentration array shape: {c_out.shape}")
+    # print(f"Time array shape: {t_conv.shape}")
+    # print(f"Concentration array shape: {c_out.shape}")
 
 print(f"\nResults for beta = {beta:}:")
-print(f"Time: {t_conv[:10]}...")
-print(f"Concentration: {c_out[:10]}...")
+print(f"Time: {t_conv[:100]}...")
+print(f"Concentration: {c_out[:100]}...")
 
 
 

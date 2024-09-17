@@ -28,8 +28,8 @@ c_out = c_out_full[valid_indices]
 tau_dir = os.path.join(base_dir, f'tau_{tau}')
 os.makedirs(tau_dir, exist_ok=True)
 
-np.save(os.path.join(tau_dir, 'time.npy'), t_conv)
-np.save(os.path.join(tau_dir, 'concentration.npy'), c_out)
+# np.save(os.path.join(tau_dir, 'time.npy'), t_conv)
+# np.save(os.path.join(tau_dir, 'concentration.npy'), c_out)
 
 
 ax1.plot(t, E, label=f'tau {tau}')
@@ -41,6 +41,7 @@ ax1.legend()
 
 ax2.plot(t, c_0, label='c_0', linestyle='--', color='black')
 ax2.set_ylim(0, 1.1)
+ax2.set_xlim(0, 90)
 ax2.set_xlabel('t')
 ax2.set_ylabel('c')
 ax2.legend()
