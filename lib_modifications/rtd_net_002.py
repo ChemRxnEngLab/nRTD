@@ -1,19 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep 17 11:54:39 2024
-
-@author: tuanaoyuncu
-"""
-
 from typing import Optional
 import torch.nn as nn
 import torch
 import numpy.typing as npt
 
-
 class RTDNet(nn.Module):
-    """_summary_
+    """RTDNet with one convolution and one deconvolution layer.
 
     Parameters
     ----------
@@ -31,27 +22,32 @@ class RTDNet(nn.Module):
         super().__init__()
         self.n_compartements = n_compartements
         self.kernel_size = kernel_size
-        self.padding_mode  = padding_mode
-        self.fn = nn.Sequential(
-            *[
-                nn.Conv1d(
-                    in_channels=1,
-                    out_channels=1,
-                    kernel_size=kernel_size,
-                    bias=False,  # no offset
-                    padding=self.kernel_size,  # we append n_kernel values to the left and right of the input to make sure the convolution is causal/full
-                    padding_mode=self.padding_mode,
-                )
-                for i in range(n_compartements)
-            ]
+        self.padding_mode = padding_mode
+        self.conv_layer = nn.Conv1d(
+            in_channels=1,
+            out_channels=1,
+            kernel_size=kernel_size,
+            bias=False,  
+            padding=self.kernel_size,
+            padding_mode=self.padding_mode,
         )
+
+        # Deconvolution
+        self.deconv_layer = nn.ConvTranspose1d(
+            in_channels=1,
+            out_channels=1,
+            kernel_size=kernel_size,
+            bias=False,
+            padding=self.kernel_size,
+        )
+
         if t_conv is None:
             self.t_conv = [(0.0, 10.0) for i in range(n_compartements)]
         else:
             self.t_conv = t_conv
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """forward method of the RTDNet class.
+        """Forward pass through the network: convolution + deconvolution.
 
         Parameters
         ----------
@@ -61,10 +57,11 @@ class RTDNet(nn.Module):
         Returns
         -------
         torch.Tensor
-            output
+            output data (Deconvolved E function)
         """
-        conv_out = self.fn(x)
-        return conv_out
+        conv_out = self.conv_layer(x)  #  convolution
+        deconv_out = self.deconv_layer(conv_out)  
+        return deconv_out
 
     def _freeze_conv(self, ind: int) -> None:
         """Utility function for freezing the weights of the convolutional layer.
@@ -74,30 +71,27 @@ class RTDNet(nn.Module):
         ind : int
             index of the convolutional layer to freeze.
         """
-        for i, conv in enumerate(self.fn):
-            if i == ind:
-                conv.weight.requires_grad = False
+        self.conv_layer.weight.requires_grad = False
 
     @property
     def E(self) -> list[npt.NDArray]:
-        """RTD density functions for compartements.
+        """RTD density functions for compartments.
 
         Returns
         -------
         list[npt.NDArray]
-            RTD density functions for compartements
+            RTD density functions for compartments
         """
         return [
-            conv.get_parameter("weight")[0, 0, :].flip(0).detach().numpy()
-            for conv in self.fn
+            self.conv_layer.weight[0, 0, :].flip(0).detach().numpy()
         ]
 
     def output_shape(self, c_in: torch.Tensor) -> int:
-        """The output shape (discretiozation) of the RTD convolution function if the input shape is 'c_in'.
+        """The output shape (discretization) of the RTD convolution function if the input shape is 'c_in'.
 
         Parameters
         ----------
-        c : torch.Tensor
+        c_in : torch.Tensor
             temporal input signal
 
         Returns
@@ -106,7 +100,7 @@ class RTDNet(nn.Module):
             discretization (length) of the output signal
         """
         n_c = c_in.shape[2]
-        return n_c + self.n_compartements * (self.kernel_size + 1)
+        return n_c + 2 * (self.kernel_size + 1)  # Adjusted for conv + deconv
 
     @property
     def t_conv_end(self) -> float:
@@ -140,10 +134,10 @@ class RTDNet(nn.Module):
 
 
 if __name__ == "__main__":
-    fitter = RTDNet(kernel_size=100, padding_mode="replicate", n_compartements=1)
-    print(fitter.output_shape)
-    print(fitter.E)
+    model = RTDNet(kernel_size=100, padding_mode="replicate", n_compartements=1)
+    c_in = torch.rand(1, 1, 100)
 
-    # forward pass
-    c = fitter(torch.rand(1, 1, 100))
-    print(c.shape)
+    # Perform  pass: Convolution and Deconvolution
+    c_deconv = model(c_in)
+    print("Deconvolution result (E_predicted):")
+    print(c_deconv)

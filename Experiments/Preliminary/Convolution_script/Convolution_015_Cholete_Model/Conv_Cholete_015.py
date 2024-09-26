@@ -5,27 +5,23 @@ sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
+from lightning.pytorch import loggers as pl_loggers
 import matplotlib.pyplot as plt
 import numpy as np
 import wandb
 from nrtd import RTDModule
-from lightning.pytorch import loggers as pl_loggers
 
-if wandb.run is not None:
-    wandb.finish()
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
-sys.path.append(module_path)
+tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model/beta0.9'
 
-tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0'
 t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
 
-n_disc = 250
-t_input = torch.linspace(0, 30, n_disc)
+n_disc = 500
+t_input = torch.linspace(0, 35, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
-c_in[::2, :, t_input > 5] = 1
-c_in[1::2, :, t_input < 5] = 1
+c_in[::2, :, t_input > 1] = 1
+c_in[1::2, :, t_input < 1] = 1
 
 #file_numbers = range(1, 21)
 c_out_list = []
@@ -49,14 +45,14 @@ print(f"c_out size: {c_out.size()}")
 print(f"t_conv size: {t_conv.size()}")
 
 model = RTDModule(
-    kernel_size=249,
-    learning_rate=10e-4,
+    kernel_size=291,
+    learning_rate=10e-3,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(5, 40, model.kernel_size)
+t_E = torch.linspace(0, 25, model.kernel_size)
 E = E / E.max()
 j = 0  
 
@@ -89,22 +85,19 @@ plt.ylim((0,1.1))
 plt.show()
 
 print(model(c_in).size())
+
+
 ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=20, shuffle=True)
+
 wandb_logger = pl_loggers.WandbLogger(
     project="nRTD",
-    log_model=True
-)
-
-ds = TensorDataset(c_in, c_out)
-dl = DataLoader(ds, batch_size=20, shuffle=True)
-
+    log_model=True)
 
 trainer = pl.Trainer(
-    accelerator="gpu" if torch.cuda.is_available() else "cpu",
+    accelerator="auto",
     max_epochs=15000,
-    logger=wandb_logger,
-    deterministic=True,
+    logger=wandb_logger, deterministic=True
 )
 trainer.fit(model, dl)
 trainer.test(model, dl)
@@ -112,7 +105,7 @@ trainer.test(model, dl)
 
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(5, 30, model.kernel_size)
+t_E = torch.linspace(0, 25, model.kernel_size)
 E = E / E.max()
 
 plt.figure()
@@ -122,7 +115,7 @@ for i in range(c_out.size(1)):
     plt.plot(
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
-        label="Tau 5.0",
+        label="beta0.9",
         color="green",
     )
 
@@ -133,9 +126,16 @@ plt.plot(
     color="red",
 )
 plt.plot(t_E, E, label="E", color="orange")
-plt.xlim((0, 20))
+plt.xlim((0, 40))
 plt.ylim((0, 1.1))
 plt.legend()
 
-plt.savefig("Figure_conv_laminar_002_dis500_shifted")
+# fig = plt.gcf()
+# wandb.log({"RTD_Plot": fig})
+# wandb.log({"RTD_Plot": wandb.Image(fig)})
+
+
+#wandb.finish()
+
+#plt.savefig("Figure_conv_laminar")
 plt.show()
