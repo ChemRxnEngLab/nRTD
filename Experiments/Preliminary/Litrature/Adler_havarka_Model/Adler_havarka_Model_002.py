@@ -10,7 +10,7 @@ def compute_inverse_laplace(coefficients, t_values):
     for tau_a_val in coefficients['tau_a_val']:  # Loop for each combination
         for tau_p_val in coefficients['tau_p_val']:
             for beta_val in coefficients['beta_val']:
-                tau_m_val = (beta_val * (1 - alpha)) / alpha
+                tau_m_val = (beta_val * (1 - alpha)) / alpha #tau_m definition 
                 F_s = (sp.exp(-tau_p_val * s)) / (1 + beta_val + tau_a_val * s - (beta_val / (1 + tau_m_val * s)))
                 print(f"E(s)")
                 sp.pprint(F_s)

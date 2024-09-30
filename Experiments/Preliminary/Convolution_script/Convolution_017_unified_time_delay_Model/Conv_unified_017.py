@@ -1,21 +1,21 @@
 import sys
 import os
+module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import matplotlib.pyplot as plt
 import numpy as np
 from nrtd import RTDModule
+from lightning.pytorch import loggers as pl_loggers
 
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
-sys.path.append(module_path)
+tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Unified_time_delay'
 
-tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Unified_time_delay/J_1.0_tau_1_alpha_0.3'
+t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time_J5_tau3_alpha0.2.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration_J5_tau3_alpha0.2.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
-t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-
-n_disc = 277
+n_disc = 166
 t_input = torch.linspace(0, 20, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
 c_in[::2, :, t_input > 1] = 1
@@ -32,7 +32,7 @@ t_conv = torch.cat(t_conv_list, dim=0)
 plt.show()
 
 model = RTDModule(
-    kernel_size=222,
+    kernel_size=133,
     learning_rate=10e-3,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
@@ -59,7 +59,7 @@ plt.plot(
     label="Predicted",
     color="red",
 )
-plt.plot(t_E, E, label="E", color="orange")
+plt.plot(t_E, E, label="CNN E Signal", color="orange")
 plt.legend()
 plt.xlim((0, 40))
 plt.ylim((0, 1.1))
@@ -72,7 +72,7 @@ dl = DataLoader(ds, batch_size=20, shuffle=True)
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=1000,
+    max_epochs=10000,
     deterministic=True
 )
 trainer.fit(model, dl)
@@ -90,7 +90,7 @@ for i in range(c_out.size(1)):
     plt.plot(
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
-        label="Bo10",
+        label="",
         color="green",
     )
 
@@ -101,15 +101,25 @@ plt.plot(
     color="red",
 )
 
-t_plot = torch.linspace(0, 50, 1000).numpy()
-E_t = (3.24642 * np.exp(-2.34833 * t_plot) * t_plot
-       + 0.0392897 * np.exp(-0.851669 * t_plot) * t_plot
-       - 0.477252 * np.exp(-2.34833 * t_plot)
-       + 0.477252 * np.exp(-0.851669 * t_plot))
+t_plot = torch.linspace(0, 40, 1000).numpy()
 
-plt.plot(t_plot, E_t, label="Expected E_t", color="orange", linestyle='--')
+E_expected = (0.507094 * np.exp(-1.74903 * t_plot) * t_plot**4
+              + 9.81543e-11 * np.exp(-0.317636 * t_plot) * t_plot**4
+              - 0.0785608 * np.exp(-1.74903 * t_plot) * t_plot**3
+              + 1.0707e-7 * np.exp(-0.317636 * t_plot) * t_plot**3
+              - 0.161001 * np.exp(-1.74903 * t_plot) * t_plot**2
+              + 4.02603e-5 * np.exp(-0.317636 * t_plot) * t_plot**2
+              - 0.219912 * np.exp(-1.74903 * t_plot) * t_plot
+              + 0.00498889 * np.exp(-0.317636 * t_plot) * t_plot
+              - 0.150149 * np.exp(-1.74903 * t_plot)
+              + 0.150149 * np.exp(-0.317636 * t_plot))
+
+E_expected[t_plot < 5] = 0
+plt.plot(t_plot, E_expected, label="E_Expected", color="purple", linestyle='--')
+plt.plot(t_E, E, label="E_predicted", color="orange")
+plt.savefig("Figure_conv_unifiedtdelay_J5_tau3")
 plt.xlim((0, 50))
 plt.ylim((0, 1.1))
 plt.legend()
-plt.savefig("Figure_conv_unifiedtdelay_Bo1_300disc_expected")
 plt.show()
+

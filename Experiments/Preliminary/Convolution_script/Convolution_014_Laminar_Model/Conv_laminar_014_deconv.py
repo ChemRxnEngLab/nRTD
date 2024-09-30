@@ -39,7 +39,7 @@ dl = DataLoader(ds, batch_size=20, shuffle=True)
 wandb_logger = pl_loggers.WandbLogger(project="nRTD", log_model=True)
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=1000,
+    max_epochs=100,
     logger=wandb_logger, deterministic=True
 )
 
