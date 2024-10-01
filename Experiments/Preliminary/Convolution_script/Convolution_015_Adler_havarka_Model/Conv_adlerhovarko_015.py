@@ -11,13 +11,12 @@ import numpy as np
 import sympy as sp
 import wandb
 from nrtd import RTDModule
-
 if wandb.run is not None:
     wandb.finish()
 module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 sys.path.append(module_path)
 
-adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1'
+adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_3_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1'
 
 t_conv_tau = torch.tensor(np.load(os.path.join(adler_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(adler_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
@@ -26,8 +25,8 @@ c_out_tau = torch.tensor(np.load(os.path.join(adler_dir, 'concentration.npy')), 
 n_disc = 88
 t_input = torch.linspace(0, 25, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
-c_in[::2, :, t_input > 1] = 1
-c_in[1::2, :, t_input < 1] = 1
+c_in[::2, :, t_input > 5] = 1
+c_in[1::2, :, t_input < 5] = 1
 
 #file_numbers = range(1, 21)
 c_out_list = []
@@ -59,7 +58,7 @@ model = RTDModule(
 c_conv = model(c_in)
 E = model.net.E[0]
 t_E = torch.linspace(0, 20, model.kernel_size)
-E = E / E.max()
+E = E /E.max()
 j = 0  
 
 plt.figure()
@@ -116,7 +115,7 @@ trainer.test(model, dl)
 c_conv = model(c_in)
 E = model.net.E[0]
 t_E = torch.linspace(0, 25, model.kernel_size)
-E = E / E.max()
+E = E/E.max()
 
 def compute_inverse_laplace(coefficients, t_values):
     s, t = sp.symbols('s t', real=True, positive=True)
@@ -140,7 +139,7 @@ def compute_inverse_laplace(coefficients, t_values):
                 })
     return results
 coefficients = {
-    'tau_a_val': np.array([1]),
+    'tau_a_val': np.array([3]),
     'tau_p_val': np.array([2]),
     'beta_val': np.array([0.1]),
     'alpha_val': 0.2
@@ -148,7 +147,7 @@ coefficients = {
 t_plot = torch.linspace(0, 40, 500).numpy()
 inverse_laplace_results = compute_inverse_laplace(coefficients, t_plot)
 E_expected = inverse_laplace_results[0]['E_t']
-
+E_expected =E_expected /E_expected.max()
 
 plt.figure()
 plt.plot(t_input, c_in[0, 0, :].numpy(), label="c_in", color="blue")

@@ -20,10 +20,10 @@ def Cholete(t: npt.NDArray[np.float64], alpha: float, beta: float, tau: float, g
     H = np.where(t < g, 0, 1)
     k = ((1 - alpha) / (beta * tau))
     exp_term = (1 - alpha) * np.exp(k * (g - t))
-    E = alpha * H - exp_term + (1 - alpha)
-    E[E < 0] = 0
-    # E /= np.trapz(E, t)  
-    return E
+    F = alpha * H - exp_term + (1 - alpha)
+    F[F < 0] = 0
+    E = np.gradient(F,t)  
+    return F,E
 
 t = np.linspace(0, 100, 200)
 c_0 = np.zeros_like(t)
@@ -34,7 +34,7 @@ beta_values = np.array([0.1, 0.3, 0.9])
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model'
 
 for beta in beta_values:
-    E = Cholete(t, 0.2, beta, 5, 2.5)
+    F,E = Cholete(t, 0.2, beta, 5, 2.5)
     
     E_t_normalized = E / np.sum(E)
     print(f"beta: {beta}, Integral of E: {np.sum(E)}")
@@ -49,7 +49,7 @@ for beta in beta_values:
     np.save(os.path.join(Bo_dir, 'concentration.npy'), E)
     c_out_derivative = np.gradient(c_out, t_conv)
     ax1.plot(t, E, label=f'beta {beta}')
-    ax2.plot(t_conv, c_out_derivative, label=f'beta {beta}')
+    ax2.plot(t, F, label=f'beta {beta}')
 
 ax1.set_xlabel('t')
 ax1.set_ylabel('E')
