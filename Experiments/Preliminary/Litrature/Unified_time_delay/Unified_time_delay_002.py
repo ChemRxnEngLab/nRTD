@@ -38,7 +38,7 @@ def laminarflow(t: np.ndarray, J: int, tau: int, alpha: float) -> np.ndarray:
     return E_t
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Unified_time_delay'
 
-t = np.linspace(0, 45, 300)
+t = np.linspace(0, 45, 200)
 c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))

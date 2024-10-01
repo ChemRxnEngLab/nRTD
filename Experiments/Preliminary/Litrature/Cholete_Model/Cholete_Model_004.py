@@ -25,7 +25,7 @@ def Cholete(t: npt.NDArray[np.float64], alpha: float, beta: float, tau: float, g
     # E /= np.trapz(E, t)  
     return E
 
-t = np.linspace(0, 100, 500)
+t = np.linspace(0, 100, 200)
 c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
@@ -47,19 +47,17 @@ for beta in beta_values:
     os.makedirs(Bo_dir, exist_ok=True)
     np.save(os.path.join(Bo_dir, 'time.npy'), t_conv)
     np.save(os.path.join(Bo_dir, 'concentration.npy'), E)
-
+    c_out_derivative = np.gradient(c_out, t_conv)
     ax1.plot(t, E, label=f'beta {beta}')
-    ax2.plot(np.linspace(0, 100, len(c_out)), c_out, label=f'beta {beta}')
+    ax2.plot(t_conv, c_out_derivative, label=f'beta {beta}')
 
 ax1.set_xlabel('t')
 ax1.set_ylabel('E')
 ax1.legend()
 
-ax2.plot(t, c_0, label='c_0', linestyle='--', color='black')
 ax2.set_xlim(0, 120)
-ax2.set_ylim(0, 1.1)
 ax2.set_xlabel('t')
-ax2.set_ylabel('C')
+ax2.set_ylabel("d(c)/dt")
 ax2.legend()
 plt.savefig("Figure_conv_Cholete_model")
 plt.tight_layout()

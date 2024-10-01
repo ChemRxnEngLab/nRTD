@@ -101,7 +101,7 @@ dl = DataLoader(ds, batch_size=20, shuffle=True)
 
 
 trainer = pl.Trainer(
-    accelerator="gpu" if torch.cuda.is_available() else "cpu",
+    accelerator="auto",
     max_epochs=10000,
     logger=wandb_logger,
     deterministic=True,

@@ -17,11 +17,11 @@ t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=to
 c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
 
-n_disc = 500
-t_input = torch.linspace(0, 35, n_disc)
+n_disc = 119
+t_input = torch.linspace(0, 40, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
-c_in[::2, :, t_input > 1] = 1
-c_in[1::2, :, t_input < 1] = 1
+c_in[::2, :, t_input > 5] = 1
+c_in[1::2, :, t_input < 5] = 1
 
 #file_numbers = range(1, 21)
 c_out_list = []
@@ -45,14 +45,14 @@ print(f"c_out size: {c_out.size()}")
 print(f"t_conv size: {t_conv.size()}")
 
 model = RTDModule(
-    kernel_size=291,
+    kernel_size=80,
     learning_rate=10e-3,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(0, 25, model.kernel_size)
+t_E = torch.linspace(0, 60, model.kernel_size)
 E = E / E.max()
 j = 0  
 
@@ -96,7 +96,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=15000,
+    max_epochs=10000,
     logger=wandb_logger, deterministic=True
 )
 trainer.fit(model, dl)
@@ -137,5 +137,5 @@ plt.legend()
 
 #wandb.finish()
 
-#plt.savefig("Figure_conv_laminar")
+plt.savefig("Figure_conv_Cholete")
 plt.show()
