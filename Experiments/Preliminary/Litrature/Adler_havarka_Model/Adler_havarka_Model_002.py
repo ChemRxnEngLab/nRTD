@@ -37,7 +37,7 @@ coefficients = {
     'alpha_val': 0.2           
 }
 
-t_values = np.linspace(0, 45, 500, endpoint=True)
+t_values = np.linspace(0, 45, 200, endpoint=True)
 results = compute_inverse_laplace(coefficients, t_values)
 c_0 = np.zeros_like(t_values)
 c_0[t_values > 5] = 1

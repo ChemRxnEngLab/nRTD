@@ -15,11 +15,11 @@ if wandb.run is not None:
 module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 sys.path.append(module_path)
 
-tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo1_300'
+tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo1_200'
 t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
-n_disc = 90
+n_disc = 60
 t_input = torch.linspace(0, 70, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
 c_in[::2, :, t_input > 1] = 1
@@ -30,7 +30,7 @@ c_out = torch.cat(c_out_list, dim=0)
 t_conv = torch.cat(t_conv_list, dim=0)
 
 model = RTDModule(
-    kernel_size=209,
+    kernel_size=139,
     learning_rate=10e-3,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
@@ -111,5 +111,5 @@ plt.plot(t_E.numpy(), E_expected_np, label="E (Expected)", color="purple", lines
 plt.xlim((0, 100))
 plt.ylim((0, 1.1))
 plt.legend()
-plt.savefig("Figure_conv_dispersion_Bo1_300disc_expected")
+plt.savefig("Figure_conv_dispersion_Bo1_200disc_expected")
 plt.show()

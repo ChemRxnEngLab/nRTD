@@ -8,7 +8,7 @@ def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float6
     E[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
     return E
 
-t = np.linspace(0, 60, 100, endpoint=True)
+t = np.linspace(0, 60, 200, endpoint=True)
 c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 
@@ -25,7 +25,7 @@ t_conv_full = np.linspace(t[0] + t[0], t[-1] + t[-1], len(c_out_full))
 valid_indices = t_conv_full <= 60
 t_conv = t_conv_full[valid_indices]
 c_out = c_out_full[valid_indices]
-tau_dir = os.path.join(base_dir, f'tau_100_{tau}')
+tau_dir = os.path.join(base_dir, f'tau_200_{tau}')
 os.makedirs(tau_dir, exist_ok=True)
 
 np.save(os.path.join(tau_dir, 'time.npy'), t_conv)
@@ -45,7 +45,7 @@ ax2.set_xlim(0, 90)
 ax2.set_xlabel('t')
 ax2.set_ylabel('c')
 ax2.legend()
-plt.savefig('laminar_flow_004_100disc.png', dpi=300)
+#plt.savefig('laminar_flow_004_100disc.png', dpi=300)
 plt.show()
 t_conv = np.load(os.path.join(tau_dir, 'time.npy'))
 c_out = np.load(os.path.join(tau_dir, 'concentration.npy'))

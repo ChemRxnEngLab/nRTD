@@ -16,12 +16,12 @@ if wandb.run is not None:
 module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 sys.path.append(module_path)
 
-tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0'
+tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_200_5.0'
 t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
 
-n_disc = 250
+n_disc = 100
 t_input = torch.linspace(0, 30, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
 c_in[::2, :, t_input > 5] = 1
@@ -49,7 +49,7 @@ print(f"c_out size: {c_out.size()}")
 print(f"t_conv size: {t_conv.size()}")
 
 model = RTDModule(
-    kernel_size=249,
+    kernel_size=99,
     learning_rate=10e-4,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
@@ -102,7 +102,7 @@ dl = DataLoader(ds, batch_size=20, shuffle=True)
 
 trainer = pl.Trainer(
     accelerator="gpu" if torch.cuda.is_available() else "cpu",
-    max_epochs=100,
+    max_epochs=10000,
     logger=wandb_logger,
     deterministic=True,
 )
@@ -118,7 +118,7 @@ t_E_np = t_E.numpy()
 
 
 def expected_formula(t):
-    return np.where(t >= 2.5, (5**2 / (2 * t**3)), 0)
+    return np.where(t >= 2.5,(5**2) / (2 * (t**3)), 0)
 E_expected_np = expected_formula(t_E_np)
 
 
@@ -146,5 +146,5 @@ plt.xlim((0, 20))
 plt.ylim((0, 1.1))
 plt.legend()
 
-#plt.savefig("Figure_conv_laminar_002_dis500_shifted")
+plt.savefig("Figure_conv_laminar_002_dis200_expected")
 plt.show()

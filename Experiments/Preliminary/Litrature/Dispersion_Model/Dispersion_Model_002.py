@@ -14,7 +14,7 @@ def dispersion(t: npt.NDArray[np.float64], Bo: float, tau: float) -> npt.NDArray
     E = E / tau
     return E
 
-t = np.linspace(0, 100, 300, endpoint=True) #last position
+t = np.linspace(0, 100, 200, endpoint=True) #last position
 c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
@@ -31,7 +31,7 @@ for Bo in Bo_values:
     valid_indices = t_conv_full <= 100
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
-    Bo_dir = os.path.join(base_dir, f'Bo{Bo}_300')
+    Bo_dir = os.path.join(base_dir, f'Bo{Bo}_200')
     os.makedirs(Bo_dir, exist_ok=True)
     
     np.save(os.path.join(Bo_dir, 'time.npy'), t_conv)
@@ -55,7 +55,7 @@ ax2.set_ylabel('C')
 ax2.legend()
 
 plt.tight_layout()
-plt.savefig('dispersion_model_001_300.png', dpi=300)
+#plt.savefig('dispersion_model_001_300.png', dpi=300)
 plt.show()
 
 t_conv = np.load(os.path.join(Bo_dir, 'time.npy'))

@@ -61,7 +61,7 @@ ax2.set_ylim(0, 1.1)
 ax2.set_xlabel('t')
 ax2.set_ylabel('C')
 ax2.legend()
-
+plt.savefig("Figure_conv_Cholete_model")
 plt.tight_layout()
 plt.show()
 

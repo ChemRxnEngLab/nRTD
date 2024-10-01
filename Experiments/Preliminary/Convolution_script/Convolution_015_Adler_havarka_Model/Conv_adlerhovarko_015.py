@@ -12,14 +12,19 @@ import sympy as sp
 import wandb
 from nrtd import RTDModule
 
-tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_3_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1'
+if wandb.run is not None:
+    wandb.finish()
+module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+sys.path.append(module_path)
 
-t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1'
+
+t_conv_tau = torch.tensor(np.load(os.path.join(adler_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+c_out_tau = torch.tensor(np.load(os.path.join(adler_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
 
-n_disc = 277
-t_input = torch.linspace(0, 20, n_disc)
+n_disc = 88
+t_input = torch.linspace(0, 25, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
 c_in[::2, :, t_input > 1] = 1
 c_in[1::2, :, t_input < 1] = 1
@@ -46,14 +51,14 @@ print(f"c_out size: {c_out.size()}")
 print(f"t_conv size: {t_conv.size()}")
 
 model = RTDModule(
-    kernel_size=222,
+    kernel_size=111,
     learning_rate=10e-3,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(0, 25, model.kernel_size)
+t_E = torch.linspace(0, 20, model.kernel_size)
 E = E / E.max()
 j = 0  
 
@@ -71,7 +76,7 @@ for i in range(c_out.size(1)):
     plt.plot(
         t_conv[j, i, :].numpy(),
         c_out[j, i, :].numpy(),
-        label= "Tau 5.0",
+        label= "tau_a_val_3_tau_p_val_2",
         color="green")
 plt.plot(
     t_conv[j, 0, :].numpy(),
@@ -90,16 +95,23 @@ print(model(c_in).size())
 
 ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=20, shuffle=True)
+wandb_logger = pl_loggers.WandbLogger(
+    project="nRTD",
+    log_model=True
+)
+
+ds = TensorDataset(c_in, c_out)
+dl = DataLoader(ds, batch_size=20, shuffle=True)
 
 
 trainer = pl.Trainer(
-    accelerator="auto",
+    accelerator="gpu" if torch.cuda.is_available() else "cpu",
     max_epochs=10000,
-    deterministic=True
+    logger=wandb_logger,
+    deterministic=True,
 )
 trainer.fit(model, dl)
 trainer.test(model, dl)
-
 
 c_conv = model(c_in)
 E = model.net.E[0]
@@ -117,7 +129,7 @@ def compute_inverse_laplace(coefficients, t_values):
                 # Laplace transform equation
                 F_s = (sp.exp(-tau_p_val * s)) / (1 + beta_val + tau_a_val * s - (beta_val / (1 + tau_m_val * s)))
                 f_t = sp.inverse_laplace_transform(F_s, s, t)
-                f_t_numeric = sp.lambdify(t, f_t, modules="numpy")  # Convert to numerical function
+                f_t_numeric = sp.lambdify(t, f_t, modules="numpy")
                 E_t = f_t_numeric(t_values)
                 results.append({
                     'tau_a_val': tau_a_val,
@@ -129,7 +141,7 @@ def compute_inverse_laplace(coefficients, t_values):
     return results
 coefficients = {
     'tau_a_val': np.array([1]),
-    'tau_p_val': np.array([3]),
+    'tau_p_val': np.array([2]),
     'beta_val': np.array([0.1]),
     'alpha_val': 0.2
 }
@@ -139,27 +151,28 @@ E_expected = inverse_laplace_results[0]['E_t']
 
 
 plt.figure()
-plt.plot(t_input, c_in[0, 0, :].numpy(), label="SF", color="blue")
+plt.plot(t_input, c_in[0, 0, :].numpy(), label="c_in", color="blue")
 
 for i in range(c_out.size(1)):
     plt.plot(
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
-        label="Bo10",
+        label="tau_a_val_3_tau_p_val_2",
         color="green",
     )
 
 plt.plot(
     t_conv[0, 0, :].numpy(),
     c_conv[0, 0, :].detach().numpy(),
-    label="Predicted",
+    label="c_predicted",
     color="red",
 )
 plt.plot(t_E, E, label="E", color="orange")
-plt.plot(t_plot, E_expected, label="E_predicted", color="purple")
+plt.plot(t_plot, E_expected, label="E_predicted", color="purple", linestyle="--")
 plt.xlim((0, 50))
 plt.ylim((0, 1.1))
 plt.legend()
-
-plt.savefig("Figure_Adler_havarka_Model_tau_a_val_1_tau_p_val_3_")
+ax = plt.gca()  
+ax.set_xticks(np.arange(0, 10, 1))  
+#plt.savefig("Figure_Adler_havarka_Model_tau_a_val_3_tau_p_val_2_200disc")
 plt.show()
