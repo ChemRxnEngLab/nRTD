@@ -12,14 +12,14 @@ from lightning.pytorch import loggers as pl_loggers
 
 tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Unified_time_delay'
 
-t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time_J5_tau1_alpha0.2.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration_J5_tau1_alpha0.2.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time_J5_tau3_alpha0.2.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration_J5_tau3_alpha0.2.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
 n_disc = 111
 t_input = torch.linspace(0, 20, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
-c_in[::2, :, t_input > 1] = 1
-c_in[1::2, :, t_input < 1] = 1
+c_in[::2, :, t_input > 5] = 1
+c_in[1::2, :, t_input < 5] = 1
 
 c_out_list = []
 t_conv_list = []
@@ -83,6 +83,7 @@ E = model.net.E[0]
 t_E = torch.linspace(0, 25, model.kernel_size)
 E = E / E.max()
 
+
 plt.figure()
 plt.plot(t_input, c_in[0, 0, :].numpy(), label="SF", color="blue")
 
@@ -103,21 +104,24 @@ plt.plot(
 
 t_plot = torch.linspace(0, 40, 1000).numpy()
 
-E_expected =  (123.224 * np.exp(-5.24709 * t_plot) * t_plot**4
-       + 5.66367e-9 * np.exp(-0.952909 * t_plot) * t_plot**4
-       - 6.36342 * np.exp(-5.24709 * t_plot) * t_plot**3
-       + 8.68252e-6 * np.exp(-0.952909 * t_plot) * t_plot**3
-       - 4.34703 * np.exp(-5.24709 * t_plot) * t_plot**2
-       + 0.00108703 * np.exp(-0.952909 * t_plot) * t_plot**2
-       - 1.97921 * np.exp(-5.24709 * t_plot) * t_plot
-       + 0.0449 * np.exp(-0.952909 * t_plot) * t_plot
-       - 0.450448 * np.exp(-5.24709 * t_plot)
-       + 0.450448 * np.exp(-0.952909 * t_plot))
+E_expected=(0.507094 * np.exp(-1.74903 * t_plot) * t_plot**4
+               + 9.81543e-11 * np.exp(-0.317636 * t_plot) * t_plot**4
+               - 0.0785608 * np.exp(-1.74903 * t_plot) * t_plot**3
+               + 1.0707e-7 * np.exp(-0.317636 * t_plot) * t_plot**3
+               - 0.161001 * np.exp(-1.74903 * t_plot) * t_plot**2
+               + 4.02603e-5 * np.exp(-0.317636 * t_plot) * t_plot**2
+               - 0.219912 * np.exp(-1.74903 * t_plot) * t_plot
+               + 0.00498889 * np.exp(-0.317636 * t_plot) * t_plot
+               - 0.150149 * np.exp(-1.74903 * t_plot)
+               + 0.150149 * np.exp(-0.317636 * t_plot))
 
 E_expected[t_plot < 5] = 0
+
+E_expected =E_expected /E_expected.max()
+
 plt.plot(t_plot, E_expected, label="E_Expected", color="purple", linestyle='--')
 plt.plot(t_E, E, label="E_predicted", color="orange")
-plt.savefig("Figure_conv_unifiedtdelay_J5_tau1")
+#plt.savefig("Figure_conv_unifiedtdelay_J5_tau1")
 plt.xlim((0, 50))
 plt.ylim((0, 1.1))
 plt.legend()

@@ -11,10 +11,10 @@ import wandb
 from nrtd import RTDModule
 from lightning.pytorch import loggers as pl_loggers
 
-if wandb.run is not None:
-    wandb.finish()
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
-sys.path.append(module_path)
+# if wandb.run is not None:
+#     wandb.finish()
+# module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+# sys.path.append(module_path)
 
 tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_200_5.0'
 t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
@@ -91,21 +91,27 @@ plt.show()
 print(model(c_in).size())
 ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=20, shuffle=True)
-wandb_logger = pl_loggers.WandbLogger(
-    project="nRTD",
-    log_model=True
-)
+# wandb_logger = pl_loggers.WandbLogger(
+#     project="nRTD",
+#     log_model=True
+# )
 
 ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=20, shuffle=True)
 
 
+# trainer = pl.Trainer(
+#     accelerator="auto",
+#     max_epochs=10000,
+#     logger=wandb_logger,
+#     deterministic=True,
+# )
 trainer = pl.Trainer(
     accelerator="auto",
     max_epochs=10000,
-    logger=wandb_logger,
     deterministic=True,
 )
+
 trainer.fit(model, dl)
 trainer.test(model, dl)
 
@@ -120,6 +126,7 @@ t_E_np = t_E.numpy()
 def expected_formula(t):
     return np.where(t >= 2.5,(5**2) / (2 * (t**3)), 0)
 E_expected_np = expected_formula(t_E_np)
+E_expected_np =E_expected_np /E_expected_np.max()
 
 
 
@@ -140,11 +147,11 @@ plt.plot(
     label="Predicted",
     color="red",
 )
-plt.plot(t_E_np, E_expected_np, label="E (Expected )", color="purple", linestyle="--")
+plt.plot(t_E_np+2, E_expected_np, label="E (Expected )", color="purple", linestyle="--")
 plt.plot(t_E, E, label="E", color="orange")
 plt.xlim((0, 20))
 plt.ylim((0, 1.1))
 plt.legend()
 
-#plt.savefig("Figure_conv_laminar_002_dis200_expected")
+plt.savefig("Figure_conv_laminar_002_dis200_expected")
 plt.show()

@@ -166,7 +166,7 @@ plt.plot(
     label="c_predicted",
     color="red",
 )
-plt.plot(t_E, E, label="E", color="orange")
+plt.plot(t_E-1, E, label="E", color="orange")
 plt.plot(t_plot, E_expected, label="E_predicted", color="purple", linestyle="--")
 plt.xlim((0, 50))
 plt.ylim((0, 1.1))

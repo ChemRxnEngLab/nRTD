@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep 17 16:09:58 2024
-
-@author: tuanaoyuncu
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 import numpy.typing as npt
@@ -46,7 +38,7 @@ for beta in beta_values:
     Bo_dir = os.path.join(base_dir, f'beta{beta}')
     os.makedirs(Bo_dir, exist_ok=True)
     np.save(os.path.join(Bo_dir, 'time.npy'), t_conv)
-    np.save(os.path.join(Bo_dir, 'concentration.npy'), E)
+    np.save(os.path.join(Bo_dir, 'concentration.npy'), c_out)
     c_out_derivative = np.gradient(c_out, t_conv)
     ax1.plot(t, E, label=f'beta {beta}')
     ax2.plot(t, F, label=f'beta {beta}')
@@ -57,7 +49,7 @@ ax1.legend()
 
 ax2.set_xlim(0, 120)
 ax2.set_xlabel('t')
-ax2.set_ylabel("d(c)/dt")
+ax2.set_ylabel("C")
 ax2.legend()
 plt.savefig("Figure_conv_Cholete_model")
 plt.tight_layout()

@@ -11,10 +11,10 @@ import numpy as np
 import wandb
 from nrtd import RTDModule
 
-tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model/beta0.9'
+Bo_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model/beta0.9'
 
-t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+t_conv_tau = torch.tensor(np.load(os.path.join(Bo_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+c_out_tau = torch.tensor(np.load(os.path.join(Bo_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
 
 n_disc = 119
