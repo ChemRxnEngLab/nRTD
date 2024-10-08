@@ -56,7 +56,7 @@ model = RTDModule(
 )
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(5, 40, model.kernel_size)
+t_E = torch.linspace(5, 30, model.kernel_size)
 E = E / E.max()
 j = 0  
 
@@ -118,16 +118,16 @@ trainer.test(model, dl)
 
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(5, 30, model.kernel_size)
+t_E = torch.linspace(0, 30, model.kernel_size)
 E = E / E.max()
-t_E_np = t_E.numpy()
+t_E_np = np.linspace(0, 30,500)
 
 
 def expected_formula(t):
     return np.where(t >= 2.5,(5**2) / (2 * (t**3)), 0)
 E_expected_np = expected_formula(t_E_np)
 E_expected_np =E_expected_np /E_expected_np.max()
-
+print (f"integral E_expected_np: {np.trapz(E_expected_np, t_E_np)}")
 
 
 plt.figure()
@@ -147,11 +147,11 @@ plt.plot(
     label="Predicted",
     color="red",
 )
-plt.plot(t_E_np+2, E_expected_np, label="E (Expected )", color="purple", linestyle="--")
+plt.plot(t_E_np, E_expected_np, label="E (Expected )", color="purple", linestyle="--")
 plt.plot(t_E, E, label="E", color="orange")
 plt.xlim((0, 20))
 plt.ylim((0, 1.1))
 plt.legend()
 
-plt.savefig("Figure_conv_laminar_002_dis200_expected")
+plt.savefig("Figure_conv_laminar_002_dis200_expected_004_disc")
 plt.show()

@@ -61,6 +61,7 @@ for result in results:
     #np.save(os.path.join(unified_dir, 'concentration.npy'), c_out)
     ax1.plot(t_values, E_t, label=f'tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m={tau_m_val:.2f}, beta={beta_val}')
     ax2.plot(t_conv, c_out, label=f'tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m={tau_m_val:.2f}, beta={beta_val}')
+ax1.set_xticks(np.arange(0, 10, 1))
 ax1.set_xlabel('t')
 ax1.set_ylabel('E(t)')
 ax1.legend()
@@ -72,7 +73,7 @@ ax2.set_xlabel('t')
 ax2.set_ylabel('C')
 ax2.legend()
 plt.tight_layout()
-#plt.savefig('unified_time_delay_001.png', dpi=300)
+plt.savefig('unified_time_delay_001.png', dpi=300)
 plt.show()
 for result in results:
     tau_a_val = result['tau_a_val']

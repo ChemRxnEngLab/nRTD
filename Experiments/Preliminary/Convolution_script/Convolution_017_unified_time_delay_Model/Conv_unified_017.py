@@ -12,8 +12,8 @@ from lightning.pytorch import loggers as pl_loggers
 
 tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Unified_time_delay'
 
-t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time_J5_tau3_alpha0.2.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration_J5_tau3_alpha0.2.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time_J2_tau1_alpha0.2.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration_J2_tau1_alpha0.2.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
 n_disc = 111
 t_input = torch.linspace(0, 20, n_disc)
@@ -104,24 +104,15 @@ plt.plot(
 
 t_plot = torch.linspace(0, 40, 1000).numpy()
 
-E_expected=(0.507094 * np.exp(-1.74903 * t_plot) * t_plot**4
-               + 9.81543e-11 * np.exp(-0.317636 * t_plot) * t_plot**4
-               - 0.0785608 * np.exp(-1.74903 * t_plot) * t_plot**3
-               + 1.0707e-7 * np.exp(-0.317636 * t_plot) * t_plot**3
-               - 0.161001 * np.exp(-1.74903 * t_plot) * t_plot**2
-               + 4.02603e-5 * np.exp(-0.317636 * t_plot) * t_plot**2
-               - 0.219912 * np.exp(-1.74903 * t_plot) * t_plot
-               + 0.00498889 * np.exp(-0.317636 * t_plot) * t_plot
-               - 0.150149 * np.exp(-1.74903 * t_plot)
-               + 0.150149 * np.exp(-0.317636 * t_plot))
+E_expected=3.24642*np.exp(-2.34833*t_plot)*t_plot+0.0392897* np.exp(-0.851669 *t_plot) *t_plot - 0.477252 *np.exp(-2.34833* t_plot) + 0.477252* np.exp(-0.851669 *t_plot)
 
-E_expected[t_plot < 5] = 0
+#E_expected[t_plot < 5] = 0
 
 E_expected =E_expected /E_expected.max()
 
 plt.plot(t_plot, E_expected, label="E_Expected", color="purple", linestyle='--')
 plt.plot(t_E, E, label="E_predicted", color="orange")
-#plt.savefig("Figure_conv_unifiedtdelay_J5_tau1")
+#plt.savefig("Figure_conv_unifiedtdelay_J2_tau1")
 plt.xlim((0, 50))
 plt.ylim((0, 1.1))
 plt.legend()

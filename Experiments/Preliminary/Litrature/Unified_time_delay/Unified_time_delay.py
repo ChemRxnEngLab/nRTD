@@ -37,7 +37,7 @@ def laminarflow(t: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         + 0.00436552 * np.exp(-0.28389 * t) * t
         - 0.159084 * np.exp(-0.782777 * t)
         + 0.159084 * np.exp(-0.28389 * t)
-    )
+    ) 
     return E_t
 
 
