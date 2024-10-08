@@ -153,5 +153,5 @@ plt.xlim((0, 20))
 plt.ylim((0, 1.1))
 plt.legend()
 
-plt.savefig("Figure_conv_laminar_002_dis200_expected_004_disc")
+#plt.savefig("Figure_conv_laminar_002_dis200_expected_004_disc")
 plt.show()

@@ -17,7 +17,7 @@ from lightning.pytorch import loggers as pl_loggers
 # module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 # sys.path.append(module_path)
 
-tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo1_200_150s'
+tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo10_200_150s'
 t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
@@ -46,7 +46,7 @@ model = RTDModule(
 
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(5, 50, model.kernel_size)
+t_E = torch.linspace(0, 50, model.kernel_size)
 E = E / E.max()
 j = 0
 
@@ -108,12 +108,12 @@ c_conv = model(c_in)
 E = model.net.E[0]
 # t_E = torch.linspace(5, 50, model.kernel_size)  
 # E = E / torch.sum(E * (t_E[1] - t_E[0]))  
-t_E = torch.linspace(5, 50, model.kernel_size)
+t_E = torch.linspace(0, 50, model.kernel_size)
 E = E / E.max()
 t_E_np = np.linspace(0, 50,500)
 
 def expected_formula(t):
-    return np.where(t >= 2.5, 1/2*(np.sqrt(1/(np.pi*(t/5))))*np.exp(-(1*((1-(t/5))**2))/(4*(t/5))), 0)
+    return np.where(t >= 2.5, 1/2*(np.sqrt(10/(np.pi*(t/5))))*np.exp(-(10*((1-(t/5))**2))/(4*(t/5))), 0)
 E_expected_np = expected_formula(t_E_np)
 dt = t_E_np[1] - t_E_np[0]  
 E_expected_np /= np.sum(E_expected_np * dt)
@@ -137,10 +137,10 @@ plt.plot(
     label="Predicted",
     color="red",
 )
-plt.plot(t_E_np+2.5, E_expected_np, label="E (Expected )", color="purple", linestyle="--")
+plt.plot(t_E_np, E_expected_np, label="E (Expected )", color="purple", linestyle="--")
 plt.plot(t_E, E, label="E", color="orange")
 plt.xlim((0, 100))
 plt.ylim((0, 1.1))
 plt.legend()
-plt.savefig("Figure_conv_dispersion_Bo1_200disc_expected_epoch_10000_003")
+plt.savefig("Figure_conv_dispersion_Bo10_200disc_expected_epoch_10000_003")
 plt.show()
