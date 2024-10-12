@@ -41,6 +41,7 @@ for beta in beta_values:
     np.save(os.path.join(Bo_dir, 'concentration.npy'), c_out)
     c_out_derivative = np.gradient(c_out, t_conv)
     ax1.plot(t, E, label=f'beta {beta}')
+    ax1.plot(t, E_t_normalized, label=f'beta {beta}')
     ax2.plot(t, F, label=f'beta {beta}')
 
 ax1.set_xlabel('t')
