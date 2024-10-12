@@ -16,7 +16,7 @@ from nrtd import RTDModule
 # module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 # sys.path.append(module_path)
 
-adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1'
+adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_3_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1'
 
 t_conv_tau = torch.tensor(np.load(os.path.join(adler_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(adler_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
@@ -57,7 +57,7 @@ model = RTDModule(
 )
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(5, 20, model.kernel_size)
+t_E = torch.linspace(0, 20, model.kernel_size)
 E = E /E.max()
 j = 0  
 
@@ -99,10 +99,6 @@ dl = DataLoader(ds, batch_size=20, shuffle=True)
 #     log_model=True
 # )
 
-ds = TensorDataset(c_in, c_out)
-dl = DataLoader(ds, batch_size=20, shuffle=True)
-
-
 # trainer = pl.Trainer(
 #     accelerator="gpu" if torch.cuda.is_available() else "cpu",
 #     max_epochs=10000,
@@ -110,7 +106,7 @@ dl = DataLoader(ds, batch_size=20, shuffle=True)
 #     deterministic=True,
 # )
 trainer = pl.Trainer(
-    accelerator="gpu" if torch.cuda.is_available() else "cpu",
+    accelerator="auto",
     max_epochs=10000,
     deterministic=True,
 )
@@ -120,7 +116,7 @@ trainer.test(model, dl)
 
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(5, 25, model.kernel_size)
+t_E = torch.linspace(0, 25, model.kernel_size)
 E = E/E.max()
 
 def compute_inverse_laplace(coefficients, t_values):
@@ -145,39 +141,109 @@ def compute_inverse_laplace(coefficients, t_values):
                 })
     return results
 coefficients = {
-    'tau_a_val': np.array([1]),
+    'tau_a_val': np.array([3]),
     'tau_p_val': np.array([2]),
     'beta_val': np.array([0.1]),
     'alpha_val': 0.2
 }
-t_plot = torch.linspace(0, 25, 500).numpy()
+t_plot = np.linspace(0, 25,100)
 inverse_laplace_results = compute_inverse_laplace(coefficients, t_plot)
 E_expected = inverse_laplace_results[0]['E_t']
 E_expected =E_expected /E_expected.max()
 
+# plt.figure()
+# plt.plot(t_input, c_in[0, 0, :].numpy(), label="c_in", color="blue")
+
+# for i in range(c_out.size(1)):
+#     plt.plot(
+#         t_conv[0, i, :].numpy(),
+#         c_out[0, i, :].numpy(),
+#         label="tau_a_val_1_tau_p_val_2",
+#         color="green",
+#     )
+
+# plt.plot(
+#     t_conv[0, 0, :].numpy(),
+#     c_conv[0, 0, :].detach().numpy(),
+#     label="c_predicted",
+#     color="red",
+# )
+# plt.plot(t_E, E, label="E", color="orange")
+# plt.plot(t_plot, E_expected, label="E_predicted", color="purple", linestyle="--")
+# plt.xlim((0, 50))
+# plt.ylim((0, 1.1))
+# plt.legend()
+# ax = plt.gca()  
+# ax.set_xticks(np.arange(0, 10, 1))  
+# plt.savefig("Figure_Adler_havarka_Model_tau_a_val_1_tau_p_val_2_200disc_001")
+# plt.show()
 plt.figure()
-plt.plot(t_input, c_in[0, 0, :].numpy(), label="c_in", color="blue")
+plt.plot(t_input, c_in[0, 0, :].numpy(), label="SF", color="blue")
+
+fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(10, 8))
+fig.subplots_adjust(hspace=0)  
+ax1.plot(t_input, c_in[0, 0, :].numpy(), label="SF", color="blue")
 
 for i in range(c_out.size(1)):
-    plt.plot(
+    ax1.plot(
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
-        label="tau_a_val_1_tau_p_val_2",
+        label="tau_a_val_3_tau_p_val_2",
         color="green",
     )
 
-plt.plot(
+
+ax1.plot(
     t_conv[0, 0, :].numpy(),
     c_conv[0, 0, :].detach().numpy(),
-    label="c_predicted",
-    color="red",
+    label="Predicted",
+    color="red",linestyle="-."
 )
-plt.plot(t_E, E, label="E", color="orange")
-plt.plot(t_plot, E_expected, label="E_predicted", color="purple", linestyle="--")
-plt.xlim((0, 50))
-plt.ylim((0, 1.1))
-plt.legend()
-ax = plt.gca()  
-ax.set_xticks(np.arange(0, 10, 1))  
-plt.savefig("Figure_Adler_havarka_Model_tau_a_val_1_tau_p_val_2_200disc_001")
+ax1.set_xlim((0, 150))
+ax1.set_ylim((0, 1.1))
+ax1.set_ylabel('Concentration')
+ax1.legend()
+ax1.tick_params(labelbottom=False)
+ax2.plot(t_E, E, label="E", color="orange")
+ax2.set_xlabel('t')
+ax2.set_ylabel('E')
+ax2.plot(t_plot, E_expected, label="E (Expected )", color="purple", linestyle="--")
+ax2.set_xlim((0, 150))
+ax2.set_ylim((0, 1.1))
+ax2.legend()
+ax2.set_xticks(np.arange(0, 10, 1))  
+plt.xlabel("Time")
+save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Adler_havarka_Model"
+unified_dir = os.path.join(save_dir, f'tau_a_val_{3}_tau_p_val_2')
+os.makedirs(unified_dir, exist_ok=True)
+plt.savefig(os.path.join(unified_dir, 'Figure_Adler_havarka_Model_tau_a_val_3_tau_p_val_2.png'), dpi=300)
 plt.show()
+
+predicted_E = E
+predicted_time = t_E              
+expected_E = E_expected                 
+expected_time = t_plot
+save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Adler_havarka_Model"
+np.save(os.path.join(unified_dir, 'E_predicted_tau_a_val_3.npy'), predicted_E)
+np.save(os.path.join(unified_dir, 't_E_predicted_tau_a_val_3.npy'), predicted_time)
+np.save(os.path.join(unified_dir, 'E_expected_tau_a_val_3.npy'), expected_E)
+np.save(os.path.join(unified_dir, 't_E_expected_tau_a_val_3.npy'), expected_time)
+print("saved under:", unified_dir)
+print("E_predicted",predicted_E)
+print("E_expected",expected_E)
+predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Adler_havarka_Model/tau_a_val_3_tau_p_val_2/E_predicted_tau_a_val_3.npy')
+predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Adler_havarka_Model/tau_a_val_3_tau_p_val_2/t_E_predicted_tau_a_val_3.npy')
+plt.plot(predicted_time, predicted_E, label='E_predicted_tau_a_val_3', color='orange')
+plt.plot(expected_time, expected_E, label='E_expected_tau_a_val_3', color='purple', linestyle='--')
+plt.xlabel('t')
+plt.ylabel('E')
+plt.xlim((predicted_time.min(), predicted_time.max()))
+plt.ylim((0, 1.1))  
+plt.xlim(0,25)
+plt.legend()
+plt.xticks(np.arange(0, 10, 1))  
+plt.savefig(os.path.join(unified_dir, 'E_saved_10102024_tau_a_val_3.png'), dpi=300)
+plt.show()
+
+
+

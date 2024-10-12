@@ -14,7 +14,7 @@ def dispersion(t: npt.NDArray[np.float64], Bo: float, tau: float) -> npt.NDArray
     E = E / tau
     return E
 
-t = np.linspace(0, 100, 200, endpoint=True) #last position
+t = np.linspace(0, 150, 200, endpoint=True) #last position
 c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
@@ -28,10 +28,10 @@ for Bo in Bo_values:
     print(f"Bo: {Bo}, E= {np.trapz(E, t)}")
     c_out_full = np.convolve(c_0, E / np.sum(E), mode="full")
     t_conv_full = np.linspace(t[0] + t[0], t[-1] + t[-1], len(c_out_full))
-    valid_indices = t_conv_full <= 100
+    valid_indices = t_conv_full <= 150
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
-    Bo_dir = os.path.join(base_dir, f'Bo{Bo}_200_150s')
+    Bo_dir = os.path.join(base_dir, f'Bo{Bo}_200disc_150s')
     os.makedirs(Bo_dir, exist_ok=True)
     
     np.save(os.path.join(Bo_dir, 'time.npy'), t_conv)
