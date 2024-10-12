@@ -71,7 +71,7 @@ dl = DataLoader(ds, batch_size=20, shuffle=True)
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=10, deterministic=True
+    max_epochs=10000, deterministic=True
 )
 
 trainer.fit(model, dl)
@@ -80,7 +80,7 @@ trainer.test(model, dl)
 c_conv = model(c_in)
 E = model.net.E[0]
 t_E = torch.linspace(0, 60, model.kernel_size)
-# E = E / E.max()
+E = E / E.max()
 
 def Cholete(t: npt.NDArray[np.float64], alpha: float, beta: float, tau: float, g: float) -> npt.NDArray[np.float64]: 
     shifted_t = t
@@ -95,7 +95,7 @@ def Cholete(t: npt.NDArray[np.float64], alpha: float, beta: float, tau: float, g
     return F, E_expected
 
 alpha = 0.2
-beta = 0.9 
+beta = 0.9
 tau = 5
 g = 2.5
 t_values = torch.linspace(0, 60, 80).numpy()
@@ -160,7 +160,7 @@ print("E_predicted",predicted_E)
 print("E_expected",expected_E)
 predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Cholete_Model/Bo_0.9/E_predicted_Bo_9.npy')
 predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Cholete_Model/Bo_0.9/t_E_predicted_Bo_9.npy')
-plt.plot(predicted_time+6, predicted_E, label='E_predicted_tau_a_val_3', color='orange')
+plt.plot(predicted_time+4, predicted_E, label='E_predicted_tau_a_val_3', color='orange')
 plt.plot(expected_time, expected_E, label='E_expected_tau_a_val_3', color='purple', linestyle='--')
 plt.xlabel('t')
 plt.ylabel('E')
