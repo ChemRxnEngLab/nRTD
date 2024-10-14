@@ -129,3 +129,4 @@ dmypy.json
 wandb/
 **/lightning_logs
 **.ckpt
+.DS_Store
