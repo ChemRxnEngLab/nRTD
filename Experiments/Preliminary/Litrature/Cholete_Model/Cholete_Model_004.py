@@ -17,7 +17,7 @@ def Cholete(t: npt.NDArray[np.float64], alpha: float, beta: float, tau: float, g
     E = np.gradient(F,t)  
     return F,E
 
-t = np.linspace(0, 100, 200)
+t = np.linspace(0, 140, 200)
 c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
@@ -32,7 +32,7 @@ for beta in beta_values:
     print(f"beta: {beta}, Integral of E: {np.sum(E)}")
     c_out_full = np.convolve(c_0, E_t_normalized, mode="full")
     t_conv_full = np.linspace(t[0], t[-1] + t[-1], len(c_out_full))
-    valid_indices = t_conv_full <= 100
+    valid_indices = t_conv_full <= 140
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
     Bo_dir = os.path.join(base_dir, f'beta{beta}')

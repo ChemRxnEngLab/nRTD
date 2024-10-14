@@ -38,7 +38,7 @@ def laminarflow(t: np.ndarray, J: int, tau: int, alpha: float) -> np.ndarray:
     return E_t
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Unified_time_delay'
 
-t = np.linspace(0, 45, 200)
+t = np.linspace(0, 60, 200)
 c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
@@ -57,7 +57,7 @@ for result in results:
     E_t_normalized = E_t / np.sum(E_t)
     c_out_full = np.convolve(c_0, E_t_normalized, mode="full")
     t_conv_full = np.linspace(t[0] + t[0], t[-1] + t[-1], len(c_out_full))
-    valid_indices = t_conv_full <= 45
+    valid_indices = t_conv_full <= 60
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
     filename_time = f'time_J{J_val}_tau{tau_val}_alpha{alpha_val}.npy'
