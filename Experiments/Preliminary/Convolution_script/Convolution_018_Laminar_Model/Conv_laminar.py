@@ -11,16 +11,20 @@ import wandb
 from nrtd import RTDModule
 from lightning.pytorch import loggers as pl_loggers
 
-if wandb.run is not None:
-    wandb.finish()
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
-sys.path.append(module_path)
+# if wandb.run is not None:
+#     wandb.finish()
+# module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+# sys.path.append(module_path)
 
-tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_200_5.0'
+laminar_model_dir='/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_018_Laminar_Model/Laminar Flow'
+tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_50_5.0'
 t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
-n_disc = 100
+# t_in_conv = torch.tensor(np.load(os.path.join(laminar_model_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+# c_in_conv = torch.tensor(np.load(os.path.join(laminar_model_dir, 'c_conv_in.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+
+n_disc = 25
 t_input = torch.linspace(0, 30, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
 c_in[::2, :, t_input > 5] = 1
@@ -38,7 +42,7 @@ print(f"c_out size: {c_out.size()}")
 print(f"t_conv size: {t_conv.size()}")
 
 model = RTDModule(
-    kernel_size=99,
+    kernel_size=24,
     learning_rate=10e-4,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
@@ -74,15 +78,21 @@ plt.show()
 print(model(c_in).size())
 ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=20, shuffle=True)
-wandb_logger = pl_loggers.WandbLogger(
-    project="nRTD",
-    log_model=True
-)
+# wandb_logger = pl_loggers.WandbLogger(
+#     project="nRTD",
+#     log_model=True
+# )
+
+# trainer = pl.Trainer(
+#     accelerator="auto",
+#     max_epochs=1,
+#     logger=wandb_logger,
+#     deterministic=True,
+# )
 
 trainer = pl.Trainer(
     accelerator="auto",
     max_epochs=10000,
-    logger=wandb_logger,
     deterministic=True,
 )
 
@@ -137,11 +147,13 @@ predicted_E = E
 predicted_time = t_E.numpy()               
 expected_E = E_expected_np                   
 expected_time = t_E_np
+c_conv_in_50=c_conv.detach().numpy()
 save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_018_Laminar_Model"
 np.save(os.path.join(save_dir, 'E_predicted.npy'), predicted_E)
 np.save(os.path.join(save_dir, 't_E_predicted.npy'), predicted_time)
 np.save(os.path.join(save_dir, 'E_expected.npy'), expected_E)
 np.save(os.path.join(save_dir, 't_E_expected.npy'), expected_time)
+np.save(os.path.join(save_dir, 'c_conv_in_100.npy'),c_conv_in_50 )
 print("saved under:", save_dir)
 predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_018_Laminar_Model/E_predicted.npy')
 predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_018_Laminar_Model/t_E_predicted.npy')
@@ -154,3 +166,8 @@ plt.ylim((0, 1.1))
 plt.legend()
 plt.savefig('E_saved_09102024.png', dpi=300)
 plt.show()
+print("c_in_conv)",c_conv_in_50)
+print("expected_time",expected_time)
+print(f"c_conv_in size: {t_E.numpy().shape}")
+print(f"c_conv_in size: {t_E_np.shape}")
+print(f"c_conv_in_100 shape: {c_conv_in_50.shape}")
