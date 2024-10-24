@@ -12,7 +12,7 @@ import wandb
 from nrtd import RTDModule
 import numpy.typing as npt
 
-Bo_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model/beta0.9'
+Bo_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model/beta0.3'
 t_conv_tau = torch.tensor(np.load(os.path.join(Bo_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(Bo_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
@@ -95,7 +95,7 @@ def Cholete(t: npt.NDArray[np.float64], alpha: float, beta: float, tau: float, g
     return F, E_expected
 
 alpha = 0.2
-beta = 0.9
+beta = 0.35
 tau = 5
 g = 2.5
 t_values = torch.linspace(0, 70, 99).numpy()
@@ -126,16 +126,17 @@ ax1.plot(
     label="Predicted",
     color="red",linestyle="-."
 )
-ax1.set_xlim((0, 150))
+ax1.set_xlim((0, 8))
 ax1.set_ylim((0, 1.1))
 ax1.set_ylabel('Concentration')
+ax1.set_xticks(np.arange(0, 7, 1)) 
 ax1.legend()
 ax1.tick_params(labelbottom=False)
 ax2.plot(t_E, E, label="E", color="orange")
 ax2.set_xlabel('t')
 ax2.set_ylabel('E')
 ax2.plot(t_values, E_expected, label="E (Expected )", color="purple", linestyle="--")
-ax2.set_xlim((0, 150))
+ax2.set_xlim((0, 8))
 ax2.set_ylim((0, 1.1))
 ax2.legend()
 ax2.set_xticks(np.arange(0, 10, 1))  
@@ -160,8 +161,8 @@ print("E_predicted",predicted_E)
 print("E_expected",expected_E)
 predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Cholete_Model/Bo_0.9/E_predicted_Bo_9.npy')
 predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Cholete_Model/Bo_0.9/t_E_predicted_Bo_9.npy')
-plt.plot(predicted_time, predicted_E, label='E_predicted_Bo9', color='orange')
-plt.plot(expected_time, expected_E, label='E_expected_Bo9', color='purple', linestyle='--')
+plt.plot(predicted_time, predicted_E, label='E_predicted_Bo3', color='orange')
+plt.plot(expected_time, expected_E, label='E_expected_Bo3', color='purple', linestyle='--')
 plt.xlabel('t')
 plt.ylabel('E')
 plt.xlim((predicted_time.min(), predicted_time.max()))
@@ -169,8 +170,5 @@ plt.ylim((0,1.1 ))
 plt.xlim(0,25)
 plt.legend()
 plt.xticks(np.arange(0, 10, 1))  
-plt.savefig(os.path.join(unified_dir, 'E_saved_12102024_Bo_9.png'), dpi=300)
+plt.savefig(os.path.join(unified_dir, 'E_saved_12102024_Bo_3.png'), dpi=300)
 plt.show()
-
-
-

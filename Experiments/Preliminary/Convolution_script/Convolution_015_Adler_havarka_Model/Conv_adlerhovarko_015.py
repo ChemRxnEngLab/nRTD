@@ -16,7 +16,7 @@ from nrtd import RTDModule
 # module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 # sys.path.append(module_path)
 
-adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_3_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1'
+adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1'
 
 t_conv_tau = torch.tensor(np.load(os.path.join(adler_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(adler_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
@@ -141,8 +141,8 @@ def compute_inverse_laplace(coefficients, t_values):
                 })
     return results
 coefficients = {
-    'tau_a_val': np.array([3]),
-    'tau_p_val': np.array([2]),
+    'tau_a_val': np.array([1]),
+    'tau_p_val': np.array([2]), #####check!
     'beta_val': np.array([0.1]),
     'alpha_val': 0.2
 }
@@ -188,7 +188,7 @@ for i in range(c_out.size(1)):
     ax1.plot(
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
-        label="tau_a_val_3_tau_p_val_2",
+        label="tau_a_val_1_tau_p_val_2",
         color="green",
     )
 
@@ -216,7 +216,7 @@ plt.xlabel("Time")
 save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Adler_havarka_Model"
 unified_dir = os.path.join(save_dir, f'tau_a_val_{3}_tau_p_val_2')
 os.makedirs(unified_dir, exist_ok=True)
-plt.savefig(os.path.join(unified_dir, 'Figure_Adler_havarka_Model_tau_a_val_3_tau_p_val_2.png'), dpi=300)
+plt.savefig(os.path.join(unified_dir, 'Figure_Adler_havarka_Model_tau_a_val_1_tau_p_val_2.png'), dpi=300)
 plt.show()
 
 predicted_E = E
@@ -224,17 +224,17 @@ predicted_time = t_E
 expected_E = E_expected                 
 expected_time = t_plot
 save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Adler_havarka_Model"
-np.save(os.path.join(unified_dir, 'E_predicted_tau_a_val_3.npy'), predicted_E)
-np.save(os.path.join(unified_dir, 't_E_predicted_tau_a_val_3.npy'), predicted_time)
-np.save(os.path.join(unified_dir, 'E_expected_tau_a_val_3.npy'), expected_E)
-np.save(os.path.join(unified_dir, 't_E_expected_tau_a_val_3.npy'), expected_time)
+np.save(os.path.join(unified_dir, 'E_predicted_tau_a_val_1.npy'), predicted_E)
+np.save(os.path.join(unified_dir, 't_E_predicted_tau_a_val_1.npy'), predicted_time)
+np.save(os.path.join(unified_dir, 'E_expected_tau_a_val_1.npy'), expected_E)
+np.save(os.path.join(unified_dir, 't_E_expected_tau_a_val_1.npy'), expected_time)
 print("saved under:", unified_dir)
 print("E_predicted",predicted_E)
 print("E_expected",expected_E)
-predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Adler_havarka_Model/tau_a_val_3_tau_p_val_2/E_predicted_tau_a_val_3.npy')
-predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Adler_havarka_Model/tau_a_val_3_tau_p_val_2/t_E_predicted_tau_a_val_3.npy')
-plt.plot(predicted_time, predicted_E, label='E_predicted_tau_a_val_3', color='orange')
-plt.plot(expected_time, expected_E, label='E_expected_tau_a_val_3', color='purple', linestyle='--')
+predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Adler_havarka_Model/tau_a_val_1_tau_p_val_2/E_predicted_tau_a_val_1.npy')
+predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Adler_havarka_Model/tau_a_val_1_tau_p_val_2/t_E_predicted_tau_a_val_1.npy')
+plt.plot(predicted_time, predicted_E, label='E_predicted_tau_a_val_1', color='orange')
+plt.plot(expected_time, expected_E, label='E_expected_tau_a_val_1', color='purple', linestyle='--')
 plt.xlabel('t')
 plt.ylabel('E')
 plt.xlim((predicted_time.min(), predicted_time.max()))
@@ -242,7 +242,7 @@ plt.ylim((0, 1.1))
 plt.xlim(0,25)
 plt.legend()
 plt.xticks(np.arange(0, 10, 1))  
-plt.savefig(os.path.join(unified_dir, 'E_saved_10102024_tau_a_val_3.png'), dpi=300)
+plt.savefig(os.path.join(unified_dir, 'E_saved_21102024_tau_a_val_1.png'), dpi=300)
 plt.show()
 
 

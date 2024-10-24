@@ -139,7 +139,7 @@ ax2.set_xlim((0, 40))
 ax2.set_ylim((0, 1.1))
 ax2.legend()
 plt.xlabel("Time")
-plt.savefig('Figure_connected_plot_09102024.png', dpi=300)
+plt.savefig('Figure_connected_plot_21102024.png', dpi=300)
 plt.show()
 
 #Saving of E and time
