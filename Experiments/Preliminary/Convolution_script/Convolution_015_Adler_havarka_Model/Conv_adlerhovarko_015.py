@@ -16,13 +16,13 @@ from nrtd import RTDModule
 # module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 # sys.path.append(module_path)
 
-adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1'
+adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/Combined_tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1'
 
-t_conv_tau = torch.tensor(np.load(os.path.join(adler_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-c_out_tau = torch.tensor(np.load(os.path.join(adler_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+t_conv_tau = torch.tensor(np.load(os.path.join(adler_dir, 'time_334.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+c_out_tau = torch.tensor(np.load(os.path.join(adler_dir, 'concentration_334.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
 
-n_disc = 88
+n_disc = 200
 t_input = torch.linspace(0, 25, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
 c_in[::2, :, t_input > 5] = 1
@@ -50,7 +50,7 @@ print(f"c_out size: {c_out.size()}")
 print(f"t_conv size: {t_conv.size()}")
 
 model = RTDModule(
-    kernel_size=111,
+    kernel_size=133,
     learning_rate=10e-3,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
@@ -199,7 +199,7 @@ ax1.plot(
     label="Predicted",
     color="red",linestyle="-."
 )
-ax1.set_xlim((0, 150))
+ax1.set_xlim((0, 30))
 ax1.set_ylim((0, 1.1))
 ax1.set_ylabel('Concentration')
 ax1.legend()
@@ -207,8 +207,8 @@ ax1.tick_params(labelbottom=False)
 ax2.plot(t_E, E, label="E", color="orange")
 ax2.set_xlabel('t')
 ax2.set_ylabel('E')
-ax2.plot(t_plot, E_expected, label="E (Expected )", color="purple", linestyle="--")
-ax2.set_xlim((0, 150))
+ax2.plot(t_plot-0.9, E_expected, label="E (Expected )", color="purple", linestyle="--")
+ax2.set_xlim((0, 30))
 ax2.set_ylim((0, 1.1))
 ax2.legend()
 ax2.set_xticks(np.arange(0, 10, 1))  
@@ -233,8 +233,8 @@ print("E_predicted",predicted_E)
 print("E_expected",expected_E)
 predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Adler_havarka_Model/tau_a_val_1_tau_p_val_2/E_predicted_tau_a_val_1.npy')
 predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Adler_havarka_Model/tau_a_val_1_tau_p_val_2/t_E_predicted_tau_a_val_1.npy')
-plt.plot(predicted_time, predicted_E, label='E_predicted_tau_a_val_1', color='orange')
-plt.plot(expected_time, expected_E, label='E_expected_tau_a_val_1', color='purple', linestyle='--')
+plt.plot(t_E, E, label="E", color="orange")
+plt.plot(expected_time-1, expected_E, label='E_expected_tau_a_val_1', color='purple', linestyle='--')
 plt.xlabel('t')
 plt.ylabel('E')
 plt.xlim((predicted_time.min(), predicted_time.max()))

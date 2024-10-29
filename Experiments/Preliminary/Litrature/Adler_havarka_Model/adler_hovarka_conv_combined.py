@@ -37,7 +37,7 @@ coefficients = {
     'alpha_val': 0.2           
 }
 
-t_values = np.linspace(0, 50, 333, endpoint=True)
+t_values = np.linspace(0, 50, 334, endpoint=True)
 results = compute_inverse_laplace(coefficients, t_values)
 c_0 = np.zeros_like(t_values)
 c_0[t_values > 5] = 1
@@ -57,9 +57,9 @@ for result in results:
     c_out = c_out_full[valid_indices]
     unified_dir = os.path.join(base_dir, f'Combined_tau_a_val_{tau_a_val}_tau_p_val_{tau_p_val}_tau_m_val_{tau_m_val}_beta_val_{beta_val}')
     os.makedirs(unified_dir, exist_ok=True)
-    np.save(os.path.join(unified_dir, 'time.npy'), t_conv)
-    np.save(os.path.join(unified_dir, 'concentration.npy'), c_out)
-    ax1.plot(t_values, E_t_normalized, label=f'tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m={tau_m_val:.2f}, beta={beta_val}')
+    np.save(os.path.join(unified_dir, 'time_334.npy'), t_conv)
+    np.save(os.path.join(unified_dir, 'concentration_334.npy'), c_out)
+    ax1.plot(t_values, E_t, label=f'tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m={tau_m_val:.2f}, beta={beta_val}')
     ax2.plot(t_conv, c_out, label=f'tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m={tau_m_val:.2f}, beta={beta_val}')
 ax1.set_xlabel('t')
 ax1.set_ylabel('E(t)')
