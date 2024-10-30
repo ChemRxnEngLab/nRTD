@@ -14,7 +14,7 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-from nrtd import RTDModule
+from nRTD import RTDModule
 from lightning.pytorch import loggers as pl_loggers
 import sympy as sp
 import os
