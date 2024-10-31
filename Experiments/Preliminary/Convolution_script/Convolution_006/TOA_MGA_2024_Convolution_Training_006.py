@@ -7,7 +7,7 @@ from torch.utils.data import TensorDataset, DataLoader, random_split
 import lightning.pytorch as pl
 from lightning.pytorch import loggers as pl_loggers
 import matplotlib.pyplot as plt
-from nrtd import RTDModule
+from nRTD import RTDModule
 import numpy as np
 import wandb
 
