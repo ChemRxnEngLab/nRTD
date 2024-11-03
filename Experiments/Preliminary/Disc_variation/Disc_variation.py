@@ -129,7 +129,7 @@ for n_disc_o, kernel_size, n_disc in discretization_confg_second:
         log_model=True
     )
 
-    trainer = pl.Trainer(accelerator="auto", max_epochs=1, logger=wandb_logger,deterministic=True)
+    trainer = pl.Trainer(accelerator="auto", max_epochs=10000, logger=wandb_logger,deterministic=True)
     trainer.fit(model, dl)
     trainer.test(model, dl)
     wandb.finish()
@@ -175,10 +175,14 @@ for n_disc_o, kernel_size, n_disc in discretization_confg_second:
     plt.show()
    
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Disc_variation/CNN_1st'
+y = [1.17e-6, 9.1083e-7, 4.544e-6, 8.293e-6, 1.8712e-4]
+x = [100, 200, 300, 400, 500]
+# y = [1.17e-6, 9.1083e-7, 4.544e-6, 8.293e-6]
+# x = [100, 200, 300, 400]
 discs = [100, 200, 300, 400, 500]  
-num_plots = 6  
+num_plots = 5
 
-fig, axs = plt.subplots(3, 2, figsize=(15, 10))
+fig, axs = plt.subplots(3, 2, figsize=(12, 10))
 
 for i, disc in enumerate(discs[:num_plots], start=1):
     disc_dir = os.path.join(base_dir, f'Disc_{disc}')
@@ -191,79 +195,71 @@ for i, disc in enumerate(discs[:num_plots], start=1):
         t_predicted = np.load(t_predicted_path)
         E_expected = np.load(E_expected_path)
         E_predicted = np.load(E_predicted_path)
-    
-        if t_expected.shape != E_expected.shape:
-            print(f"Expected data shape mismatch for Disc {disc}: {t_expected.shape} vs {E_expected.shape}. Skipping...")
-            continue
-        if t_predicted.shape != E_predicted.shape:
-            print(f"Predicted data shape mismatch for Disc {disc}: {t_predicted.shape} vs {E_predicted.shape}. Skipping...")
-            continue
         row, col = divmod(i - 1, 2)
         
-        axs[row, col].plot(t_expected, E_expected, label=f'Expected (Disc {disc})', color='blue')
-        axs[row, col].plot(t_predicted, E_predicted, label=f'Predicted (Disc {disc})', color='purple', linestyle='--')
-        axs[row, col].set_title(f'Disc {disc}')
+        axs[row, col].plot(t_expected, E_expected, label=f'E_expected (Discritization = {disc})', color='blue')
+        axs[row, col].plot(t_predicted, E_predicted, label=f'E_predicted (Discritization = {disc})', color='purple', linestyle='--')
+        #axs[row, col].set_title(f'Disc {disc}')
         axs[row, col].set_xlabel('Time')
         axs[row, col].set_ylabel('E')
         axs[row, col].legend()
+        axs[row, col].set_xlim(0, 30)
     else:
-        print(f"One or more data files not found for Disc {disc} in {disc_dir}. Skipping...")
+        print("Skipping...")
 
+axs[2, 1].plot(x, y, color='green', marker='o')
+#axs[2, 1].set_title('')
+axs[2, 1].set_xlabel('Number of discritization')
+axs[2, 1].set_ylabel('Test/Loss')
+axs[2, 1].ticklabel_format(style='sci', axis='y', scilimits=(-8, -8))
+
+# Customize the x-axis to show ticks every 100
+axs[2, 1].set_xticks(range(100, 601, 100))
+
+# Final adjustments and saving
 plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+plt.tight_layout()
 plt.savefig(os.path.join(base_dir, "subplots_disc_variation.png"), dpi=300)
 plt.show()
 
+# base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Disc_variation/CNN_1st'
+# discs = [100, 200, 300, 400, 500]  
+# num_plots = 6  
 
+# fig, axs = plt.subplots(3, 2, figsize=(15, 10))
 
+# for i, disc in enumerate(discs[:num_plots], start=1):
+#     disc_dir = os.path.join(base_dir, f'Disc_{disc}')
+#     t_expected_path = os.path.join(disc_dir, f't_E_expected_first_layer_{disc}.npy')
+#     t_predicted_path = os.path.join(disc_dir, f't_E_predicted_first_layer_{disc}.npy')
+#     E_expected_path = os.path.join(disc_dir, f'E_expected_first_layer_{disc}.npy')
+#     E_predicted_path = os.path.join(disc_dir, f'E_predicted_first_layer_{disc}.npy')
+#     if all(os.path.exists(path) for path in [t_expected_path, t_predicted_path, E_expected_path, E_predicted_path]):
+#         t_expected = np.load(t_expected_path)
+#         t_predicted = np.load(t_predicted_path)
+#         E_expected = np.load(E_expected_path)
+#         E_predicted = np.load(E_predicted_path)
+    
+#         if t_expected.shape != E_expected.shape:
+#             print(f"Expected data shape mismatch for Disc {disc}: {t_expected.shape} vs {E_expected.shape}. Skipping...")
+#             continue
+#         if t_predicted.shape != E_predicted.shape:
+#             print(f"Predicted data shape mismatch for Disc {disc}: {t_predicted.shape} vs {E_predicted.shape}. Skipping...")
+#             continue
+#         row, col = divmod(i - 1, 2)
+        
+#         axs[row, col].plot(t_expected, E_expected, label=f'Expected (Disc {disc})', color='blue')
+#         axs[row, col].plot(t_predicted, E_predicted, label=f'Predicted (Disc {disc})', color='purple', linestyle='--')
+#         axs[row, col].set_title(f'Disc {disc}')
+#         axs[row, col].set_xlabel('Time')
+#         axs[row, col].set_ylabel('E')
+#         axs[row, col].legend()
+#     else:
+#         print(f"One or more data files not found for Disc {disc} in {disc_dir}. Skipping...")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+# plt.savefig(os.path.join(base_dir, "subplots_disc_variation.png"), dpi=300)
+# plt.show()
 
 
 # import matplotlib.pyplot as plt
