@@ -121,7 +121,7 @@ for n_disc_o, kernel_size, n_disc in discretization_confg_second:
     
     trainer = pl.Trainer(
         accelerator="auto",
-        max_epochs=10000,
+        max_epochs=1,
         deterministic=True,)
     
     trainer.fit(model, dl)
@@ -151,20 +151,34 @@ for n_disc_o, kernel_size, n_disc in discretization_confg_second:
         c_out_l = c_out_l_full[valid_indices]
     
         # Create a unique directory for each discretization level to avoid overwriting
-        disc_dir = os.path.join(base_CNN_dir, f'Disc_{disc}')
-        os.makedirs(disc_dir, exist_ok=True)
-        predicted_E_first = E
-        predicted_time_first = t_E.numpy()               
-        expected_E_first = E_laminar                   
-        expected_time_first = t_l
-    
-        # Save files in the specific disc directory
-        np.save(os.path.join(disc_dir, f'E_predicted_first_layer_{n_disc_o}.npy'), predicted_E_first)
-        np.save(os.path.join(disc_dir, f't_E_predicted_first_layer_{n_disc_o}.npy'), predicted_time_first)
-        np.save(os.path.join(disc_dir, f'E_expected_first_layer_{n_disc_o}.npy'), expected_E_first)
-        np.save(os.path.join(disc_dir, f't_E_expected_first_layer_{n_disc_o}.npy'), expected_time_first)
-        np.save(os.path.join(disc_dir, f'c_conv_in_first_layer_{n_disc_o}.npy'), c_conv_results)
-
+        discretization_Laminar = [100, 200, 300, 400, 500]
+        
+        for disc in discretization_Laminar:
+            disc_dir = os.path.join(base_CNN_dir, f'Disc_{disc}')
+            os.makedirs(disc_dir, exist_ok=True)
+        
+            # Simulated data for saving
+            predicted_E_first = E
+            predicted_time_first = t_E.numpy()
+            expected_E_first = E_laminar
+            expected_time_first = t_l
+        
+            # Save only the required files in the specific disc directory
+            np.save(os.path.join(disc_dir, f't_E_predicted_first_layer_{disc}.npy'), predicted_time_first)
+            np.save(os.path.join(disc_dir, f'E_expected_first_layer_{disc}.npy'), expected_E_first)
+            np.save(os.path.join(disc_dir, f'E_predicted_first_layer_{disc}.npy'), predicted_E_first)
+            np.save(os.path.join(disc_dir, f't_E_expected_first_layer_{disc}.npy'), expected_time_first)
+        
+            # Optional: Validate only designated files are present
+            allowed_files = {
+                f't_E_predicted_first_layer_{disc}.npy',
+                f'E_expected_first_layer_{disc}.npy',
+                f't_E_expected_first_layer_{disc}.npy',
+                f'E_predicted_first_layer_{disc}.npy'
+            }
+    for file in os.listdir(disc_dir):
+        if file not in allowed_files:
+            os.remove(os.path.join(disc_dir, file))
         # Plotting and saving the plot
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
         ax1.plot(t_l, E_laminar, label=f'Tau {tau_l}')
@@ -184,44 +198,94 @@ for n_disc_o, kernel_size, n_disc in discretization_confg_second:
         plt.savefig(os.path.join(disc_dir, f'Laminar_Flow_Model_{current_date}_Disc_{disc}.png'), dpi=300)
         plt.show()
         
-        print(f"Discretization: {disc}")
-        print(f"Shape of t_conv_l: {t_conv_l.shape}")
-        print(f"Shape of c_out_l: {c_out_l.shape}")
+        # print(f"Discretization: {disc}")
+        # print(f"Shape of t_conv_l: {t_conv_l.shape}")
+        # print(f"Shape of c_out_l: {c_out_l.shape}")
+
+
+# discs = [100, 200, 300, 400, 500]  
+# num_plots = 6
+# fig, axs = plt.subplots(3, 2, figsize=(15, 10))
+# tau_l = 5.0
+# num_plots = 6  # Number of subplots to display
+
+# for i, disc in enumerate(discs[:num_plots], start=1):
+#     # Set up directory and file paths for each disc value
+#     disc_dir = os.path.join(base_dir, f'Disc_{disc}')
+#     t_path = os.path.join(base_CNN_dir, f't_E_expected_first_layer_{discs}.npy')
+#     t_predicted_path = os.path.join(base_CNN_dir, f't_E_predicted_first_layer_{discs}.npy')
+#     E_path = os.path.join(base_CNN_dir, f'E_expected_first_layer_{discs}.npy')
+#     E_predicted_path = os.path.join(base_CNN_dir, f'E_predicted_first_layer_{disc}.npy')
+    
+#     # Check if files exist
+#     if os.path.exists(t_path) and os.path.exists(t_predicted_path) and os.path.exists(E_path) and os.path.exists(E_predicted_path):
+#         # Load data if files exist
+#         t_expected = np.load(t_path)
+#         t_predicted = np.load(t_predicted_path)
+#         E_data = np.load(E_path)
+#         E_predicted = np.load(E_predicted_path)
+
+#         # Determine subplot row and column based on index
+#         row, col = divmod(i - 1, 2)
+        
+#         # Plot time vs. concentration data
+#         axs[row, col].plot(t_expected, E_data, label=f'Disc {disc} Expected', color='blue')
+#         axs[row, col].plot(t_predicted, E_predicted, label=f'Disc {disc} Predicted', color='purple')
+#         axs[row, col].set_xlabel('Time')
+#         axs[row, col].set_ylabel('E')
+#         axs[row, col].legend()
+#     else:
+#         # Print message if files are missing
+#         print(f"Data files not found for Disc {disc} in {disc_dir}. Skipping...")
+
+# # Adjust layout and display the plot
+# plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+# plt.show()
 
 
 discs = [100, 200, 300, 400, 500]  
 num_plots = 6
 fig, axs = plt.subplots(3, 2, figsize=(15, 10))
 tau_l = 5.0
-num_plots = 6  # Number of subplots to display
 
+# Loop through each disc value
 for i, disc in enumerate(discs[:num_plots], start=1):
     # Set up directory and file paths for each disc value
     disc_dir = os.path.join(base_CNN_dir, f'Disc_{disc}')
-    t_path = os.path.join(disc_dir, f't_E_expected_first_layer_{discs}.npy')
-    t_predicted_path = os.path.join(disc_dir, f't_E_predicted_first_layer_{discs}.npy')
-    E_path = os.path.join(disc_dir, f'E_expected_first_layer_{discs}.npy')
-    E_predicted_path = os.path.join(disc_dir, f'E_predicted_first_layer_{n_disc_o}.npy')
+    t_path = os.path.join(disc_dir, f't_E_expected_first_layer_{disc}.npy')
+    t_predicted_path = os.path.join(disc_dir, f't_E_predicted_first_layer_{disc}.npy')
+    E_path = os.path.join(disc_dir, f'E_expected_first_layer_{disc}.npy')
+    E_predicted_path = os.path.join(disc_dir, f'E_predicted_first_layer_{disc}.npy')
+
+    print(f"Checking files for Disc {disc}:")
+    print(f"  t_path exists: {os.path.exists(t_path)}")
+    print(f"  t_predicted_path exists: {os.path.exists(t_predicted_path)}")
+    print(f"  E_path exists: {os.path.exists(E_path)}")
+    print(f"  E_predicted_path exists: {os.path.exists(E_predicted_path)}")
     
-    # Check if files exist
-    if os.path.exists(t_path) and os.path.exists(t_predicted_path) and os.path.exists(E_path) and os.path.exists(E_predicted_path):
-        # Load data if files exist
+    # Load and plot data if files exist
+    if all(os.path.exists(p) for p in [t_path, t_predicted_path, E_path, E_predicted_path]):
+        # Load data
         t_expected = np.load(t_path)
         t_predicted = np.load(t_predicted_path)
         E_data = np.load(E_path)
         E_predicted = np.load(E_predicted_path)
+        
+        # Check for matching dimensions
+        if t_expected.shape[0] != E_data.shape[0]:
+            print(f"Skipping Disc {disc} due to mismatched lengths.")
+            continue
 
         # Determine subplot row and column based on index
         row, col = divmod(i - 1, 2)
         
         # Plot time vs. concentration data
-        axs[row, col].plot(t_expected, E_data, label=f'Disc {disc} Expected', color='blue')
-        axs[row, col].plot(t_predicted, E_predicted, label=f'Disc {disc} Predicted', color='purple')
+        axs[row, col].plot(t_expected, E_data, label=f'Disc {disc} (Expected)', color='blue')
+        axs[row, col].plot(t_predicted, E_predicted, label=f'Disc {disc} (Predicted)', color='purple')
         axs[row, col].set_xlabel('Time')
         axs[row, col].set_ylabel('E')
         axs[row, col].legend()
     else:
-        # Print message if files are missing
         print(f"Data files not found for Disc {disc} in {disc_dir}. Skipping...")
 
 # Adjust layout and display the plot
