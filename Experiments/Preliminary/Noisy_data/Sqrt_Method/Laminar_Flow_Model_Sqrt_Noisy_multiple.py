@@ -23,8 +23,8 @@ import wandb
 n_disc = 100
 t_input = torch.linspace(0, 30, n_disc)
 c_in = torch.zeros((20, 1, n_disc))
-c_in[::2, :, t_input > 5] = 1
-c_in[1::2, :, t_input < 5] = 1
+c_in[:, :, t_input > 5] = 1
+#c_in[1::2, :, t_input < 5] = 1
 file_numbers = range(1, 21)
 c_out_list = []
 t_conv_list = []
@@ -91,12 +91,6 @@ plt.show()
 print(model(c_in).size())
 
 ds = TensorDataset(c_in, c_out)
-# split the dataset into train and test
-# train_ds, test_ds = random_split(ds, [0.8, 0.2])
-
-# train_dl = DataLoader(train_ds, batch_size=1)
-# test_dl = DataLoader(test_ds, batch_size=1, shuffle=True)
-
 dl = DataLoader(ds, batch_size=20, shuffle=True)
 
 # set up the logger
@@ -110,10 +104,7 @@ trainer = pl.Trainer(
     logger=wandb_logger, deterministic=True
 )
 
-# trainer.fit(model, train_dl)
 trainer.fit(model, dl)
-# adds an epoch at the end to calculate the final loss at the traineing end
-# trainer.test(model, test_dl)
 trainer.test(model, dl)  ### check it maybe you will see changes??
 
 ##################

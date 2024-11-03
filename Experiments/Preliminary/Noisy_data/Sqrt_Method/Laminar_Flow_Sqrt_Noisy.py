@@ -84,20 +84,19 @@ c_conv_results = {}
 
 for n_disc_o, kernel_size, n_disc in discretization_confg:
     if n_disc_o == 200:
-        data_time = np.load(os.path.join(tau_l_dir, f'Tau_{tau_l}_Disc_200_time.npy'))
-        data_concentration = np.load(os.path.join(tau_l_dir, f'Tau_{tau_l}_Disc_200_concentration_noisy.npy'))
+        data_time = np.load(os.path.join(tau_l_dir, f'Tau_{tau_l}_Disc_200_time_Dataset_1.npy'))
+        data_concentration = np.load(os.path.join(tau_l_dir, f'Tau_{tau_l}_Disc_200_concentration_noisy_Dataset_1.npy'))
     else:
         raise ValueError(f"Disc do not match: n_disc_o: {n_disc_o}, kernel_size: {kernel_size}, n_disc: {n_disc}")
- # data_time = np.load(os.path.join(tau_l_dir, f'Tau_{tau_l}_Laminar_Flow_Model_Disc_{n_disc_o}_time.npy'))
- # data_concentration = np.load(os.path.join(tau_l_dir, f'Tau_{tau_l}_Laminar_Flow_Model_Disc_{n_disc_o}_concentration.npy'))
- 
+
     t_conv_tau = torch.tensor(data_time[:n_disc_o], dtype=torch.float32).unsqueeze(0).unsqueeze(0)
     c_out_tau = torch.tensor(data_concentration[:n_disc_o], dtype=torch.float32).unsqueeze(0).unsqueeze(0)
     #print(discretization_number_1st_Layer,"discretization_number_1st_Layer")
 
     t_input = torch.linspace(0, 30, n_disc)
     c_in = torch.zeros((1, 1, n_disc))
-    c_in[:, :, t_input > 5] = 1
+    c_in[::2, :, t_input > 5] = 1
+    c_in[1::2, :, t_input < 5] = 1
     c_out_list = [c_out_tau]
     t_conv_list = [t_conv_tau]
     c_out = torch.cat(c_out_list, dim=0)
@@ -149,7 +148,7 @@ for n_disc_o, kernel_size, n_disc in discretization_confg:
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(10, 8))
     fig.subplots_adjust(hspace=0)
     ax1.plot(t_input, c_in[0, 0, :].numpy(), label="Input Signal", color="blue")
-    ax1.plot(t_conv_tau[0, 0, :].numpy(), c_out_tau[0, 0, :].numpy(), label="Expected Output", color="green")
+    ax1.plot(t_l, c_out_l_noisy, label="Expected Output", color="green")
     ax1.plot(t_conv_tau[0, 0, :].numpy(), c_conv[0, 0, :].detach().numpy(), label="Predicted Output", color="red", linestyle="--")
     ax1.set_xlim((0, 30))
     ax1.set_ylim((0, 1.1))
