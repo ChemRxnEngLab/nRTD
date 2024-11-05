@@ -247,7 +247,7 @@ for disc in discretization_adler:
     plt.savefig(os.path.join(adler_dir, f'Adler_Model_Disc_{disc}.png'), dpi=300)
     plt.show()
     print(f"Shape of c_out_Adler for discretization {disc}: {c_out_Adler.shape}")
-    
+  
 ## CNN, 2nd layer
 
 adler_CNN_dir = os.path.join(base_dir, f'CNN_2nd')

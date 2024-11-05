@@ -92,4 +92,7 @@ if len(non_zero_indices) > 0:
     first_non_zero_concentration = c_out[first_non_zero_index]
     print(f"first non-zero concentration at time {first_non_zero_time:.4f} = {first_non_zero_concentration:.4f}")
 
-
+print(f"Shape of t_conv_Adler: {t_conv.shape}")
+print(f"Shape of c_out_Adler: {c_out.shape}")
+print(f"Shape of t_values_Adler: {t_values_Adler.shape}")
+print(f"Shape of E_Adler_normalized: {E_Adler_normalized.shape}")
