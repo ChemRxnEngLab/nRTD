@@ -22,10 +22,10 @@ import wandb
 
 n_disc = 100
 t_input = torch.linspace(0, 30, n_disc)
-c_in = torch.zeros((20, 1, n_disc))
+c_in = torch.zeros((10, 1, n_disc))
 c_in[:, :, t_input > 5] = 1
 #c_in[1::2, :, t_input < 5] = 1
-file_numbers = range(1, 21)
+file_numbers = range(1, 11)
 c_out_list = []
 t_conv_list = []
 # file_numbers = range(1, 21, 2)
@@ -94,14 +94,19 @@ ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=20, shuffle=True)
 
 # set up the logger
-wandb_logger = pl_loggers.WandbLogger(
-    project="nRTD",
-    log_model=True)
+# wandb_logger = pl_loggers.WandbLogger(
+#     project="nRTD",
+#     log_model=True)
 
+# trainer = pl.Trainer(
+#     accelerator="auto",
+#     max_epochs=10000,
+#     logger=wandb_logger, deterministic=True
+# )
 trainer = pl.Trainer(
     accelerator="auto",
     max_epochs=10000,
-    logger=wandb_logger, deterministic=True
+     deterministic=True
 )
 
 trainer.fit(model, dl)
@@ -146,7 +151,7 @@ plt.legend()
 
 #wandb.finish()
 
-#plt.savefig("Figure_C_002_H_135_C2")
+plt.savefig("10_file_Noisy")
 plt.show()
 
 

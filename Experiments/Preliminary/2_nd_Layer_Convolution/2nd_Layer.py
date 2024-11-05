@@ -9,7 +9,7 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-from nrtd import RTDModule
+from nRTD import RTDModule
 from lightning.pytorch import loggers as pl_loggers
 import sympy as sp
 import os
@@ -120,7 +120,7 @@ for n_disc_o, kernel_size, n_disc in discretization_confg:
     ds = TensorDataset(c_in, c_out_tau)
     dl = DataLoader(ds, batch_size=20, shuffle=True)
 
-    trainer = pl.Trainer(accelerator="auto", max_epochs=10000, deterministic=True)
+    trainer = pl.Trainer(accelerator="auto", max_epochs=1, deterministic=True)
     trainer.fit(model, dl)
     trainer.test(model, dl)
     c_conv = model(c_in)

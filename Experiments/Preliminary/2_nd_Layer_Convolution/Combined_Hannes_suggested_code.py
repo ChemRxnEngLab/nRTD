@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Nov  4 01:23:20 2024
-
-@author: tuanaoyuncu
-"""
-
 import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
@@ -28,12 +20,13 @@ n_1_in=100
 n_1_E=99
 n_1_out=200
 n_2_in=n_1_out
-n_2_E=132
+n_2_E=133
 n_2_out=334
 t_lam=60
 t_adl=50
 t_1=30
 t_e=30
+t_e_2=25
 
 #Parameters
 tau_l = 5.0
@@ -163,32 +156,29 @@ c_1_in = torch.zeros((1, 1, n_1_in)).float()
 indices = (t_1_in > 5).squeeze()
 c_1_in[:, :, indices] = 1
 
-# Convert c_out and t_conv to float32
 
-print("c_1_in shape:", c_1_in.shape)  # Should be [1, 1, 100]
-print("t_1_in shape:", t_1_in.shape)  # Should also be [1, 1, 100]
 
-# c_out_list = [torch.tensor(c_out_l)]  # Ensure c_out_l is a tensor
+print("c_1_in shape:", c_1_in.shape)  
+print("t_1_in shape:", t_1_in.shape) 
+
+# c_out_list = [torch.tensor(c_out_l)]  
 
 # # Concatenate tensors in c_out_list along the specified dimension
 # t_conv_list = [torch.tensor(t_conv_l)]
 # c_out = torch.cat(c_out_list, dim=0)
 # t_conv = torch.cat(t_conv_list, dim=0)
 
-c_out_l = torch.tensor(c_out_l).unsqueeze(0).unsqueeze(0)  # Shape [1, 1, 200]
-t_conv_l = torch.tensor(t_conv_l).unsqueeze(0).unsqueeze(0)  # Shape [1, 1, 200]
+c_out_l = torch.tensor(c_out_l).unsqueeze(0).unsqueeze(0)  
+t_conv_l = torch.tensor(t_conv_l).unsqueeze(0).unsqueeze(0) 
 c_out = torch.cat([torch.tensor(c_out_l)], dim=0).float()
 t_conv = torch.cat([torch.tensor(t_conv_l)], dim=0).float()
-# Combine into list if needed
 c_out_list = [c_out_l]
 t_conv_list = [t_conv_l]
-
-# Concatenate along the last dimension
 c_out = torch.cat(c_out_list, dim=-1)
 t_conv = torch.cat(t_conv_list, dim=-1)
 
-print("c_out shape:", c_out.shape)  # Should be [1, 1, 100]
-print("t_conv shape:", t_conv.shape)  # Should also be [1, 1, 100]
+print("c_out shape:", c_out.shape)  
+print("t_conv shape:", t_conv.shape)  
 model = RTDModule(
         kernel_size=n_1_E,
         learning_rate=1e-3,
@@ -202,51 +192,34 @@ t_E = torch.linspace(0, t_e, model.kernel_size)
 E /= E.max()
 print(model(c_1_in).size())
 
-# Convert data in TensorDataset to float32
+
 ds = TensorDataset(c_1_in.float(), c_out_l.float())
+print("c_1_in.float()",c_1_in.float().shape)
+print("c_out_l.float()",c_out_l.float().shape)
 
 dl = DataLoader(ds, batch_size=20, shuffle=True)
-trainer = pl.Trainer(accelerator="auto", max_epochs=10000, deterministic=True)
+trainer = pl.Trainer(accelerator="auto", max_epochs=1, deterministic=True)
 trainer.fit(model, dl)
 trainer.test(model, dl)
 c_conv = model(c_1_in)
 c_conv_results[n_1_out] = c_conv.detach().numpy()
+print("c_conv_results",c_conv.detach().numpy().shape)
 E = model.net.E[0]
 t_E = torch.linspace(0, t_e, model.kernel_size)
 E = E / E.max()
 
-# fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(10, 8))
-# fig.subplots_adjust(hspace=0)
-# ax1.plot(t_1_in, c_1_in[0, 0, :].numpy(), label="Input Signal", color="blue")
-# ax1.plot(t_conv[0, 0, :].numpy(), c_out_l[0, 0, :].numpy(), label="Expected Output", color="green")
-# ax1.plot(t_conv[0, 0, :].numpy(), c_conv[0, 0, :].detach().numpy(), label="Predicted Output", color="red", linestyle="--")
-# ax1.set_xlim((0, 30))
-# ax1.set_ylim((0, 1.1))
-# ax1.set_ylabel('Concentration')
-# ax1.legend()
-
-# ax2.plot(t_E, E, label="Predicted E", color="orange")
-# ax2.plot(t_l, E_laminar, label="Expected E", color="purple", linestyle="--")
-# ax2.set_xlabel('Time')
-# ax2.set_ylabel('E')
-# ax2.legend()
-
-# #plt.savefig(os.path.join(first_layer_CNN_dir, f'Profile_{current_date}_1st_Convolution_Layer_{n_disc_o}.png'), dpi=300)
-# plt.show()
-
-
-
 fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(10, 8))
 fig.subplots_adjust(hspace=0)
 
-# Adjust shapes for compatibility
+
 t_1_in_reshaped = t_1_in.squeeze().numpy()
 c_1_in_reshaped = c_1_in[0, 0, :].squeeze().numpy()
 t_conv_reshaped = t_conv[0, 0, :].squeeze().numpy()
 c_out_l_reshaped = c_out_l[0, 0, :].squeeze().numpy()
 c_conv_reshaped = c_conv[0, 0, :].detach().squeeze().numpy()
+print("c_conv",c_conv.shape)
 
-# Plot the first graph
+
 ax1.plot(t_1_in_reshaped, c_1_in_reshaped, label="Input Signal", color="blue")
 ax1.plot(t_conv_reshaped, c_out_l_reshaped, label="Expected Output", color="green")
 ax1.plot(t_conv_reshaped, c_conv_reshaped, label="Predicted Output", color="red", linestyle="--")
@@ -256,6 +229,55 @@ ax1.set_ylabel('Concentration')
 ax1.legend()
 
 
+c_conv_2_results = {}
+model_2 = RTDModule(
+        kernel_size=n_2_E,
+        learning_rate=1e-3,
+        use_scheduler=True,
+        scheduler_kwargs={"factor": 0.5, "patience": 80},
+    )
+c_conv_2 = model(c_conv)
+E = model.net.E[0]
+t_E = torch.linspace(0, t_e_2, model.kernel_size)
+E /= E.max()
+
+c_out_Adler_tensor = torch.tensor(c_out_Adler).float().unsqueeze(0).unsqueeze(0)
+ds = TensorDataset(c_conv.float(), c_out_Adler_tensor)
+print("c_conv.float()",c_conv.shape)
+print("c_out_Adler_tensor",c_out_Adler_tensor.shape)
+dl = DataLoader(ds, batch_size=1, shuffle=True)
+
+print("c_2_in shape:", c_conv.shape)  
+print("t_2_in shape:", t_conv.shape) 
+print("c_2_out shape:", c_out_Adler_tensor.shape) 
+
+trainer = pl.Trainer(accelerator="auto", max_epochs=10000, deterministic=True)
+trainer.fit(model, dl)
+trainer.test(model, dl)
+c_conv_2 = model(c_conv)
+c_conv_results[n_2_out] = c_conv_2.detach().numpy()
+E = model.net.E[0]
+t_E = torch.linspace(0, t_e_2, model.kernel_size)
+E = E / E.max()
+
+fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(10, 8))
+fig.subplots_adjust(hspace=0)
+
+
+# t_1_in_reshaped = t_1_in.squeeze().numpy()
+# c_1_in_reshaped = c_1_in[0, 0, :].squeeze().numpy()
+# t_conv_reshaped = t_conv[0, 0, :].squeeze().numpy()
+# c_out_l_reshaped = c_out_l[0, 0, :].squeeze().numpy()
+# c_conv_reshaped = c_conv[0, 0, :].detach().squeeze().numpy()
+
+
+ax1.plot(t_conv, c_conv, label="Input Signal", color="blue")
+ax1.plot(t_conv_Adler, c_out_Adler, label="Expected Output", color="green")
+ax1.plot(t_conv_Adler, c_conv_2, label="Predicted Output", color="red", linestyle="--")
+ax1.set_xlim((0, 30))
+ax1.set_ylim((0, 1.1))
+ax1.set_ylabel('Concentration')
+ax1.legend()
 
 # model_1= RTDModule(
 #     kernel_size=n_0_E,
