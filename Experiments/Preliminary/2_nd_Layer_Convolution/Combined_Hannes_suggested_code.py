@@ -17,30 +17,18 @@ import datetime
 
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
 
-n_1_in=100
-n_1_E=99
-n_1_out=200
+n_1_in=67
+n_1_E=90
+n_1_out=158
 n_2_in=n_1_out
-n_2_E=133
-n_2_out=334
-t_lam=60
-t_adl=50
+n_2_E=113
+n_2_out=272
+t_lam=70
+t_adl=120
 t_1=30
-t_e=30
-t_e_2=25
-
-
-# n_1_in=40
-# n_1_E=122
-# n_1_out=163
-# n_2_in=n_1_out
-# n_2_E=122
-# n_2_out=287
-# t_lam=40
-# t_adl=70
-# t_1=10
-# t_e=30
-# t_e_2=30
+t_e=40
+t_e_2=50
+epoch=10000
 
 #Parameters
 tau_l = 5.0
@@ -110,7 +98,8 @@ for result in results:
             E_Adler = E_Adler[:len(t_values_Adler)]
         else:
             E_Adler = np.pad(E_Adler, (0, len(t_values_Adler) - len(E_Adler)), 'constant')
-
+            ####/max?
+        E_Adler=E_Adler/E_Adler.max()
     E_Adler_normalized=E_Adler/np.sum(E_Adler)
     print(f"Shape of t_values_Adler: {t_values_Adler.shape}")
     # print(f"Shape of E_Adler_normalized: {E_Adler_normalized.shape}")
@@ -212,7 +201,7 @@ print("c_1_in.float()",c_1_in.float().shape)
 print("c_out_l.float()",c_out_l.float().shape)
 
 dl = DataLoader(ds, batch_size=20, shuffle=True)
-trainer = pl.Trainer(accelerator="auto", max_epochs=10000, deterministic=True)
+trainer = pl.Trainer(accelerator="auto", max_epochs=epoch, deterministic=True)
 trainer.fit(model, dl)
 trainer.test(model, dl)
 c_conv = model(c_1_in)
@@ -238,7 +227,6 @@ ax1.set_ylabel('Concentration')
 ax1.legend()
 plt.show()
 ##Second
-# Initialize an empty dictionary to store results
 c_conv_2_results = {}
 # Create model for the second layer of convolution
 model_2 = RTDModule(
@@ -252,7 +240,7 @@ ds_2 = TensorDataset(c_conv.detach().float(), c_out_Adler_tensor.detach())
 dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=10000,
+    max_epochs=epoch,
     deterministic=True,
 )
 
@@ -282,10 +270,57 @@ fig, ax1 = plt.subplots(figsize=(10, 6))
 ax1.plot(t_conv_values, c_out_values, label="Expected Output", color="green")
 c_conv_2_values = c_conv_2.detach().numpy().squeeze() if isinstance(c_conv_2, torch.Tensor) else c_conv_2
 ax1.plot(t_conv_values, c_conv_2_values, label="Predicted Output", color="red", linestyle="--")
+ax1.plot(t_E, E, label="Predicted Output", color="red", linestyle="--")
 ax1.set_xlim((0, 50))
 ax1.set_ylim((0, 1.1))
 ax1.set_ylabel('Concentration')
 ax1.set_xlabel('Time')
-plt.savefig("Lminar_Adler_combined_08112024.png", format="png", dpi=300)  # format ve dpi ekleyebilirsiniz
+plt.savefig("Laminar_Adler_combined_08112024.png", format="png", dpi=300)  # format ve dpi ekleyebilirsiniz
 ax1.legend()
+plt.show()
+
+fig, ax1 = plt.subplots(figsize=(10, 6))
+ax1.plot(t_1_in_reshaped, c_1_in_reshaped, label="Input Signal", color="blue")
+ax1.plot(t_conv_reshaped, c_conv_reshaped, label="Predicted Output_Laminar", color="red", linestyle="--")
+ax1.plot(t_conv_values, c_conv_2_values, label="Predicted Output_Adler", color="orange", linestyle="--")
+ax1.set_xlim((0, 50))
+ax1.set_ylim((0, 1.1))
+ax1.set_ylabel('Concentration')
+ax1.set_xlabel('Time')
+ax1.legend()
+plt.show()
+
+E_laminar_normalized = E_laminar / np.max(E_laminar)
+E_laminar_a_normalized = E_laminar_a / np.max(E_laminar_a)
+E_Adler_normalized = E_Adler / np.max(E_Adler)
+
+E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
+E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
+
+
+# Normalize learned E functions
+E_learned_1 /= np.max(E_learned_1)
+E_learned_2 /= np.max(E_learned_2)
+
+# Time arrays for each E function
+t_l = np.linspace(0, t_lam, len(E_laminar_normalized))
+t_l_a = np.linspace(0, t_adl, len(E_laminar_a_normalized))
+t_adler = t_values_Adler if isinstance(t_values_Adler, np.ndarray) else t_values_Adler.numpy()
+t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
+t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
+
+# Plot all E functions
+plt.figure(figsize=(10, 6))
+# plt.plot(t_l, E_laminar_normalized, label="E Laminar Layer 1", color="blue")
+# plt.plot(t_l_a, E_laminar_a_normalized, label="E Laminar Layer 2", color="green")
+plt.plot(t_adler, E_Adler_normalized, label="E Adler", color="orange")
+# plt.plot(t_learned_1, E_learned_1, label="Learned E Layer 1", linestyle="--", color="red")
+plt.plot(t_E, E, label="Predicted Output", color="red", linestyle="--")
+
+# Set plot labels and legend
+plt.xlabel("Time")
+plt.ylabel("E(t) (Normalized)")
+plt.xlim((0, 20))
+plt.ylim((0, 1.1))
+plt.legend()
 plt.show()

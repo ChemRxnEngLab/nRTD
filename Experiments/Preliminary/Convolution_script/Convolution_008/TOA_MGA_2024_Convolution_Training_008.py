@@ -7,7 +7,7 @@ from torch.utils.data import TensorDataset, DataLoader, random_split
 import lightning.pytorch as pl
 from lightning.pytorch import loggers as pl_loggers
 import matplotlib.pyplot as plt
-from nrtd import RTDModule
+from nRTD import RTDModule
 import numpy as np
 import wandb
 
@@ -99,7 +99,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=10000,
+    max_epochs=1,
     logger=wandb_logger, deterministic=True
 )
 
@@ -147,5 +147,5 @@ plt.legend()
 
 #wandb.finish()
 
-plt.savefig("Figure_C_004_H_080")
+# plt.savefig("Figure_C_004_H_080")
 plt.show()

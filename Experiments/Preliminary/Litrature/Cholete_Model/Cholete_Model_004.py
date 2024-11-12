@@ -31,10 +31,10 @@ base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Lit
 for beta in beta_values:
     F,E = Cholete(t, 0.2, beta, 5,5)
     E_c = Cholete_E(t, 0.2, beta, 5)
-    E_t_normalized = E / np.sum(E)
+    #E_t_normalized = E / np.sum(E)
     E_c_normalized = E_c / np.sum(E_c)
-    print(f"beta: {beta}, Integral of E: {np.sum(E)}")
-    c_out_full = np.convolve(c_0, E_t_normalized, mode="full")
+    #print(f"beta: {beta}, Integral of E: {np.sum(E)}")
+    c_out_full = np.convolve(c_0, E_c_normalized, mode="full")
     t_conv_full = np.linspace(t[0] + t[0], t[-1] + t[-1], len(c_out_full))
     valid_indices = t_conv_full <= 140
     t_conv = t_conv_full[valid_indices]
@@ -44,10 +44,10 @@ for beta in beta_values:
     np.save(os.path.join(Bo_dir, 'time.npy'), t_conv)
     np.save(os.path.join(Bo_dir, 'concentration.npy'), c_out)
     c_out_derivative = np.gradient(c_out, t_conv)
-    ax1.plot(t, E, label=f'beta {beta}')
+    #ax1.plot(t, E, label=f'beta {beta}')
     
-    ax1.plot(t, E_t_normalized, label=f'E(t), beta={beta}')
-    ax1.plot(t, E_c_normalized, '--', label=f'E_ch(t), beta={beta}')
+    #ax1.plot(t, E_t_normalized, label=f'E(t), beta={beta}')
+    ax1.plot(t, E_c_normalized/E_c_normalized.max(), '--', label=f'E_ch(t), beta={beta}')
     ax2.plot(t, F, label=f'beta {beta}')
 
 ax1.set_xlabel('t')
@@ -55,7 +55,8 @@ ax1.set_ylabel('E')
 ax1.legend()
 ax1.set_ylim(0, 1)
 ax1.set_xticks(np.arange(0, 5, 1))  
-ax2.set_xlim(0, 20)
+ax1.set_xlim(0, 5)
+ax2.set_xlim(0, 5)
 ax2.set_xlabel('t')
 ax2.set_ylabel("C")
 ax2.set_xticks(np.arange(0, 7, 1))  

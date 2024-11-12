@@ -19,7 +19,7 @@ import os
 tau_l = 5.0
 discretization_Laminar = [200]
 noise_level = 0.001
-num_datasets = 2
+num_datasets = 100
 
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method'
 def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
@@ -49,31 +49,22 @@ for i in range(num_datasets):
     os.makedirs(tau_l_dir, exist_ok=True)
     np.save(os.path.join(tau_l_dir, f'Tau_{tau_l}_Disc_{disc}_time_Dataset_{i+1}.npy'), t_conv_l)
     np.save(os.path.join(tau_l_dir, f'Tau_{tau_l}_Disc_{disc}_concentration_noisy_Dataset_{i+1}.npy'), c_out_l_noisy)
-
-    # Plot each dataset
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
     
-    # Plot laminar flow
-    ax1.plot(t_l, E_laminar, label=f'Tau {tau_l}')
-    ax1.set_xlim(0, 50)
-    ax1.set_xlabel('Time')
-    ax1.set_ylabel('E')
-    ax1.legend()
-
-    # Plot concentration output with noise
-    ax2.plot(t_conv_l, c_out_l, label='Noiseless Output', color='blue')
-    ax2.plot(t_conv_l, c_out_l_noisy, label='Noisy Output', color='red', linestyle='--')
-    ax2.plot(t_l, c_0_l, label='c_0', linestyle='--', color='black')
-    ax2.set_xlabel('Time')
-    ax2.set_ylabel('Concentration')
-    ax2.legend()
-
-    # Save and show the plot for this dataset
-    current_date = datetime.datetime.now().strftime("%Y%m%d")
-    plt.savefig(os.path.join(tau_l_dir, f'Laminar_Flow_Model_{current_date}_Dataset_{i+1}.png'), dpi=300)
-    plt.show()
-    plt.close(fig)
-
+    # fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
+    # ax1.plot(t_l, E_laminar, label=f'Tau {tau_l}')
+    # ax1.set_xlim(0, 50)
+    # ax1.set_xlabel('Time')
+    # ax1.set_ylabel('E')
+    # ax1.legend()
+    # ax2.plot(t_conv_l, c_out_l, label='Noiseless Output', color='blue')
+    # ax2.plot(t_conv_l, c_out_l_noisy, label='Noisy Output', color='red', linestyle='--')
+    # ax2.plot(t_l, c_0_l, label='c_0', linestyle='--', color='black')
+    # ax2.set_xlabel('Time')
+    # ax2.set_ylabel('Concentration')
+    # ax2.legend()
+    # current_date = datetime.datetime.now().strftime("%Y%m%d")
+    # plt.savefig(os.path.join(tau_l_dir, f'Laminar_Flow_Model_{current_date}_Dataset_{i+1}.png'), dpi=300)
+    # plt.show()
 
 ## CNN of 1st model
 first_layer_CNN_dir = os.path.join(base_dir, 'CNN_1st')

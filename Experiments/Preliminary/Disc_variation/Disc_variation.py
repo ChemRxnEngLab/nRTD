@@ -15,6 +15,7 @@ import sympy as sp
 import os
 import datetime
 
+epoch=10000
 if wandb.run is not None:
     wandb.finish()
 ## Data Simulation for the 1st model
@@ -46,19 +47,19 @@ for disc in discretization_Laminar:
     np.save(os.path.join(tau_l_dir, f'Tau_{tau_l}_Laminar_Flow_Model_Disc_{disc}_time.npy'), t_conv_l)
     np.save(os.path.join(tau_l_dir, f'Tau_{tau_l}_Laminar_Flow_Model_Disc_{disc}_concentration.npy'), c_out_l)
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
-    ax1.plot(t_l, E_laminar, label=f'Tau {tau_l}')
-    ax2.plot(t_conv_l, c_out_l, label=f'Tau {tau_l}')
+    # fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
+    # ax1.plot(t_l, E_laminar, label=f'Tau {tau_l}')
+    # ax2.plot(t_conv_l, c_out_l, label=f'Tau {tau_l}')
     
-    ax1.set_xlim(0,50)
-    ax1.set_xlabel('t')
-    ax1.set_ylabel('E')
-    ax1.legend()
+    # ax1.set_xlim(0,50)
+    # ax1.set_xlabel('t')
+    # ax1.set_ylabel('E')
+    # ax1.legend()
     
-    ax2.plot(t_l, c_0_l, label='c_0', linestyle='--', color='black')
-    ax2.set_xlabel('t')
-    ax2.set_ylabel('c')
-    ax2.legend()
+    # ax2.plot(t_l, c_0_l, label='c_0', linestyle='--', color='black')
+    # ax2.set_xlabel('t')
+    # ax2.set_ylabel('c')
+    # ax2.legend()
     
     current_date = datetime.datetime.now().strftime("%Y%m%d")
     plt.savefig(os.path.join(tau_l_dir, f'Laminar_Flow_Model_{current_date}_Disc_{disc}.png'), dpi=300)
@@ -129,7 +130,7 @@ for n_disc_o, kernel_size, n_disc in discretization_confg_second:
         log_model=True
     )
 
-    trainer = pl.Trainer(accelerator="auto", max_epochs=10000, logger=wandb_logger,deterministic=True)
+    trainer = pl.Trainer(accelerator="auto", max_epochs=epoch, logger=wandb_logger,deterministic=True)
     trainer.fit(model, dl)
     trainer.test(model, dl)
     wandb.finish()
@@ -197,8 +198,8 @@ for i, disc in enumerate(discs[:num_plots], start=1):
         E_predicted = np.load(E_predicted_path)
         row, col = divmod(i - 1, 2)
         
-        axs[row, col].plot(t_expected, E_expected, label=f'E_expected (Discritization = {disc})', color='blue')
-        axs[row, col].plot(t_predicted, E_predicted, label=f'E_predicted (Discritization = {disc})', color='purple', linestyle='--')
+        axs[row, col].plot(t_expected, E_expected, label=fr'$E_{{expected}} \, @n_{{o,1}} = {disc}$', color='blue')
+        axs[row, col].plot(t_predicted, E_predicted, label=fr'$E_{{predicted}} \, @n_{{o,1}} = {disc}$', color='purple', linestyle='--')
         #axs[row, col].set_title(f'Disc {disc}')
         axs[row, col].set_xlabel('Time')
         axs[row, col].set_ylabel('E')
@@ -207,20 +208,20 @@ for i, disc in enumerate(discs[:num_plots], start=1):
     else:
         print("Skipping...")
 
-axs[2, 1].plot(x, y, color='green', marker='o')
-#axs[2, 1].set_title('')
-axs[2, 1].set_xlabel('Number of discritization')
+axs[2, 1].loglog(x, y, color='green', marker='o')  # Log scale only on x-axis
+axs[2, 1].set_xlabel('Number of Discretization')
 axs[2, 1].set_ylabel('Test/Loss')
-axs[2, 1].ticklabel_format(style='sci', axis='y', scilimits=(-8, -8))
-
-# Customize the x-axis to show ticks every 100
-axs[2, 1].set_xticks(range(100, 601, 100))
-
-# Final adjustments and saving
+# axs[2, 1].ticklabel_format(style='sci', axis='y', scilimits=(-8, -8))
+# axs[2, 1].set_xticks([100, 200, 300, 400, 500])  
+# axs[2, 1].get_xaxis().set_major_formatter(plt.ScalarFormatter())  # Format x-axis labels in standard notation
 plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-plt.tight_layout()
+axs[2, 1].text(0.03, 0.95, 'Logarithmic Scale',  # Place it near the top
+               transform=axs[2, 1].transAxes,  # Use axis-relative coordinates (0 to 1)
+               fontsize=8, color='Black', 
+               ha='left', va='top', rotation=0)  # No rotation, top alignment
 plt.savefig(os.path.join(base_dir, "subplots_disc_variation.png"), dpi=300)
 plt.show()
+
 
 # base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Disc_variation/CNN_1st'
 # discs = [100, 200, 300, 400, 500]  

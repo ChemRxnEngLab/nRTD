@@ -10,9 +10,9 @@ from lightning.pytorch import loggers as pl_loggers
 
 n_disc = 100
 t_input = torch.linspace(0, 30, n_disc)
-c_in = torch.zeros((10, 1, n_disc))
+c_in = torch.zeros((100, 1, n_disc))
 c_in[:, :, t_input > 5] = 1
-test_file_numbers = range(6, 11)
+test_file_numbers = range(30, 101)
 
 def load_data(file_numbers):
     c_out_list = []
@@ -31,8 +31,7 @@ test_ds = TensorDataset(c_in[5:], c_out_test)  # Test data (fixed)
 test_dl = DataLoader(test_ds, batch_size=2, shuffle=False)
 
 
-wandb_logger = pl_loggers.WandbLogger(project="nRTD_behavior_study", log_model=True)
-for num_train_files in range(1, 6):  
+for num_train_files in range(30, 101):  
     train_file_numbers = range(1, num_train_files + 1)
     t_conv_train, c_out_train = load_data(train_file_numbers)
     train_ds = TensorDataset(c_in[:num_train_files], c_out_train)  # Select corresponding inputs
@@ -44,6 +43,9 @@ for num_train_files in range(1, 6):
         use_scheduler=True,
         scheduler_kwargs={"factor": 0.5, "patience": 80},
     )
+    wandb_logger = pl_loggers.WandbLogger(
+            project="nRTD",
+            log_model=True)
     trainer = pl.Trainer(
         accelerator="auto",
         max_epochs=1,
@@ -72,3 +74,4 @@ for num_train_files in range(1, 6):
     plt.title(f"Model Behavior with {num_train_files} Training Files")
     plt.savefig(f"train_result_with_{num_train_files}_files.png")
     plt.show()
+    wandb_logger.experiment.finish()

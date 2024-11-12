@@ -52,7 +52,7 @@ wandb_logger = pl_loggers.WandbLogger(
 # Set up PyTorch Lightning Trainer
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=10000,
+    max_epochs=10,
     logger=wandb_logger,
     deterministic=True
 )
