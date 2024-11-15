@@ -53,8 +53,8 @@ for result in results:
     c_out = c_out_full[valid_indices]
     unified_dir = os.path.join(base_dir, f'tau_a_val_{tau_a_val}_tau_p_val_{tau_p_val}_tau_m_val_{tau_m_val}_beta_val_{beta_val}')
     os.makedirs(unified_dir, exist_ok=True)
-    np.save(os.path.join(unified_dir, 'time.npy'), t_conv)
-    np.save(os.path.join(unified_dir, 'concentration.npy'), c_out)
+    #np.save(os.path.join(unified_dir, 'time.npy'), t_conv)
+    #np.save(os.path.join(unified_dir, 'concentration.npy'), c_out)
 
     ax1.plot(t_values, E_t, label=f'tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m_={tau_m_val},beta={beta_val}')
     ax2.plot(t_conv, c_out, label=f'tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m_={tau_m_val},beta={beta_val}')

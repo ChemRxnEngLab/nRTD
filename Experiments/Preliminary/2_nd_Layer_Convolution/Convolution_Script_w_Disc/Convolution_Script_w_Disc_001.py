@@ -16,6 +16,7 @@ import datetime
 import sympy as sp
 from sympy import ceiling
 
+
 if wandb.run is not None:
     wandb.finish()
 #Parameters
@@ -25,7 +26,7 @@ coefficients = {
     'tau_p_val': np.array([2]), 
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2}
-epoch=10000
+epoch=1
 
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
 n_in_1, n_out_1, n_out_2, n_e_1, n_e_2 = sp.symbols("n_in_1 n_out_1 n_out_2 n_e_1 n_e_2", positive=True, real=True)
@@ -108,7 +109,7 @@ print("t_e_1 =", t_e_1)
 print("t_e_2 =", t_e_2)
 print("epoch =", epoch) 
 
-### Model Laminar, 200disc###
+### Model Laminar###
 def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
     E_laminar = np.zeros_like(t)
     E_laminar[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
@@ -131,6 +132,8 @@ ax1.plot(t_l, E_laminar, label=f'Tau {tau_l}')
 ax1.set_xlim(0,5)
 ax1.set_xlabel('t')
 ax1.set_ylabel('E')
+#timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+#plt.savefig(f"Laminar_Model_{timestamp}.png", format="png", dpi=300)
 ax1.legend()
 
 ### Adler Model###
@@ -232,11 +235,11 @@ model = RTDModule(
         use_scheduler=True,
         scheduler_kwargs={"factor": 0.5, "patience": 80},
     )
-wandb_logger = pl_loggers.WandbLogger(
-project="nRTD",
-log_model=True,
-reinit=True
-)
+# wandb_logger = pl_loggers.WandbLogger(
+# project="nRTD",
+# log_model=True,
+# reinit=True
+# )
 
 c_conv = model(c_1_in)
 print("c_1_in",c_1_in.shape)
@@ -249,7 +252,8 @@ ds = TensorDataset(c_1_in.float(), c_out_l.float())
 print("c_1_in.float()",c_1_in.float().shape)
 print("c_out_l.float()",c_out_l.float().shape)
 dl = DataLoader(ds, batch_size=1, shuffle=True)
-trainer = pl.Trainer(accelerator="auto", max_epochs=epoch, logger=wandb_logger,deterministic=True)
+#trainer = pl.Trainer(accelerator="auto", max_epochs=epoch, logger=wandb_logger,deterministic=True)
+trainer = pl.Trainer(accelerator="auto", max_epochs=epoch,deterministic=True)
 trainer.fit(model, dl)
 trainer.test(model, dl)
 c_conv = model(c_1_in)
@@ -260,28 +264,11 @@ t_E = torch.linspace(0, float(t_e_1), int(model.kernel_size))
 E = E / E.max()
 
 t_1_in_reshaped = t_1_in.squeeze().numpy()
-t_conv_l_reshaped = t_conv_l.squeeze().numpy()  
+t_conv_l_reshaped = t_conv_l.squeeze().numpy()  # Reshaped for plotting compatibility
 c_1_in_reshaped = c_1_in[0, 0, :].squeeze().numpy()
 t_conv_reshaped = t_conv[0, 0, :].squeeze().numpy()
 c_out_l_reshaped = c_out_l[0, 0, :].squeeze().numpy()
 c_conv_reshaped = c_conv[0, 0, :].detach().squeeze().numpy()
-
-
-# n_1_out=85
-# def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
-#     E_laminar = np.zeros_like(t)
-#     E_laminar[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
-#     return E_laminar
-# t_l = np.linspace(0, t_lam, n_1_out, endpoint=True)  
-# c_0_l = np.zeros_like(t_l)
-# c_0_l[t_l > 5] = 1  
-# E_laminar = laminarflow(t_l, tau_l)
-# E_laminar = E_laminar / E_laminar.max()
-# c_out_l_full = np.convolve(c_0_l, E_laminar / np.sum(E_laminar), mode="full")
-# t_conv_l_full = np.linspace(t_l[0] + t_l[0], t_l[-1] + t_l[-1], len(c_out_l_full))
-# valid_indices = t_conv_l_full <= t_lam
-# t_conv_l = t_conv_l_full[valid_indices]
-# c_out_l = c_out_l_full[valid_indices]
 
 # Plotting
 fig, (ax1) = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
@@ -297,69 +284,18 @@ ax1.set_ylabel('Concentration')
 ax1.set_xlabel('Time')
 ax1.legend()
 plt.show()
-wandb.finish()
+#wandb.finish()
 
-#Second######
-# c_conv_2_results = {}
-# # wandb_logger_2 = pl_loggers.WandbLogger(
-# #     project="nRTD",
-# #     log_model=True,
-# #     reinit=True
-# # )
-# model_2 = RTDModule(
-#     kernel_size=n_e_2,
-#     learning_rate=1e-3,
-#     use_scheduler=True,
-#     scheduler_kwargs={"factor": 0.5, "patience": 80},)
-
-
-# c_out_Adler_tensor = torch.tensor(c_out_Adler).float().unsqueeze(0).unsqueeze(0)
-# ds_2 = TensorDataset(c_conv.detach().float(), c_out_Adler_tensor.detach())
-# dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
-# trainer = pl.Trainer(
-#     accelerator="auto",
-#     max_epochs=epoch,
-#     deterministic=True,
+###Second CNN
+# wandb_logger = pl_loggers.WandbLogger(
+#     project="nRTD",
+#     log_model=True,
+#     reinit=True
 # )
-
-# trainer.fit(model_2, dl_2)
-# trainer.test(model_2, dl_2)
-# print("c_out_Adler_tensor",c_out_l.shape)
-# c_out_l = c_out_l.double()
-# c_conv_2 = model_2(c_out_l)
-# model_2 = model_2.float()
-# c_out_l = c_out_l.float()
-
-# # c_conv_2 = model_2(c_out_l)
-# c_conv_results[n_2_out] = c_conv_2.numpy()  
-# E = model_2.net.E[0]
-# t_E = torch.linspace(0, t_e_2, model_2.kernel_size)
-# E = E / E.max()
-
-# t_conv[0, 0, :].numpy(),
-# c_out_l[0, 0, :].detach().numpy()
-# t_conv_values = t_conv_Adler.numpy() if isinstance(t_conv_Adler, torch.Tensor) else t_conv_Adler
-# c_out_values = c_out_Adler.squeeze().numpy() if isinstance(c_out_Adler, torch.Tensor) else c_out_Adler.squeeze()
-
-# E_Adler_normalized = E_Adler / np.max(E_Adler)
-# fig, ax1 = plt.subplots(figsize=(10, 6))
-
-# ax1.plot(t_conv_values, c_out_values, label="Expected Output", color="green")
-# c_conv_2_values = c_conv_2.detach().numpy().squeeze() if isinstance(c_conv_2, torch.Tensor) else c_conv_2
-# ax1.plot(t_conv_values, c_conv_2_values, label="Predicted Output", color="red", linestyle="--")
-# ax1.plot(t_E, E, label="Predicted E", color="orange")
-# ax1.set_xlim((0, 50))
-# ax1.set_ylim((0, 1.1))
-# ax1.set_ylabel('Concentration')
-# ax1.set_xlabel('Time')
-# #plt.savefig("Laminar_Adler_combined_08112024.png", format="png", dpi=300)  # format ve dpi ekleyebilirsiniz
-# ax1.legend()
-# plt.show()
-
 c_conv_2_results = {}
-
 t_2_in=torch.tensor(t_conv_l).float()
 c_2_in=torch.tensor(c_out_l).float()
+print("c_out_l",c_out_l.shape)
 c_out_l_a=torch.tensor(c_out_Adler).float().unsqueeze(0).unsqueeze(0)
 t_out_l_a=torch.tensor(t_conv_Adler).float().unsqueeze(0).unsqueeze(0)
 print(t_2_in.shape)
@@ -373,14 +309,6 @@ model_2 = RTDModule(
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
-
-# Initialize the Wandb logger
-# wandb_logger = pl_loggers.WandbLogger(
-#     project="nRTD",
-#     log_model=True,
-#     reinit=True
-# )
-
 c_conv_2 = model_2(c_2_in)
 E = model_2.net.E[0]
 t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
@@ -388,14 +316,17 @@ E = E / E.max()
 ds_2 =TensorDataset(c_2_in.float(), c_out_l_a.float())
 dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 
+# trainer = pl.Trainer(
+#     accelerator="auto",
+#     max_epochs=epoch,
+#     logger=wandb_logger,
+#     deterministic=True,
+# )
 trainer = pl.Trainer(
     accelerator="auto",
     max_epochs=epoch,
-    logger=wandb_logger,
     deterministic=True,
 )
-
-
 trainer.fit(model_2, dl_2)
 trainer.test(model_2, dl_2)
 c_conv_2 = model_2(c_2_in)
@@ -404,7 +335,7 @@ c_conv_2_results[n_2_out] = c_conv_2.detach().numpy()
 E = model_2.net.E[0]
 t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
 E = E / E.max()
-
+####Plotting
 fig, ax1 = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
 ax1.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), label="Input Signal", color="blue", linestyle="--")
 ax1.plot(t_out_l_a.squeeze().numpy(), c_out_l_a.squeeze().numpy(), label="Expected Output", color="green")
@@ -416,74 +347,45 @@ ax1.set_ylabel('Concentration')
 ax1.set_xlabel('Time')
 ax1.legend()
 
-##2nd model
-# c_conv_2_results = {}
-# t_2_in = torch.tensor(t_conv_l).float()
-# c_2_in = torch.tensor(c_out_l).float()
-# c_out_l_a = torch.tensor(c_out_Adler).float().unsqueeze(0).unsqueeze(0)
-# t_out_l_a = torch.tensor(t_conv_Adler).float().unsqueeze(0).unsqueeze(0)
-# print(t_2_in.shape)
-# print(c_2_in.shape)
-# print(c_out_l_a.shape)
-# print(t_out_l_a.shape)
+#### General Plotting
+E_Adler_normalized = E_Adler / np.max(E_Adler)
+E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
+E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
+E_learned_1 /= np.max(E_learned_1)
+E_learned_2 /= np.max(E_learned_2)
+t_adler = t_values_Adler if isinstance(t_values_Adler, np.ndarray) else t_values_Adler.numpy()
+t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
+t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
 
-# model_2 = RTDModule(
-#     kernel_size=n_e_2,
-#     learning_rate=1e-3,
-#     use_scheduler=True,
-#     scheduler_kwargs={"factor": 0.5, "patience": 80},
-# )
-
-# wandb_logger = pl_loggers.WandbLogger(
-#     project="nRTD",
-#     log_model=True,
-#     reinit=True
-# )
-# c_conv_2 = model_2(c_2_in)
-# print(c_conv_2.shape)
-# E_2 = model_2.net.E[0]  
-# t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
-# E = E / E.max()
-# print(E.shape)
-# print(t_E_2.shape)
-# ds_2 = TensorDataset(c_2_in.float(), c_out_l_a.float())
-# dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
-# trainer = pl.Trainer(
-#     accelerator="auto",
-#     max_epochs=epoch,
-#     logger=wandb_logger,
-#     deterministic=True,
-# )
-# trainer.fit(model_2, dl_2)
-# trainer.test(model_2, dl_2)
-# c_conv_2 = model_2(c_2_in)
-# E_2 = model_2.net.E[0]  
-# c_conv_2_results[n_2_out] = c_conv_2.detach().numpy() 
-# E_2 = model_2.net.E[0]  
-# t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
-# E = E / E.max()
- 
-
-
-# fig, ax1 = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
-# ax1.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), label="Input Signal", color="blue", linestyle="--")
-# ax1.plot(t_out_l_a.squeeze().numpy(), c_out_l_a.squeeze().numpy(), label="Expected Output", color="green")
-# ax1.plot(t_out_l_a.squeeze().numpy(), c_conv_2.detach().squeeze().numpy(), label="Predicted Output", color="red", linestyle="--")
-# ax1.plot(t_E_2, E, label="E_predict", color="purple", linestyle="--")
-# ax1.set_xlim((0, 30))
-# ax1.set_ylim((0, 1.1))
-# ax1.set_ylabel('Concentration')
-# ax1.set_xlabel('Time')
-# ax1.legend()
-
-# plt.show()
-
-# print("t_out_l_a.shape:", t_out_l_a.shape)
-# print("c_conv_2.shape:", c_conv_2.shape)
-
-
-##########
-
+plt.figure(figsize=(10, 6))
+plt.plot(t_learned_1, E_learned_1, label="$E_1$", color="black")
+plt.plot(t_learned_2, E_learned_2, label="$E_2$", color="red")
+# plt.plot(t_l, E_laminar, label="E Laminar Layer 1", color="blue")
+#plt.plot(t_l_a, E_laminar_a_normalized, label="E Laminar Layer 2", color="green")
+# plt.plot(t_adler, E_Adler_normalized, label="E Adler", color="orange")
+print("t_learned_1",t_learned_1.shape)
+print("t_learned_2",t_learned_2.shape)
+print("E_learned_1", E_learned_1.shape)
+print("E_learned_2", E_learned_2.shape)
+# Set plot labels and legend
+plt.xlabel("Time")
+plt.ylabel("E")
+plt.xlim((0, 20))
+plt.ylim((0, 1.1))
+plt.legend()
+plt.show()
+#Plotting the test/loss
+y_1 = [1.11e-7, 9.077e-6]
+x_1 = [50, 200]
+y_2 = [4.64e-7, 1.23e-5]
+x_2 = [50, 200]
+plt.figure(figsize=(10, 6))
+plt.scatter(x_1, y_1, color="black", label="Case 1")
+plt.scatter(x_2, y_2, color="red", label="Case 2")
+plt.xlabel('Number of Discretization')
+plt.ylabel('Test/Loss')
+plt.legend()
+plt.show()
 
 # fig, ax1 = plt.subplots(figsize=(10, 6))
 # ax1.plot(t_1_in_reshaped, c_1_in_reshaped, label=" $c_{in}$", color="blue")
@@ -497,48 +399,3 @@ ax1.legend()
 # ax1.set_xlabel('Time')
 # ax1.legend()
 # plt.show()
-
-
-E_Adler_normalized = E_Adler / np.max(E_Adler)
-E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
-E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
-E_learned_1 /= np.max(E_learned_1)
-E_learned_2 /= np.max(E_learned_2)
-
-
-t_adler = t_values_Adler if isinstance(t_values_Adler, np.ndarray) else t_values_Adler.numpy()
-t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
-t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
-
-
-plt.figure(figsize=(10, 6))
-# plt.plot(t_l, E_laminar, label="E Laminar Layer 1", color="blue")
-#plt.plot(t_l_a, E_laminar_a_normalized, label="E Laminar Layer 2", color="green")
-# plt.plot(t_adler, E_Adler_normalized, label="E Adler", color="orange")
-plt.plot(t_learned_1, E_learned_1, label="$E_1$", color="black")
-plt.plot(t_learned_2, E_learned_2, label="$E_2$", color="red")
-print("t_learned_1",t_learned_1.shape)
-print("t_learned_2",t_learned_2.shape)
-print("E_learned_1", E_learned_1.shape)
-print("E_learned_2", E_learned_2.shape)
-plt.xlabel("Time")
-plt.ylabel("E")
-plt.xlim((0, 20))
-plt.ylim((0, 1.1))
-plt.legend()
-plt.show()
-
-#Plotting the test/loss
-y_1 = [1.11e-7, 9.077e-6]
-x_1 = [50, 200]
-y_2 = [4.64e-7, 1.23e-5]
-x_2 = [50, 200]
-
-plt.figure(figsize=(10, 6))
-plt.scatter(x_1, y_1, color="black", label="Case 1")
-plt.scatter(x_2, y_2, color="red", label="Case 2")
-
-plt.xlabel('Number of Discretization')
-plt.ylabel('Test/Loss')
-plt.legend()
-plt.show()

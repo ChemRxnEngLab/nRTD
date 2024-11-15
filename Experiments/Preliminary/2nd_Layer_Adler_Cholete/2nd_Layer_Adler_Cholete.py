@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Nov 12 01:02:25 2024
-
-@author: tuanaoyuncu
-"""
-
 import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
@@ -103,6 +95,8 @@ t_1 = sub_dict.get(t_1)
 t_e_1 = sub_dict.get(t_e_1)
 t_e=t_e_1
 t_e_2 = result_dict.get(t_e_2)
+
+
 print("n_1_in =", n_1_in)
 print("n_1_out =", n_1_out)
 print("n_e_1 =", n_e_1)
@@ -134,6 +128,7 @@ t_conv_l_a_in = t_conv_l_a_in_full[valid_indices]
 c_out_l_a_in = c_out_l_a_in_full[valid_indices] 
 c_out_l_a_in = c_out_l_a_in.flatten() 
 
+
 def compute_inverse_laplace(coefficients, t_values):
     s, t = sp.symbols('s t')
     alpha = coefficients['alpha_val']
@@ -155,7 +150,7 @@ def compute_inverse_laplace(coefficients, t_values):
                 })
     return results_out
 
-t_values_Adler_out = np.linspace(0, t_1, n_1_out, endpoint=True)
+t_values_Adler_out = np.linspace(0, t_adl, n_1_out, endpoint=True)
 results_out = compute_inverse_laplace(coefficients, t_values_Adler_out)
 
 for result in results_out:
@@ -297,17 +292,15 @@ print(f"Shape of c_out_Adler_outsupp: {c_out_Adler.shape}")
 print(f"Shape of t_conv_Adleroutsupp for discretization: {t_conv_Adler.shape}")
 #print(f"Shape of E_Adler_normalized for discretization: {E_Adler_normalized.shape}")
 
-
-
 #NN
-c_conv_results = {}
 
+c_conv_results = {}
 t_1_in = torch.tensor(t_conv_l_a_in).float().unsqueeze(0).unsqueeze(0)
 c_1_in = torch.tensor(c_out_l_a_in).float().unsqueeze(0).unsqueeze(0)
 
-
 print("c_1_in shape:", c_1_in.shape)  
 print("t_1_in shape:", t_1_in.shape) 
+
 c_out_adl = torch.tensor(c_out_Adler_out).unsqueeze(0).unsqueeze(0)  
 t_conv_adl = torch.tensor(t_conv_Adler_out).unsqueeze(0).unsqueeze(0) 
 c_out = torch.cat([torch.tensor(c_out_adl)], dim=0).float()
@@ -316,6 +309,7 @@ c_out_list = [c_out_adl]
 t_conv_list = [t_conv_adl]
 c_out = torch.cat(c_out_list, dim=-1)
 t_conv = torch.cat(t_conv_list, dim=-1)
+
 print("c_out shape:", c_out.shape)  
 print("t_conv shape:", t_conv.shape) 
  
@@ -323,8 +317,8 @@ model = RTDModule(
         kernel_size=n_e_1,
         learning_rate=1e-3,
         use_scheduler=True,
-        scheduler_kwargs={"factor": 0.5, "patience": 80},
-    )
+        scheduler_kwargs={"factor": 0.5, "patience": 80},)
+
 # wandb_logger = pl_loggers.WandbLogger(
 # project="nRTD",
 # log_model=True,
@@ -343,8 +337,7 @@ print("c_1_in.float()",c_1_in.float().shape)
 print("c_out_l.float()",c_out_adl.float().shape)
 dl = DataLoader(ds, batch_size=1, shuffle=True)
 #trainer = pl.Trainer(accelerator="auto", max_epochs=epoch, logger=wandb_logger,deterministic=True)
-trainer = pl.Trainer(accelerator="auto", max_epochs=epoch, 
-                     deterministic=True)
+trainer = pl.Trainer(accelerator="auto", max_epochs=epoch,deterministic=True)
 trainer.fit(model, dl)
 trainer.test(model, dl)
 c_conv = model(c_1_in)
@@ -353,37 +346,19 @@ print("c_conv_results",c_conv.detach().numpy().shape)
 E = model.net.E[0]
 t_E = torch.linspace(0, float(t_e_1), int(model.kernel_size))
 E = E / E.max()
-
+t_conv_adl_reshaped = t_conv_adl.squeeze().numpy() if isinstance(t_conv_adl, torch.Tensor) else t_conv_adl
+c_out_Adler_out_reshaped = c_out_Adler_out.squeeze().numpy() if isinstance(c_out_Adler_out, torch.Tensor) else c_out_Adler_out
 t_1_in_reshaped = t_1_in.squeeze().numpy()
-c_out_l_a_reshaped = c_out_l_a # Reshaped for plotting compatibility
 c_1_in_reshaped = c_1_in[0, 0, :].squeeze().numpy()
 t_conv_reshaped = t_conv[0, 0, :].squeeze().numpy()
-t_conv_l_a_reshaped = t_conv_l_a
 c_conv_reshaped = c_conv[0, 0, :].detach().squeeze().numpy()
-
-
-# n_1_out=85
-# def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
-#     E_laminar = np.zeros_like(t)
-#     E_laminar[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
-#     return E_laminar
-# t_l = np.linspace(0, t_lam, n_1_out, endpoint=True)  
-# c_0_l = np.zeros_like(t_l)
-# c_0_l[t_l > 5] = 1  
-# E_laminar = laminarflow(t_l, tau_l)
-# E_laminar = E_laminar / E_laminar.max()
-# c_out_l_full = np.convolve(c_0_l, E_laminar / np.sum(E_laminar), mode="full")
-# t_conv_l_full = np.linspace(t_l[0] + t_l[0], t_l[-1] + t_l[-1], len(c_out_l_full))
-# valid_indices = t_conv_l_full <= t_lam
-# t_conv_l = t_conv_l_full[valid_indices]
-# c_out_l = c_out_l_full[valid_indices]
 
 # Plotting
 fig, (ax1) = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
 fig.subplots_adjust(hspace=0)
 ax1.plot(t_1_in_reshaped, c_1_in_reshaped, label="Input Signal", color="blue")
-ax1.plot(t_conv_adl, c_out_Adler_out, label="Expected Output", color="green")
-ax1.plot(t_conv, c_conv_reshaped, label="Predicted Output", color="red", linestyle="--")
+ax1.plot(t_conv_adl_reshaped, c_out_Adler_out_reshaped, label="Expected Output", color="green")
+ax1.plot(t_conv_reshaped, c_conv_reshaped, label="Predicted Output", color="red", linestyle="--")
 ax1.plot(t_E, E, label="Convolution Kernel", color="purple", linestyle="--")
 # ax1.plot(t_conv_l, E_laminar, color="grey")
 ax1.set_xlim((0, 30))
@@ -395,30 +370,30 @@ plt.show()
 wandb.finish()
 
 ##Second
+
 c_conv_2_results = {}
 t_2_in = torch.tensor(t_conv_adl).float()
-c_2_in = torch.tensor(c_out_Adler_out).float()
-c_out_ch = torch.tensor(c_out_ch).float().unsqueeze(0).unsqueeze(0)
+c_2_in = torch.tensor(c_out_Adler_out).float().unsqueeze(0).unsqueeze(0)
+c_out_ch=torch.tensor(c_out_ch).float().unsqueeze(0).unsqueeze(0)
+print("c_2_in",c_2_in.shape)
+print("Shape of c_out_ch:", c_out_ch.shape) 
 t_out_ch = torch.tensor(t_conv_ch).float().unsqueeze(0).unsqueeze(0)
+
 print(t_2_in.shape)
-print(c_2_in.shape)
+print("c_2_in",c_2_in.shape)
 print(c_out_ch.shape)
 print(t_out_ch.shape)
-
-
 
 model_2 = RTDModule(
     kernel_size=n_e_2,
     learning_rate=1e-3,
     use_scheduler=True,
-    scheduler_kwargs={"factor": 0.5, "patience": 80},
-)
+    scheduler_kwargs={"factor": 0.5, "patience": 80},)
 
-wandb_logger = pl_loggers.WandbLogger(
-    project="nRTD",
-    log_model=True,
-    reinit=True
-)
+# wandb_logger = pl_loggers.WandbLogger(
+#     project="nRTD",
+#     log_model=True,
+#     reinit=True)
 
 c_conv_2 = model_2(c_2_in)
 print(c_conv_2.shape)
@@ -427,14 +402,24 @@ t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
 E_2 = E_2 / E_2.max()
 print(E_2.shape)
 print(t_E_2.shape)
-ds_2 = TensorDataset(c_2_in.float(), c_out_l_a.float())
+
+
+# Create TensorDataset with consistent tensor types
+ds_2 = TensorDataset(c_2_in.float(), c_out_ch.float())
 dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
+
+# trainer = pl.Trainer(
+#     accelerator="auto",
+#     max_epochs=epoch,
+#     logger=wandb_logger,
+#     deterministic=True,
+# )
 trainer = pl.Trainer(
     accelerator="auto",
     max_epochs=epoch,
-    logger=wandb_logger,
     deterministic=True,
 )
+
 trainer.fit(model_2, dl_2)
 trainer.test(model_2, dl_2)
 c_conv_2 = model_2(c_2_in)
@@ -455,56 +440,58 @@ ax1.set_ylim((0, 1.1))
 ax1.set_ylabel('Concentration')
 ax1.set_xlabel('Time')
 ax1.legend()
-
 plt.show()
 wandb.finish()
-####
 
-# wandb.finish()
+###Plotting
+t_1_in_reshaped = t_1_in.squeeze().numpy()
+c_1_in_reshaped = c_1_in[0, 0, :].squeeze().numpy()
+t_conv_reshaped = t_conv[0, 0, :].squeeze().numpy()
+c_conv_reshaped = c_conv[0, 0, :].detach().squeeze().numpy()
 
-# fig, ax1 = plt.subplots(figsize=(10, 6))
-# ax1.plot(t_1_in_reshaped, c_1_in_reshaped, label=" $c_{in}$", color="blue")
-# ax1.plot(t_conv_reshaped, c_conv_reshaped, label="$c_{p,1}$", color="black", linestyle="--")
-# ax1.plot(t_conv_reshaped, c_out_l_reshaped, label="$c_{o,1}$", color="yellow")
-# ax1.plot(t_conv_values, c_conv_2_values, label="$c_{p,2}$", color="red", linestyle="--")
-# ax1.plot(t_conv_values, c_out_values, label="$c_{o,2}$", color="orange")
-# ax1.set_xlim((0, 30))
-# ax1.set_ylim((0, 1.1))
-# ax1.set_ylabel('Concentration')
-# ax1.set_xlabel('Time')
-# ax1.legend()
-# plt.show()
-
-
-# E_Adler_normalized = E_Adler / np.max(E_Adler)
-# E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
-# E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
-# E_learned_1 /= np.max(E_learned_1)
-# E_learned_2 /= np.max(E_learned_2)
+fig, ax1 = plt.subplots(figsize=(10, 6))
+ax1.plot(t_1_in_reshaped, c_1_in_reshaped, label=" $c_{in}$", color="blue")
+ax1.plot(t_conv_reshaped, c_conv_reshaped, label="$c_{p,1}$", color="black", linestyle="--")
+ax1.plot(t_conv_values, c_out_values, label="$c_{o,1}$", color="yellow")
+ax1.plot(t_out_ch.squeeze().numpy(), c_out_ch.squeeze().numpy(), label="$c_{o,2}$", color="orange")
+ax1.plot(t_out_ch.squeeze().numpy(), c_conv_2.detach().squeeze().numpy(), label="$c_{p,2}$", color="red", linestyle="--")
+ax1.set_xlim((0, 30))
+ax1.set_ylim((0, 1.1))
+ax1.set_ylabel('Concentration')
+ax1.set_xlabel('Time')
+ax1.legend()
+plt.show()
 
 
-# t_adler = t_values_Adler if isinstance(t_values_Adler, np.ndarray) else t_values_Adler.numpy()
-# t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
-# t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
+E_Adler_normalized = E_Adler / np.max(E_Adler)
+E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
+E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
+E_learned_1 /= np.max(E_learned_1)
+E_learned_2 /= np.max(E_learned_2)
 
 
-# plt.figure(figsize=(10, 6))
-# # plt.plot(t_l, E_laminar, label="E Laminar Layer 1", color="blue")
-# #plt.plot(t_l_a, E_laminar_a_normalized, label="E Laminar Layer 2", color="green")
-# # plt.plot(t_adler, E_Adler_normalized, label="E Adler", color="orange")
-# plt.plot(t_learned_1, E_learned_1, label="$E_1$", color="black")
-# plt.plot(t_learned_2, E_learned_2, label="$E_2$", color="red")
-# print("t_learned_1",t_learned_1.shape)
-# print("t_learned_2",t_learned_2.shape)
-# print("E_learned_1", E_learned_1.shape)
-# print("E_learned_2", E_learned_2.shape)
-# # Set plot labels and legend
-# plt.xlabel("Time")
-# plt.ylabel("E")
-# plt.xlim((0, 20))
-# plt.ylim((0, 1.1))
-# plt.legend()
-# plt.show()
+#t_adler = t_values_Adler if isinstance(t_values_Adler, np.ndarray) else t_values_Adler.numpy()
+t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
+t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
+
+
+plt.figure(figsize=(10, 6))
+# plt.plot(t_l, E_laminar, label="E Laminar Layer 1", color="blue")
+#plt.plot(t_l_a, E_laminar_a_normalized, label="E Laminar Layer 2", color="green")
+# plt.plot(t_adler, E_Adler_normalized, label="E Adler", color="orange")
+plt.plot(t_learned_1, E_learned_1, label="$E_1$", color="black")
+plt.plot(t_learned_2, E_learned_2, label="$E_2$", color="red")
+print("t_learned_1",t_learned_1.shape)
+print("t_learned_2",t_learned_2.shape)
+print("E_learned_1", E_learned_1.shape)
+print("E_learned_2", E_learned_2.shape)
+# Set plot labels and legend
+plt.xlabel("Time")
+plt.ylabel("E")
+plt.xlim((0, 20))
+plt.ylim((0, 1.1))
+plt.legend()
+plt.show()
 
 # #Plotting the test/loss
 # y_1 = [1.11e-7, 9.077e-6]
@@ -521,92 +508,3 @@ wandb.finish()
 # plt.legend()
 # plt.show()
 
-# # print("E_learned_2",E_learned_2.shape)
-
-# # def compute_inverse_laplace(coefficients, t_values):
-# #     s, t = sp.symbols('s t')
-# #     alpha = coefficients['alpha_val']
-# #     results = []  
-# #     for tau_a_val in coefficients['tau_a_val']:  
-# #         for tau_p_val in coefficients['tau_p_val']:
-# #             for beta_val in coefficients['beta_val']:
-# #                 tau_m_val = (beta_val * (1 - alpha)) / alpha
-# #                 F_s = (sp.exp(-tau_p_val * s)) / (1 + beta_val + tau_a_val * s - (beta_val / (1 + tau_m_val * s)))
-# #                 f_t = sp.inverse_laplace_transform(F_s, s, t)
-# #                 f_t_numeric = sp.lambdify(t, f_t, modules="numpy")
-# #                 E_t = f_t_numeric(t_values)
-# #                 results.append({
-# #                     'tau_a_val': tau_a_val,
-# #                     'tau_p_val': tau_p_val,
-# #                     'tau_m_val': tau_m_val,
-# #                     'beta_val': beta_val,
-# #                     'E_t': E_t
-# #                 })
-# #     return results
-
-# # t_values_Adler = np.linspace(0, t_adl, n_2_out, endpoint=True)
-# # results = compute_inverse_laplace(coefficients, t_values_Adler)
-# # adler_dir = os.path.join(base_dir, f'Adler_tau_a')
-# # os.makedirs(adler_dir, exist_ok=True)
-
-
-# # n_2_out=113
-
-# # t_values_Adler_2 = np.linspace(0, t_adl, n_2_out, endpoint=True)
-# # results = compute_inverse_laplace(coefficients, t_values_Adler_2)
-# # for result in results:
-# #     tau_a_val = result['tau_a_val']
-# #     tau_p_val = result['tau_p_val']
-# #     tau_m_val = result['tau_m_val']
-# #     beta_val = result['beta_val']
-    
-# #     E_Adler_2 = result['E_t']
-# #     if E_Adler_2.shape[0] != t_values_Adler_2.shape[0]:
-# #         print(f"Warning: E_Adler has shape {E_Adler.shape}, adjusting to match t_values_Adler_2 shape.")
-# #         if E_Adler_2.shape[0] > t_values_Adler_2.shape[0]:
-# #             E_Adler_2 = E_Adler[:len(t_values_Adler_2)]
-# #         else:
-# #             E_Adler_2 = np.pad(E_Adler_2, (0, len(t_values_Adler_2) - len(E_Adler_2)), 'constant')
-# #             ####/max?
-# #         E_Adler_2=E_Adler_2/E_Adler_2.max()
-# #     E_Adler_normalized_2=E_Adler_2/E_Adler_2.max()
-# #     print(f"Shape of t_values_Adler_2: {t_values_Adler_2.shape}")
-# #     # print(f"Shape of E_Adler_normalized: {E_Adler_normalized.shape}")
-
-# # def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
-# #     E_laminar_a = np.zeros_like(t)
-# #     E_laminar_a[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
-# #     return E_laminar_a
-# # t_l_a = np.linspace(0, t_adl, 50, endpoint=True)  
-# # c_0_l_a = np.zeros_like(t_l_a)
-# c_0_l_a[t_l_a > 5] = 1  
-# E_laminar_a = laminarflow(t_l_a, tau_l)
-# E_laminar_a = E_laminar_a / E_laminar_a.max()
-# c_out_l_a_full = np.convolve(c_0_l_a, E_laminar_a / np.sum(E_laminar_a), mode="full")
-# t_conv_l_a_full = np.linspace(t_l_a[0] + t_l_a[0], t_l_a[-1] + t_l_a[-1], len(c_out_l_a_full))
-# valid_indices = t_conv_l_a_full <= t_adl  
-# t_conv_l_a = t_conv_l_a_full[valid_indices]  
-# c_out_l_a = c_out_l_a_full[valid_indices] 
-# c_out_l_a = c_out_l_a.flatten() 
-# print(f"Shape of c_out_l_a: {c_out_l_a.shape}")
-
-# t_adler_2 = t_values_Adler_2 if isinstance(t_values_Adler_2, np.ndarray) else t_values_Adler_2.numpy()
-# E_learned_2=E_learned_2/np.max(E_learned_2)
-# E_Adler_normalized = E_Adler_2 / np.max(E_Adler_2)
-# plt.figure(figsize=(10, 6))
-# # plt.plot(t_l, E_laminar_normalized, label="E Laminar Layer 1", color="blue")
-# # plt.plot(t_l_a, E_laminar_a_normalized, label="E Laminar Layer 2", color="green")
-# plt.plot(t_adler_2, E_Adler_normalized_2, label="E Adler", color="orange")
-# # plt.plot(t_learned_1, E_learned_1, label="Learned E Layer 1", linestyle="--", color="red")
-# plt.plot(t_adler_2, E_learned_2, label="Predicted Output", color="red", linestyle="--")
-
-# # Set plot labels and legend
-# plt.xlabel("Time")
-# plt.ylabel("E(t) (Normalized)")
-# plt.xlim((0, 20))
-# plt.ylim((0, 1.1))
-# plt.legend()
-# plt.show()
-# print("E_learned_2",E_learned_2.shape)
-# print("t_adler_2",t_adler_2.shape)
-# print("E_Adler_normalized_2",E_Adler_normalized_2.shape)

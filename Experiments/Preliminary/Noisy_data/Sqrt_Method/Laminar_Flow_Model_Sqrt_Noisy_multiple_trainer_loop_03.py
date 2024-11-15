@@ -13,7 +13,7 @@ import wandb
 if wandb.run is not None:
     wandb.finish()
     
-epoch=1
+epoch=10
 n_disc = 100
 t_input = torch.linspace(0, 30, n_disc)
 c_in = torch.zeros((100, 1, n_disc))

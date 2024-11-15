@@ -41,8 +41,8 @@ for beta in beta_values:
     c_out = c_out_full[valid_indices]
     Bo_dir = os.path.join(base_dir, f'beta{beta}')
     os.makedirs(Bo_dir, exist_ok=True)
-    np.save(os.path.join(Bo_dir, 'time.npy'), t_conv)
-    np.save(os.path.join(Bo_dir, 'concentration.npy'), c_out)
+    # np.save(os.path.join(Bo_dir, 'time.npy'), t_conv)
+    # np.save(os.path.join(Bo_dir, 'concentration.npy'), c_out)
     c_out_derivative = np.gradient(c_out, t_conv)
     #ax1.plot(t, E, label=f'beta {beta}')
     
