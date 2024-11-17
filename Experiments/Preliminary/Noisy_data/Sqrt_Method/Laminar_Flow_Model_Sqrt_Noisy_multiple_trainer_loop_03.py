@@ -10,8 +10,8 @@ from lightning.pytorch import loggers as pl_loggers
 import wandb
 
 
-if wandb.run is not None:
-    wandb.finish()
+# if wandb.run is not None:
+#     wandb.finish()    
     
 epoch=10
 n_disc = 100
@@ -87,6 +87,5 @@ for num_train_files in train_file_configurations:
     plt.xlim((0, 30))
     plt.ylim((0, 2))
     plt.legend()
-    plt.title(f"Model Behavior with {num_train_files} Training Files")
     plt.show()
     wandb.finish()
