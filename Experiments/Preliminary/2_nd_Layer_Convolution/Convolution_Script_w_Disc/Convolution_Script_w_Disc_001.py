@@ -26,7 +26,9 @@ coefficients = {
     'tau_p_val': np.array([2]), 
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2}
-epoch=1
+
+epoch_1=15000
+epoch_2=20000
 
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
 n_in_1, n_out_1, n_out_2, n_e_1, n_e_2 = sp.symbols("n_in_1 n_out_1 n_out_2 n_e_1 n_e_2", positive=True, real=True)
@@ -107,7 +109,7 @@ print("t_adl =", t_adl)
 print("t_1 =", t_1)
 print("t_e_1 =", t_e_1)
 print("t_e_2 =", t_e_2)
-print("epoch =", epoch) 
+
 
 ### Model Laminar###
 def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
@@ -237,7 +239,7 @@ model = RTDModule(
     )
 wandb_logger = pl_loggers.WandbLogger(
 project="nRTD",
-log_model=True,
+log_model=True,name=f'epoch_{epoch_1}_1st',
 reinit=True
 )
 
@@ -252,7 +254,7 @@ ds = TensorDataset(c_1_in.float(), c_out_l.float())
 print("c_1_in.float()",c_1_in.float().shape)
 print("c_out_l.float()",c_out_l.float().shape)
 dl = DataLoader(ds, batch_size=1, shuffle=True)
-trainer = pl.Trainer(accelerator="auto", max_epochs=epoch, logger=wandb_logger,deterministic=True)
+trainer = pl.Trainer(accelerator="auto", max_epochs=epoch_1, logger=wandb_logger,deterministic=True)
 #trainer = pl.Trainer(accelerator="auto", max_epochs=epoch,deterministic=True)
 trainer.fit(model, dl)
 trainer.test(model, dl)
@@ -284,12 +286,12 @@ ax1.set_ylabel('Concentration')
 ax1.set_xlabel('Time')
 ax1.legend()
 plt.show()
-#wandb.finish()
+wandb.finish()
 
 ###Second CNN
 wandb_logger = pl_loggers.WandbLogger(
     project="nRTD",
-    log_model=True,
+    log_model=True,name=f'epoch_{epoch_2}_2nd',
     reinit=True
 )
 c_conv_2_results = {}
@@ -318,7 +320,7 @@ dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=epoch,
+    max_epochs=epoch_2,
     logger=wandb_logger,
     deterministic=True,
 )
