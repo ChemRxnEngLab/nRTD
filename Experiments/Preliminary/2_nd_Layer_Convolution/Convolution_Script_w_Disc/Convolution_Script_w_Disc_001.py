@@ -235,11 +235,11 @@ model = RTDModule(
         use_scheduler=True,
         scheduler_kwargs={"factor": 0.5, "patience": 80},
     )
-# wandb_logger = pl_loggers.WandbLogger(
-# project="nRTD",
-# log_model=True,
-# reinit=True
-# )
+wandb_logger = pl_loggers.WandbLogger(
+project="nRTD",
+log_model=True,
+reinit=True
+)
 
 c_conv = model(c_1_in)
 print("c_1_in",c_1_in.shape)
@@ -252,8 +252,8 @@ ds = TensorDataset(c_1_in.float(), c_out_l.float())
 print("c_1_in.float()",c_1_in.float().shape)
 print("c_out_l.float()",c_out_l.float().shape)
 dl = DataLoader(ds, batch_size=1, shuffle=True)
-#trainer = pl.Trainer(accelerator="auto", max_epochs=epoch, logger=wandb_logger,deterministic=True)
-trainer = pl.Trainer(accelerator="auto", max_epochs=epoch,deterministic=True)
+trainer = pl.Trainer(accelerator="auto", max_epochs=epoch, logger=wandb_logger,deterministic=True)
+#trainer = pl.Trainer(accelerator="auto", max_epochs=epoch,deterministic=True)
 trainer.fit(model, dl)
 trainer.test(model, dl)
 c_conv = model(c_1_in)
@@ -287,11 +287,11 @@ plt.show()
 #wandb.finish()
 
 ###Second CNN
-# wandb_logger = pl_loggers.WandbLogger(
-#     project="nRTD",
-#     log_model=True,
-#     reinit=True
-# )
+wandb_logger = pl_loggers.WandbLogger(
+    project="nRTD",
+    log_model=True,
+    reinit=True
+)
 c_conv_2_results = {}
 t_2_in=torch.tensor(t_conv_l).float()
 c_2_in=torch.tensor(c_out_l).float()
@@ -316,17 +316,17 @@ E = E / E.max()
 ds_2 =TensorDataset(c_2_in.float(), c_out_l_a.float())
 dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 
-# trainer = pl.Trainer(
-#     accelerator="auto",
-#     max_epochs=epoch,
-#     logger=wandb_logger,
-#     deterministic=True,
-# )
 trainer = pl.Trainer(
     accelerator="auto",
     max_epochs=epoch,
+    logger=wandb_logger,
     deterministic=True,
 )
+# trainer = pl.Trainer(
+#     accelerator="auto",
+#     max_epochs=epoch,
+#     deterministic=True,
+# )
 trainer.fit(model_2, dl_2)
 trainer.test(model_2, dl_2)
 c_conv_2 = model_2(c_2_in)
