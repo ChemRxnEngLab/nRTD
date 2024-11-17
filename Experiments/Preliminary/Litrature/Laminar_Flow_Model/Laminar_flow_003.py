@@ -28,8 +28,8 @@ c_out = c_out_full[valid_indices]
 tau_dir = os.path.join(base_dir, f'tau_combined_{tau}')
 os.makedirs(tau_dir, exist_ok=True)
 
-np.save(os.path.join(tau_dir, 'time_combined.npy'), t_conv)
-np.save(os.path.join(tau_dir, 'concentration_combined.npy'), c_out)
+# np.save(os.path.join(tau_dir, 'time_combined.npy'), t_conv)
+# np.save(os.path.join(tau_dir, 'concentration_combined.npy'), c_out)
 
 
 ax1.plot(t, E, label=f'tau {tau}')

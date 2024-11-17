@@ -319,11 +319,11 @@ model = RTDModule(
         use_scheduler=True,
         scheduler_kwargs={"factor": 0.5, "patience": 80},)
 
-# wandb_logger = pl_loggers.WandbLogger(
-# project="nRTD",
-# log_model=True,
-# reinit=True
-# )
+wandb_logger = pl_loggers.WandbLogger(
+project="nRTD",name=f'epoch_{epoch}_1st',
+log_model=True,
+reinit=True
+)
 
 c_conv = model(c_1_in)
 print("c_1_in",c_1_in.shape)
@@ -336,8 +336,8 @@ ds = TensorDataset(c_1_in.float(), c_out_adl.float())
 print("c_1_in.float()",c_1_in.float().shape)
 print("c_out_l.float()",c_out_adl.float().shape)
 dl = DataLoader(ds, batch_size=1, shuffle=True)
-#trainer = pl.Trainer(accelerator="auto", max_epochs=epoch, logger=wandb_logger,deterministic=True)
-trainer = pl.Trainer(accelerator="auto", max_epochs=epoch,deterministic=True)
+trainer = pl.Trainer(accelerator="auto", max_epochs=epoch, logger=wandb_logger,deterministic=True)
+# trainer = pl.Trainer(accelerator="auto", max_epochs=epoch,deterministic=True)
 trainer.fit(model, dl)
 trainer.test(model, dl)
 c_conv = model(c_1_in)
@@ -390,10 +390,11 @@ model_2 = RTDModule(
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},)
 
-# wandb_logger = pl_loggers.WandbLogger(
-#     project="nRTD",
-#     log_model=True,
-#     reinit=True)
+wandb_logger = pl_loggers.WandbLogger(
+project="nRTD",name=f'epoch_{epoch}_2nd',
+log_model=True,
+reinit=True
+)
 
 c_conv_2 = model_2(c_2_in)
 print(c_conv_2.shape)
@@ -408,28 +409,26 @@ print(t_E_2.shape)
 ds_2 = TensorDataset(c_2_in.float(), c_out_ch.float())
 dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 
-# trainer = pl.Trainer(
-#     accelerator="auto",
-#     max_epochs=epoch,
-#     logger=wandb_logger,
-#     deterministic=True,
-# )
 trainer = pl.Trainer(
     accelerator="auto",
     max_epochs=epoch,
+    logger=wandb_logger,
     deterministic=True,
 )
+# trainer = pl.Trainer(
+#     accelerator="auto",
+#     max_epochs=epoch,
+#     deterministic=True,
+# )
 
 trainer.fit(model_2, dl_2)
 trainer.test(model_2, dl_2)
 c_conv_2 = model_2(c_2_in)
 c_conv_2_results[n_2_out] = c_conv_2.detach().numpy()  
-
 t_conv[0, 0, :].numpy(),
 c_conv[0, 0, :].detach().numpy()
 t_conv_values = t_conv_Adler.numpy() if isinstance(t_conv_Adler, torch.Tensor) else t_conv_Adler
 c_out_values = c_out_Adler.squeeze().numpy() if isinstance(c_out_Adler, torch.Tensor) else c_out_Adler.squeeze()
-
 fig, ax1 = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
 ax1.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), label="Input Signal", color="blue", linestyle="--")
 ax1.plot(t_out_ch.squeeze().numpy(), c_out_ch.squeeze().numpy(), label="Expected Output", color="green")
@@ -464,27 +463,27 @@ plt.show()
 
 
 E_Adler_normalized = E_Adler / np.max(E_Adler)
-E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
-E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
-E_learned_1 /= np.max(E_learned_1)
-E_learned_2 /= np.max(E_learned_2)
+# E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
+# #E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
+# E_learned_1 /= np.max(E_learned_1)
+#E_learned_2 /= np.max(E_learned_2)
 
 
 #t_adler = t_values_Adler if isinstance(t_values_Adler, np.ndarray) else t_values_Adler.numpy()
-t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
-t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
+t_learned_1 = np.linspace(0, t_e, len(E))
+t_learned_2 = np.linspace(0, t_e_2, len(E_2))
 
 
 plt.figure(figsize=(10, 6))
 # plt.plot(t_l, E_laminar, label="E Laminar Layer 1", color="blue")
 #plt.plot(t_l_a, E_laminar_a_normalized, label="E Laminar Layer 2", color="green")
 # plt.plot(t_adler, E_Adler_normalized, label="E Adler", color="orange")
-plt.plot(t_learned_1, E_learned_1, label="$E_1$", color="black")
-plt.plot(t_learned_2, E_learned_2, label="$E_2$", color="red")
+plt.plot(t_learned_1, E, label="$E_1$", color="black")
+plt.plot(t_learned_2, E_2, label="$E_2$", color="red")
 print("t_learned_1",t_learned_1.shape)
 print("t_learned_2",t_learned_2.shape)
-print("E_learned_1", E_learned_1.shape)
-print("E_learned_2", E_learned_2.shape)
+#print("E_learned_1", E_learned_1.shape)
+#print("E_learned_2", E_learned_2.shape)
 # Set plot labels and legend
 plt.xlabel("Time")
 plt.ylabel("E")
