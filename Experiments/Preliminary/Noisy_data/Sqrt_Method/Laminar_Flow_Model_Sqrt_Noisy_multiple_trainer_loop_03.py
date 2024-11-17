@@ -3,17 +3,21 @@ from torch.utils.data import TensorDataset, DataLoader
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-sys.path.append("/Users/tuanaoyuncu/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
+sys.path.append(module_path)
 from nRTD import RTDModule
 import lightning.pytorch as pl
 from lightning.pytorch import loggers as pl_loggers
 import wandb
+import os
 
 
-if wandb.run is not None:
-    wandb.finish()
+#if wandb.run is not None:
+#    wandb.finish()
+os.chdir(r"D:\Tuana\nRTD\Experiments\Preliminary\Noisy_data\Sqrt_Method")
+
     
-epoch=10
+epoch=10000
 n_disc = 100
 t_input = torch.linspace(0, 30, n_disc)
 c_in = torch.zeros((100, 1, n_disc))
@@ -24,16 +28,25 @@ test_file_numbers = range(30, 100)
 def load_data(file_numbers):
     c_out_list = []
     t_conv_list = []
-    for file_num in file_numbers:
+    dataset_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Noisy_data\Sqrt_Method\Tau_5.0_Laminar_Flow_Model_Dataset"
+
+    for i in file_numbers: 
+        t_conv_path = os.path.join(dataset_dir, f"Tau_5.0_Disc_200_time_Dataset_{i}.npy")
+        c_out_path = os.path.join(dataset_dir, f"Tau_5.0_Disc_200_concentration_noisy_Dataset_{i}.npy")
         
-        t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method/Tau_5.0_Laminar_Flow_Model_Dataset/Tau_5.0_Disc_200_time_Dataset_{file_num:1d}.npy"
-        c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method/Tau_5.0_Laminar_Flow_Model_Dataset/Tau_5.0_Disc_200_concentration_noisy_Dataset_{file_num:1d}.npy"
+        if not (os.path.exists(t_conv_path) and os.path.exists(c_out_path)):
+            print(f"Warning: Files for dataset {i} do not exist.")
+            continue
+
         t_conv = torch.tensor(np.load(t_conv_path), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
         c_out = torch.tensor(np.load(c_out_path), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
         t_conv_list.append(t_conv)
         c_out_list.append(c_out)
-   
-    return torch.cat(t_conv_list, dim=0), torch.cat(c_out_list, dim=0)
+
+
+    t_conv_tensor = torch.cat(t_conv_list, dim=0)
+    c_out_tensor = torch.cat(c_out_list, dim=0)
+    return t_conv_tensor, c_out_tensor
 
 t_conv_test, c_out_test = load_data(test_file_numbers)
 test_ds = TensorDataset(c_in[30:100], c_out_test)  
@@ -53,19 +66,18 @@ for num_train_files in train_file_configurations:
         scheduler_kwargs={"factor": 0.5, "patience": 80},
     )
     wandb_logger = pl_loggers.WandbLogger(
-        project="nRTD",
-        log_model=True,
-        name=f"Training_with_{num_train_files}_files",
-        reinit=True
+        project="nRTD",  # Name of your project on wandb
+        log_model=True,   # Log models
     )
-    
+
     trainer = pl.Trainer(
         accelerator="auto",
         max_epochs=epoch,
         logger=wandb_logger,
         deterministic=True,
-        log_every_n_steps=1 
     )
+
+    
     
     print(f"Training with {num_train_files} training files.")
     trainer.fit(model, train_dl)
