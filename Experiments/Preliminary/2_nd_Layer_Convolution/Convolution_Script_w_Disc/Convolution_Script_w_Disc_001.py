@@ -28,8 +28,8 @@ coefficients = {
     'alpha_val': 0.2}
 
 epoch_1=15000
-epoch_2=55000
-learning_rate=1e-5
+epoch_2=500000
+learning_rate=1e-3
 
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
 n_in_1, n_out_1, n_out_2, n_e_1, n_e_2 = sp.symbols("n_in_1 n_out_1 n_out_2 n_e_1 n_e_2", positive=True, real=True)
@@ -335,15 +335,15 @@ trainer.test(model_2, dl_2)
 c_conv_2 = model_2(c_2_in)
 E_2 = model_2.net.E[0]
 c_conv_2_results[n_2_out] = c_conv_2.detach().numpy()
-E = model_2.net.E[0]
+#E = model_2.net.E[0]
 t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
-E = E / E.max()
+E_2 = E_2 / E_2.max()
 ####Plotting
 fig, ax1 = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
 ax1.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), label="Input Signal", color="blue", linestyle="--")
 ax1.plot(t_out_l_a.squeeze().numpy(), c_out_l_a.squeeze().numpy(), label="Expected Output", color="green")
 ax1.plot(t_out_l_a.squeeze().numpy(), c_conv_2.detach().squeeze().numpy(), label="Predicted Output", color="red", linestyle="--")
-ax1.plot(t_E_2, E, label="E_predict", color="purple", linestyle="--")
+ax1.plot(t_E_2, E_2, label="E_predict", color="purple", linestyle="--")
 ax1.set_xlim((0, 30))
 ax1.set_ylim((0, 1.1))
 ax1.set_ylabel('Concentration')
