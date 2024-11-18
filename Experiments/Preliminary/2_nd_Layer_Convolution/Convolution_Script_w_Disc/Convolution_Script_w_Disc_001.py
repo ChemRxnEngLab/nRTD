@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
@@ -28,7 +28,8 @@ coefficients = {
     'alpha_val': 0.2}
 
 epoch_1=15000
-epoch_2=20000
+epoch_2=55000
+learning_rate=1e-5
 
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
 n_in_1, n_out_1, n_out_2, n_e_1, n_e_2 = sp.symbols("n_in_1 n_out_1 n_out_2 n_e_1 n_e_2", positive=True, real=True)
@@ -233,13 +234,13 @@ print("t_conv shape:", t_conv.shape)
  
 model = RTDModule(
         kernel_size=n_e_1,
-        learning_rate=1e-3,
+        learning_rate=learning_rate,
         use_scheduler=True,
         scheduler_kwargs={"factor": 0.5, "patience": 80},
     )
 wandb_logger = pl_loggers.WandbLogger(
 project="nRTD",
-log_model=True,name=f'epoch_{epoch_1}_1st',
+log_model=True,name=f'learning_rate_{learning_rate}_1st',
 reinit=True
 )
 
@@ -291,7 +292,7 @@ wandb.finish()
 ###Second CNN
 wandb_logger = pl_loggers.WandbLogger(
     project="nRTD",
-    log_model=True,name=f'epoch_{epoch_2}_2nd',
+    log_model=True,name=f'learning_rate_{learning_rate}_2nd',
     reinit=True
 )
 c_conv_2_results = {}
@@ -307,7 +308,7 @@ print(t_out_l_a.shape)
 # Initialize the model
 model_2 = RTDModule(
     kernel_size=n_e_2,
-    learning_rate=1e-3,
+    learning_rate=learning_rate,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
