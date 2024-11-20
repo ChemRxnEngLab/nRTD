@@ -1,0 +1,100 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Apr 24 21:50:14 2024
+
+@author: tuanaoyuncu
+"""
+
+from typing import Any, Optional
+import torch
+import lightning.pytorch as pl
+from . import rtd_net_4 as rtd_net
+
+
+class RTDModule(pl.LightningModule):
+    def __init__(
+        self,
+        kernel_sizes: list[int],
+        kernel_times: Optional[list[tuple[float, float]]] = None,
+        padding_mode: str = "replicate",
+        learning_rate: float = 1e-3,
+        use_scheduler: bool = False,
+        scheduler_kwargs: Optional[dict[str, Any]] = None,
+    ):
+        super().__init__()
+        self.learning_rate = learning_rate
+        self.kernel_sizes = kernel_sizes
+        self.kernel_times = kernel_times
+        self.padding_mode = padding_mode
+        self.net = rtd_net.RTDNet(
+            kernel_sizes=self.kernel_sizes,
+            padding_mode=padding_mode,
+            kernel_times=self.kernel_times,
+        )
+
+        if use_scheduler and scheduler_kwargs is None:
+            raise ValueError(
+                "scheduler_kwargs must be provided when use_scheduler is True."
+            )
+
+        self.use_scheduler = use_scheduler
+        self.scheduler_kwargs: dict[str, Any] = scheduler_kwargs  # type: ignore
+
+        self.save_hyperparameters(
+            ignore=[
+                "padding_mode",
+            ],
+        )
+
+    def forward(self, X: torch.Tensor) -> torch.Tensor:
+        return self.net(X)
+
+    def training_step(self, batch, batch_idx):
+        X, y = batch
+        ### just a test for clamping the E
+        self.net.fn[0].weight.data.clamp_(min=0)
+        y_hat = self(X)
+        loss = torch.nn.functional.mse_loss(y_hat, y)
+        self.log("train/loss", loss)
+        return loss
+
+    # def training_step(self, batch, batch_idx):
+    #     X, y = batch
+    #     X_arranged = X[:, :, :50]
+    #     y_arranged = y[:, :, :50]
+    #     y_hat_arranged = self(X_arranged)
+    #     y_hat_arranged = y_hat_arranged[:, :, :50]
+    #     loss = torch.nn.functional.mse_loss(y_hat_arranged, y_arranged)
+    #     self.log("train/loss", loss)
+    #     return loss
+
+    def validation_step(self, batch, batch_idx):
+        X, y = batch
+        y_hat = self(X)
+        loss = torch.nn.functional.mse_loss(y_hat, y)
+        self.log("val/loss", loss)
+        # return loss
+
+    def test_step(self, batch, batch_idx):
+        X, y = batch
+        y_hat = self(X)
+        loss = torch.nn.functional.mse_loss(y_hat, y)
+        self.log("test/loss", loss)
+        # return loss
+
+    def configure_optimizers(self) -> dict[str, Any]:  # type: ignore
+        _optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
+        if not self.use_scheduler:
+            ret_dict = {"optimizer": _optimizer}
+        else:
+            _scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+                _optimizer,
+                **self.scheduler_kwargs,
+            )
+            ret_dict = {
+                "optimizer": _optimizer,
+                "lr_scheduler": _scheduler,
+                "monitor": "train/loss",
+            }
+        return ret_dict
