@@ -130,10 +130,3 @@ wandb/
 **/lightning_logs
 **.ckpt
 .DS_Store
-*.npy
-*.png
-*.py
-Experiments/Preliminary/Disc_variation/Disc_variation.py
-Experiments/Preliminary/2_nd_Layer_Convolution/2nd_Layer.py
-Experiments/Preliminary/Noisy_data/Sqrt_Method/Laminar_Flow_Model_Sqrt_Noisy_multiple_trainer_loop_03.py
-Experiments/Preliminary/Noisy_data/Sqrt_Method/Laminar_Flow_Model_Sqrt_Noisy_multiple_trainer_loop_03.py
