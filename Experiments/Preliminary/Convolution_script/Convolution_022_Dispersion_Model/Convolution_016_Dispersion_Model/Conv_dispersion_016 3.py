@@ -8,7 +8,7 @@ import lightning.pytorch as pl
 import matplotlib.pyplot as plt
 import numpy as np
 import wandb
-from nrtd import RTDModule
+from nRTD import RTDModule
 from lightning.pytorch import loggers as pl_loggers
 
 
@@ -22,8 +22,8 @@ t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=to
 c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
 
-n_disc = 349
-t_input = torch.linspace(0, 70, n_disc)
+n_disc = 250
+t_input = torch.linspace(0, 75, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
 c_in[::2, :, t_input > 1] = 1
 c_in[1::2, :, t_input < 1] = 1
@@ -38,7 +38,7 @@ print(f"c_out size: {c_out.size()}")
 print(f"t_conv size: {t_conv.size()}")
 
 model = RTDModule(
-    kernel_size=150,
+    kernel_size=249,
     learning_rate=10e-3,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
@@ -46,7 +46,7 @@ model = RTDModule(
 
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(0, 0, model.kernel_size)
+t_E = torch.linspace(0, 75, model.kernel_size)
 E = E / E.max()
 j = 0
 
@@ -91,7 +91,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="gpu" if torch.cuda.is_available() else "cpu",
-    max_epochs=15000,
+    max_epochs=10000,
     logger=wandb_logger,
     deterministic=True,
 )
@@ -99,7 +99,7 @@ trainer.fit(model, dl)
 trainer.test(model, dl)
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(0, 30, model.kernel_size)
+t_E = torch.linspace(0, 75, model.kernel_size)
 E = E / E.max()
 t_E_np = t_E.numpy()
 

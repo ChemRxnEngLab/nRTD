@@ -25,11 +25,12 @@ t_conv_full = np.linspace(t[0] + t[0], t[-1] + t[-1], len(c_out_full))
 valid_indices = t_conv_full <= 60
 t_conv = t_conv_full[valid_indices]
 c_out = c_out_full[valid_indices]
-tau_dir = os.path.join(base_dir, f'tau_combined_{tau}')
+tau_dir = os.path.join(base_dir, f'tau_{tau}_disc_200')
 os.makedirs(tau_dir, exist_ok=True)
-
-# np.save(os.path.join(tau_dir, 'time_combined.npy'), t_conv)
-# np.save(os.path.join(tau_dir, 'concentration_combined.npy'), c_out)
+print("c_out",c_out.shape)
+print("t_conv",t_conv.shape)
+np.save(os.path.join(tau_dir, 'time.npy'), t_conv)
+np.save(os.path.join(tau_dir, 'concentration.npy'), c_out)
 
 
 ax1.plot(t, E, label=f'tau {tau}')

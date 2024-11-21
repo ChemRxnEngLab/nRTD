@@ -28,7 +28,7 @@ coefficients = {
     "beta_val": np.array([0.1]),
     "alpha_val": 0.2,
 }
-epoch = 10000
+epoch = 1
 
 base_dir = "Experiments/Preliminary/2_nd_Layer_Convolution"
 n_in_1, n_out_1, n_out_2, n_e_1, n_e_2 = sp.symbols(
