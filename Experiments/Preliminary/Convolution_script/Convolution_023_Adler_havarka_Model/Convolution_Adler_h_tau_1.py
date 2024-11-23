@@ -25,9 +25,9 @@ if wandb.run is not None:
 # module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 # sys.path.append(module_path)
 
-#adler_dir = r'D:\Tuana\nRTD\Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1_2210'
+adler_dir = r'D:\Tuana\nRTD\Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1_2210'
 
-adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1_2210'
+#adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1_2210'
 epoch=100000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
@@ -65,9 +65,9 @@ sub_dict = {
     # n_out_1,
     n_out_1: 200,
     # n_e_1,
-    t_i: 30,
+    t_i: 40,
     t_o:70,
-    t_e_1:40,
+    t_e_1:30,
 }
 result_dict = {}
 
