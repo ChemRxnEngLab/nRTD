@@ -60,8 +60,8 @@ for result in results:
     valid_indices = t_conv_full <= 60
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
-    filename_time = f'time_J{J_val}_tau{tau_val}_alpha{alpha_val}.npy'
-    filename_conc = f'concentration_J{J_val}_tau{tau_val}_alpha{alpha_val}.npy'
+    filename_time = f'time_J{J_val}_tau{tau_val}_alpha{alpha_val}_200.npy'
+    filename_conc = f'concentration_J{J_val}_tau{tau_val}_alpha{alpha_val}_200.npy'
     np.save(os.path.join(base_dir, filename_time), t_conv)
     np.save(os.path.join(base_dir, filename_conc), c_out)
     print(f"integral E_t: {np.trapz(E_t, t)}")

@@ -5,7 +5,7 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import matplotlib.pyplot as plt
 import numpy as np
-from nrtd import RTDModule
+from nRTD import RTDModule
 
 module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 sys.path.append(module_path)
