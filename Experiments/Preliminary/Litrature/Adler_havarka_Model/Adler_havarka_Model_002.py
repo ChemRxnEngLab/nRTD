@@ -31,7 +31,7 @@ def compute_inverse_laplace(coefficients, t_values):
                 
     return results
 coefficients = {
-    'tau_a_val': np.array([3]),   
+    'tau_a_val': np.array([1,3]),   
     'tau_p_val': np.array([2]), 
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2           
@@ -55,7 +55,7 @@ for result in results:
     valid_indices = t_conv_full <= 70
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
-    unified_dir = os.path.join(base_dir, f'tau_a_val_{tau_a_val}_tau_p_val_{tau_p_val}_tau_m_val_{tau_m_val}_beta_val_{beta_val}_2110')
+    unified_dir = os.path.join(base_dir, f'tau_a_val_{tau_a_val}_tau_p_val_{tau_p_val}_tau_m_val_{tau_m_val}_beta_val_{beta_val}_2210')
     os.makedirs(unified_dir, exist_ok=True)
     np.save(os.path.join(unified_dir, 'time.npy'), t_conv)
     np.save(os.path.join(unified_dir, 'concentration.npy'), c_out)
