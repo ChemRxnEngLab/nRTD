@@ -22,9 +22,11 @@ from sympy import ceiling
 if wandb.run is not None:
     wandb.finish()
 
+#tau_5_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Unified_time_delay'
 tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Unified_time_delay'
 
-epoch=15000
+
+epoch=150000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )

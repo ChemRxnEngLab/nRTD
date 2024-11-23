@@ -2,16 +2,15 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-# module_path = r"D:\Tuana\nRTD\lib"
-# sys.path.append(module_path)
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-from nRTD import RTDModule
+from nRTD.rtd_fitting import RTDModule 
+#from nRTD import RTDModule
 from lightning.pytorch import loggers as pl_loggers
 import os
 import datetime
@@ -29,8 +28,8 @@ coefficients = {
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2}
 
-epoch_1=1
-epoch_2=1
+epoch_1=15000
+epoch_2=15000
 learning_rate=1e-3
 
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
@@ -213,7 +212,7 @@ print(f"Shape of t_values_Adler: {t_values_Adler.shape}")
 print(f"Shape of E_Adler_normalized: {E_Adler_normalized.shape}")
 print(f"Shape of c_out_l_a for discretization: {c_out_l_a.shape}")
 print(f"Shape of t_conv_l_a for discretization: {t_conv_l_a.shape}")
-###############################################################################
+
 
 #NN
 c_conv_results = {}
@@ -290,127 +289,8 @@ ax1.set_xlabel('Time')
 ax1.legend()
 plt.show()
 wandb.finish()
-###############################################################################
-#Adler Model, with the 1st layer's output as input fro the second model 
-def compute_inverse_laplace(coefficients, t_values):
-    s, t = sp.symbols('s t')
-    alpha = coefficients['alpha_val']
-    results = []  
-    for tau_a_val in coefficients['tau_a_val']:  
-        for tau_p_val in coefficients['tau_p_val']:
-            for beta_val in coefficients['beta_val']:
-                tau_m_val = (beta_val * (1 - alpha)) / alpha
-                F_s = (sp.exp(-tau_p_val * s)) / (1 + beta_val + tau_a_val * s - (beta_val / (1 + tau_m_val * s)))
-                f_t = sp.inverse_laplace_transform(F_s, s, t)
-                f_t_numeric = sp.lambdify(t, f_t, modules="numpy")
-                E_t = f_t_numeric(t_values)
-                results.append({
-                    'tau_a_val': tau_a_val,
-                    'tau_p_val': tau_p_val,
-                    'tau_m_val': tau_m_val,
-                    'beta_val': beta_val,
-                    'E_t': E_t
-                })
-    return results
 
-t_values_Adler = np.linspace(0, t_adl, n_2_out, endpoint=True)
-results = compute_inverse_laplace(coefficients, t_values_Adler)
-adler_dir = os.path.join(base_dir, f'Adler_tau_a')
-os.makedirs(adler_dir, exist_ok=True)
-
-for result in results:
-    tau_a_val = result['tau_a_val']
-    tau_p_val = result['tau_p_val']
-    tau_m_val = result['tau_m_val']
-    beta_val = result['beta_val']
-    
-    E_Adler = result['E_t']
-    if E_Adler.shape[0] != t_values_Adler.shape[0]:
-        if E_Adler.shape[0] > t_values_Adler.shape[0]:
-            E_Adler = E_Adler[:len(t_values_Adler)]
-        else:
-            E_Adler = np.pad(E_Adler, (0, len(t_values_Adler) - len(E_Adler)), 'constant')
-        E_Adler=E_Adler/E_Adler.max()
-    E_Adler_normalized=E_Adler/np.sum(E_Adler)
-    # print(f"Shape of E_Adler_normalized: {E_Adler_normalized.shape}")
-
-
-c_out_full_Adler = np.convolve(c_conv_reshaped, E_Adler_normalized, mode="full")
-t_conv_full_Adler = np.linspace(t_values_Adler[0] + t_values_Adler[0], t_values_Adler[-1] +t_values_Adler[-1], len(c_out_full_Adler))
-valid_indices = t_conv_full_Adler <= t_adl # Adjust time limit as needed
-t_conv_Adler = t_conv_full_Adler[valid_indices]
-c_out_Adler = c_out_full_Adler[valid_indices]
-
-
-print(f"Shape of t_conv_Adler: {t_conv_Adler.shape}")
-print(f"Shape of c_out_Adler: {c_out_Adler.shape}")
-print(f"Shape of t_values_Adler: {t_values_Adler.shape}")
-print(f"Shape of E_Adler_normalized: {E_Adler_normalized.shape}")
-print(f"Shape of c_conv for discretization: {c_conv.shape}")
-print(f"Shape of c_conv_reshaped for discretization: {c_conv_reshaped.shape}")
-##############################################################################
-##Second CNN, the input is coming from the NN and the predicted output(error) is coming from the theory
-# wandb_logger = pl_loggers.WandbLogger(
-#     project="nRTD",
-#     log_model=True,name=f'learning_rate_{learning_rate}_2nd',
-#     reinit=True
-# )
-# c_conv_2_results = {}
-# t_2_in=torch.tensor(t_conv_l).float()
-# c_2_in=torch.tensor(c_out_l).float()
-# print("c_out_l",c_out_l.shape)
-# c_out_l_a=torch.tensor(c_out_Adler).float().unsqueeze(0).unsqueeze(0)
-# t_out_l_a=torch.tensor(t_conv_Adler).float().unsqueeze(0).unsqueeze(0)
-# print(t_2_in.shape)
-# print(c_2_in.shape)
-# print(c_out_l_a.shape)
-# print(t_out_l_a.shape)
-# # Initialize the model
-# model_2 = RTDModule(
-#     kernel_size=n_e_2,
-#     learning_rate=learning_rate,
-#     use_scheduler=True,
-#     scheduler_kwargs={"factor": 0.5, "patience": 80},
-# )
-# c_conv_2 = model_2(c_2_in)
-# E = model_2.net.E[0]
-# t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
-# E = E / E.max()
-# ds_2 =TensorDataset(c_2_in.float(), c_out_l_a.float())
-# dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
-
-# trainer = pl.Trainer(
-#     accelerator="auto",
-#     max_epochs=epoch_2,
-#     logger=wandb_logger,
-#     deterministic=True,
-# )
-# # trainer = pl.Trainer(
-# #     accelerator="auto",
-# #     max_epochs=epoch,
-# #     deterministic=True,
-# # )
-# trainer.fit(model_2, dl_2)
-# trainer.test(model_2, dl_2)
-# c_conv_2 = model_2(c_2_in)
-# E_2 = model_2.net.E[0]
-# c_conv_2_results[n_2_out] = c_conv_2.detach().numpy()
-# #E = model_2.net.E[0]
-# t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
-# E_2 = E_2 / E_2.max()
-# ####Plotting
-# fig, ax1 = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
-# ax1.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), label="Input Signal", color="blue", linestyle="--")
-# ax1.plot(t_out_l_a.squeeze().numpy(), c_out_l_a.squeeze().numpy(), label="Expected Output", color="green")
-# ax1.plot(t_out_l_a.squeeze().numpy(), c_conv_2.detach().squeeze().numpy(), label="Predicted Output", color="red", linestyle="--")
-# ax1.plot(t_E_2, E_2, label="E_predict", color="purple", linestyle="--")
-# ax1.set_xlim((0, 30))
-# ax1.set_ylim((0, 1.1))
-# ax1.set_ylabel('Concentration')
-# ax1.set_xlabel('Time')
-# ax1.legend()
-################################################################################
-##Second CNN, the input and the predicted output both is coming from the NN 
+###Second CNN
 wandb_logger = pl_loggers.WandbLogger(
     project="nRTD",
     log_model=True,name=f'learning_rate_{learning_rate}_2nd',
@@ -470,67 +350,7 @@ ax1.set_ylim((0, 1.1))
 ax1.set_ylabel('Concentration')
 ax1.set_xlabel('Time')
 ax1.legend()
-################################################################################
-###Second NN, the input is coming from the theory
-# wandb_logger = pl_loggers.WandbLogger(
-#     project="nRTD",
-#     log_model=True,name="input as theo lam 2nd",
-#     reinit=True
-# )
-# c_conv_2_results = {}
-# t_2_in=t_conv_l.float()
-# c_2_in=c_out_l.float()
-# print("c_out_l",c_out_l.shape)
-# c_out_l_a=torch.tensor(c_out_Adler).float().unsqueeze(0).unsqueeze(0)
-# t_out_l_a=torch.tensor(t_conv_Adler).float().unsqueeze(0).unsqueeze(0)
-# print(t_2_in.shape)
-# print(c_2_in.shape)
-# print(c_out_l_a.shape)
-# print(t_out_l_a.shape)
-# # Initialize the model
-# model_2 = RTDModule(
-#     kernel_size=n_e_2,
-#     learning_rate=learning_rate,
-#     use_scheduler=True,
-#     scheduler_kwargs={"factor": 0.5, "patience": 80},
-# )
-# c_conv_2 = model_2(c_2_in)
-# E = model_2.net.E[0]
-# t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
-# E = E / E.max()
-# ds_2 =TensorDataset(c_2_in.float(), c_out_l_a.float())
-# dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 
-# trainer = pl.Trainer(
-#     accelerator="auto",
-#     max_epochs=epoch_2,
-#     logger=wandb_logger,
-#     deterministic=True,
-# )
-# # trainer = pl.Trainer(
-# #     accelerator="auto",
-# #     max_epochs=epoch,
-# #     deterministic=True,
-# # )
-# trainer.fit(model_2, dl_2)
-# trainer.test(model_2, dl_2)
-# c_conv_2 = model_2(c_2_in)
-# E_2 = model_2.net.E[0]
-# c_conv_2_results[n_2_out] = c_conv_2.detach().numpy()
-# #E = model_2.net.E[0]
-# t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
-# E_2 = E_2 / E_2.max()
-# ####Plotting
-# fig, ax1 = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
-# ax1.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), label="Input Signal", color="blue")
-# ax1.plot(t_out_l_a.squeeze().numpy(), c_out_l_a.squeeze().numpy(), label="Expected Output", color="green")
-# ax1.plot(t_out_l_a.squeeze().numpy(), c_conv_2.detach().squeeze().numpy(), label="Predicted Output", color="red", linestyle="--")
-# ax1.plot(t_E_2, E_2, label="E_predict", color="purple", linestyle="--")
-# ax1.set_xlim((0, 30))
-# ax1.set_ylim((0, 1.1))
-# ax1.set_ylabel('Concentration')
-# ax1.set_xlabel('Time')
-# ax1.legend()
 #### General Plotting
 E_Adler_normalized = E_Adler / np.max(E_Adler)
 E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
