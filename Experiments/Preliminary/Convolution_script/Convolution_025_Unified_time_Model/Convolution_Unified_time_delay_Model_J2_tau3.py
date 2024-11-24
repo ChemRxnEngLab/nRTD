@@ -32,7 +32,7 @@ tau_5_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Unified_time_delay
 #tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Unified_time_delay'
 
 
-epoch=18000
+epoch=20000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
