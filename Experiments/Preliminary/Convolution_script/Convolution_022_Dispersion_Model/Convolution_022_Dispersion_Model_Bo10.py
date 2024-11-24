@@ -33,7 +33,7 @@ sys.path.append(module_path)
 tau_5_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Dispersion_Model\Bo10_200disc_140s'
 #tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo3_200disc_140s'
 
-epoch=35000
+epoch=33000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -227,7 +227,7 @@ plt.show()
 
 #save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model"
 save_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model'
-unified_dir = os.path.join(save_dir, f'Bo_{10}_2411')
+unified_dir = os.path.join(save_dir, f'Bo_{10}')
 os.makedirs(unified_dir, exist_ok=True)
 
 predicted_E = E
@@ -241,8 +241,8 @@ np.save(os.path.join(unified_dir, 't_E_expected_Bo_10.npy'), expected_time)
 print("saved under:", unified_dir)
 # predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_016_Dispersion_Model/Bo_10/E_predicted_Bo_1.npy')
 # predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_016_Dispersion_Model/Bo_10/t_E_predicted_Bo_1.npy')
-predicted_E = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_10\E_predicted_Bo_1.npy')
-predicted_time = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_10\t_E_predicted_Bo_1.npy')
+predicted_E = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_10\E_predicted_Bo_10.npy')
+predicted_time = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_10\t_E_predicted_Bo_10.npy')
 plt.plot(predicted_time, predicted_E, label='$E_{CNN}$', color='orange')
 plt.plot(expected_time, expected_E, label='$E_{th,disp}$', color='purple', linestyle='--')
 plt.xlabel('$t$ / $s$')
