@@ -22,11 +22,11 @@ from sympy import ceiling
 if wandb.run is not None:
     wandb.finish()
 
-#tau_5_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Unified_time_delay'
-tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Unified_time_delay'
+tau_5_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Unified_time_delay'
+#tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Unified_time_delay'
 
 
-epoch=35000
+epoch=30000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -152,7 +152,7 @@ dl = DataLoader(ds, batch_size=20, shuffle=True)
 # wandb.init()
 wandb_logger = pl_loggers.WandbLogger(
     project="nRTD",
-    log_model=True
+    log_model=True,name="J2T1"
 )
 
 trainer = pl.Trainer(
@@ -192,7 +192,7 @@ plt.plot(
     color="red",
 )
 
-t_plot = torch.linspace(0, 25, 100).numpy()
+t_plot = torch.linspace(0, t_e_1, n_e_1).numpy()
 
 E_expected=3.24642*np.exp(-2.34833*t_plot)*t_plot+0.0392897* np.exp(-0.851669 *t_plot) *t_plot - 0.477252 *np.exp(-2.34833* t_plot) + 0.477252* np.exp(-0.851669 *t_plot)
 
@@ -223,21 +223,21 @@ for i in range(c_out.size(1)):
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
         label=r"$x_{(t)}$",
-        color=ICIWcolors.KELLYGREEN
+        color=ICIWcolors.DRAB
     )
 ax1.plot(
     t_conv[0, 0, :].numpy(),
     c_conv[0, 0, :].detach().numpy(),
     label=r"$\hat{x}_{(t)}$",
-    color=ICIWcolors.FLAME,
+    color="purple",
     linestyle="--"
 )
 ax1.set_ylabel(r"$x$ / $1$", )
 ax1.legend(loc='best')
 ax1.set_xlim((0, 20))  
 ax1.set_ylim((-0.1, 1.1))  
-ax2.plot(t_E, E, label=r"$\hat{E}_{(t)}$", color=ICIWcolors.CRIMSON, linestyle="--")
-ax2.plot(t_E, E_expected, label=r"$E_{(t)}$", color="purple")
+ax2.plot(t_E, E_expected, label=r"$E_{(t)}$", color=ICIWcolors.KELLYGREEN)
+ax2.plot(t_E, E, label=r"$\hat{E}_{(t)}$", color="black", linestyle="--")
 ax2.set_xlabel(r"$t$ / $s$")
 ax2.set_ylabel(r"$E$ / $1$")
 ax2.legend(loc='best')
