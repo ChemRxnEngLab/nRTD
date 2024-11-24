@@ -18,6 +18,12 @@ import os
 import datetime
 import sympy as sp
 from sympy import ceiling
+import matplotlib.pyplot as plt
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
+from ICIW_Plots import make_square_ax, cm2inch
+from ICIW_Plots import make_rect_ax
+import datetime
 
 if wandb.run is not None:
     wandb.finish()
@@ -27,7 +33,7 @@ sys.path.append(module_path)
 tau_5_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Dispersion_Model\Bo3_200disc_140s'
 #tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo3_200disc_140s'
 
-epoch=100000
+epoch=1
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -178,7 +184,7 @@ E = E / E.max()
 t_E_np = np.linspace(0, 75, 100)
 
 def expected_formula(t):
-    return np.where(t > 0, 1/2*(np.sqrt(1/(np.pi*(t/5))))*np.exp(-(1*((1-(t/5))**2))/(4*(t/5))), 0)
+    return np.where(t > 0, 1/2*(np.sqrt(3/(np.pi*(t/5))))*np.exp(-(3*((1-(t/5))**2))/(4*(t/5))), 0)
 E_expected_np = expected_formula(t_E_np)
 # dt = t_E_np[1] - t_E_np[0]  
 E_expected_np /= np.sum(E_expected_np)
@@ -219,21 +225,24 @@ current_date = datetime.datetime.now().strftime("%Y%m%d")
 plt.savefig(f"Figure_plot_{current_date}.png", dpi=300)
 plt.show()
 
-save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model"
+#save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model"
+save_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model'
 unified_dir = os.path.join(save_dir, f'Bo_{1}')
 os.makedirs(unified_dir, exist_ok=True)
 
 predicted_E = E
 predicted_time = t_E.numpy()               
-expected_E = E_expected_np                   
+expected_E = E_expected_np              
 expected_time = t_E_np
 np.save(os.path.join(unified_dir, 'E_predicted_Bo_1.npy'), predicted_E)
 np.save(os.path.join(unified_dir, 't_E_predicted_Bo_1.npy'), predicted_time)
 np.save(os.path.join(unified_dir, 'E_expected_Bo_1.npy'), expected_E)
 np.save(os.path.join(unified_dir, 't_E_expected_Bo_1.npy'), expected_time)
 print("saved under:", unified_dir)
-predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_016_Dispersion_Model/Bo_1/E_predicted_Bo_1.npy')
-predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_016_Dispersion_Model/Bo_1/t_E_predicted_Bo_1.npy')
+# predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_016_Dispersion_Model/Bo_1/E_predicted_Bo_1.npy')
+# predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_016_Dispersion_Model/Bo_1/t_E_predicted_Bo_1.npy')
+predicted_E = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_1\E_predicted_Bo_1.npy')
+predicted_time = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_1\t_E_predicted_Bo_1.npy')
 plt.plot(predicted_time, predicted_E, label='$E_{CNN}$', color='orange')
 plt.plot(expected_time, expected_E, label='$E_{th,disp}$', color='purple', linestyle='--')
 plt.xlabel('$t$ / $s$')
@@ -245,3 +254,43 @@ plt.legend()
 current_date = datetime.datetime.now().strftime("%Y%m%d")
 plt.savefig(f"Figure_E_{current_date}.png", dpi=300)
 plt.show()
+
+import torch
+import matplotlib.pyplot as plt
+import numpy as np
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes
+import datetime
+plt.style.use("ICIWstyle")
+
+fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 12 * cm2inch))
+ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_{0(t)}$", color=ICIWcolors.CERULEAN)
+for i in range(c_out.size(1)):
+    ax1.plot(
+        t_conv[0, i, :].numpy(),
+        c_out[0, i, :].numpy(),
+        label=r"$x_{(t)}$",
+       color=ICIWcolors.DRAB
+    )
+ax1.plot(
+    t_conv[0, 0, :].numpy(),
+    c_conv[0, 0, :].detach().numpy(),
+    label=r"$\hat{x}_{(t)}$",
+    color="purple",
+    linestyle="--"
+)
+ax1.set_ylabel(r"$x$ / $1$", )
+ax1.legend(loc='best')
+ax1.set_xlim((0, 20))  
+ax1.set_ylim((-0.1, 1.1))  
+ax2.plot(t_E, E_expected_np, label=r"$E_{(t)}$", color=ICIWcolors.KELLYGREEN)
+ax2.plot(t_E, E, label=r"$\hat{E}_{(t)}$", color="black", linestyle="--")
+ax2.set_xlabel(r"$t$ / $s$")
+ax2.set_ylabel(r"$E$ / $1$")
+ax2.legend(loc='best')
+ax2.set_xlim((0, 20))  
+ax2.set_ylim((-0.1, 1.1)) 
+current_date = datetime.datetime.now().strftime("%Y%m%d")
+plt.savefig(f"Profiles_Bo3_{current_date}.png", dpi=300)
+plt.show()
+

@@ -18,6 +18,7 @@ import os
 import datetime
 import sympy as sp
 from sympy import ceiling
+from ICIW_Plots import make_square_ax, cm2inch
 
 if wandb.run is not None:
     wandb.finish()
@@ -26,7 +27,7 @@ if wandb.run is not None:
 
 laminar_model_dir='/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model'
 tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0_disc_200'
-epoch=15000
+epoch=17000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -238,3 +239,47 @@ plt.show()
 
 print(f"c_conv_in size: {t_E.numpy().shape}")
 print(f"c_conv_in_100 shape: {c_conv_in_50.shape}")
+
+import torch
+import matplotlib.pyplot as plt
+import numpy as np
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes
+import datetime
+from sympy import ceiling
+from ICIW_Plots import make_square_ax, cm2inch
+
+
+plt.style.use("ICIWstyle")
+
+fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 12 * cm2inch))
+ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_{0(t)}$", color=ICIWcolors.CERULEAN)
+for i in range(c_out.size(1)):
+    ax1.plot(
+        t_conv[0, i, :].numpy(),
+        c_out[0, i, :].numpy(),
+        label=r"$x_{(t)}$",
+       color=ICIWcolors.DRAB
+    )
+ax1.plot(
+    t_conv[0, 0, :].numpy(),
+    c_conv[0, 0, :].detach().numpy(),
+    label=r"$\hat{x}_{(t)}$",
+    color="purple",
+    linestyle="--"
+)
+ax1.set_ylabel(r"$x$ / $1$", )
+ax1.legend(loc='best')
+ax1.set_xlim((0, 30))  
+ax1.set_ylim((-0.1, 1.1))  
+ax2.plot(expected_time, expected_E, label=r"$E_{(t)}$", color=ICIWcolors.KELLYGREEN)
+ax2.plot(predicted_time, predicted_E, label=r"$\hat{E}_{(t)}$", color="black", linestyle="--")
+ax2.set_xlabel(r"$t$ / $s$")
+ax2.set_ylabel(r"$E$ / $1$")
+ax2.legend(loc='best')
+ax2.set_xlim((0, 30))  
+ax2.set_ylim((-0.1, 1.1)) 
+current_date = datetime.datetime.now().strftime("%Y%m%d")
+plt.savefig(f"Profile_Laminar_{current_date}.png", dpi=300)
+plt.show()
+
