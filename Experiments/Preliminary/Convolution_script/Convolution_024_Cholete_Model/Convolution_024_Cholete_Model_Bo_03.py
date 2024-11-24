@@ -21,12 +21,12 @@ from sympy import ceiling
 
 if wandb.run is not None:
     wandb.finish()
-
-Bo_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model/beta0.3_n'
+Bo_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Cholete_Model\beta0.3_n'
+#Bo_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model/beta0.3_n'
 t_conv_tau = torch.tensor(np.load(os.path.join(Bo_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(Bo_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
-epoch=15000
+epoch=100000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )

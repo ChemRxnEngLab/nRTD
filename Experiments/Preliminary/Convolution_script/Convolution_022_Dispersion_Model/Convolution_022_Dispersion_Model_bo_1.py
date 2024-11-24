@@ -33,7 +33,7 @@ sys.path.append(module_path)
 tau_5_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Dispersion_Model\Bo1_200disc_140s'
 #tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo3_200disc_140s'
 
-epoch=1
+epoch=18000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -281,14 +281,14 @@ ax1.plot(
 )
 ax1.set_ylabel(r"$x$ / $1$", )
 ax1.legend(loc='best')
-ax1.set_xlim((0, 100))  
+ax1.set_xlim((0, 70))  
 ax1.set_ylim((-0.1, 1.1))  
 ax2.plot(t_E, E_expected_np, label=r"$E_{(t)}$", color=ICIWcolors.KELLYGREEN)
 ax2.plot(t_E, E, label=r"$\hat{E}_{(t)}$", color="black", linestyle="--")
 ax2.set_xlabel(r"$t$ / $s$")
 ax2.set_ylabel(r"$E$ / $1$")
 ax2.legend(loc='best')
-ax2.set_xlim((0, 100))  
+ax2.set_xlim((0, 70))  
 ax2.set_ylim((-0.1, 1.1)) 
 current_date = datetime.datetime.now().strftime("%Y%m%d")
 plt.savefig(f"Profiles_Bo1_{current_date}.png", dpi=300)

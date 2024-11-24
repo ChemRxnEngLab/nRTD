@@ -33,7 +33,7 @@ sys.path.append(module_path)
 tau_5_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Dispersion_Model\Bo3_200disc_140s'
 #tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo3_200disc_140s'
 
-epoch=1
+epoch=28000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -181,7 +181,7 @@ c_conv = model(c_in)
 E = model.net.E[0]
 t_E =torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
 E = E / E.max()
-t_E_np = np.linspace(0, 75, 100)
+t_E_np = np.linspace(0, t_e_1, n_e_1)
 
 def expected_formula(t):
     return np.where(t > 0, 1/2*(np.sqrt(3/(np.pi*(t/5))))*np.exp(-(3*((1-(t/5))**2))/(4*(t/5))), 0)
@@ -227,33 +227,33 @@ plt.show()
 
 #save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model"
 save_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model'
-unified_dir = os.path.join(save_dir, f'Bo_{1}')
+unified_dir = os.path.join(save_dir, f'Bo_{3}_2411')
 os.makedirs(unified_dir, exist_ok=True)
 
 predicted_E = E
 predicted_time = t_E.numpy()               
 expected_E = E_expected_np              
 expected_time = t_E_np
-np.save(os.path.join(unified_dir, 'E_predicted_Bo_1.npy'), predicted_E)
-np.save(os.path.join(unified_dir, 't_E_predicted_Bo_1.npy'), predicted_time)
-np.save(os.path.join(unified_dir, 'E_expected_Bo_1.npy'), expected_E)
-np.save(os.path.join(unified_dir, 't_E_expected_Bo_1.npy'), expected_time)
+np.save(os.path.join(unified_dir, 'E_predicted_Bo_3.npy'), predicted_E)
+np.save(os.path.join(unified_dir, 't_E_predicted_Bo_3.npy'), predicted_time)
+np.save(os.path.join(unified_dir, 'E_expected_Bo_3.npy'), expected_E)
+np.save(os.path.join(unified_dir, 't_E_expected_Bo_3.npy'), expected_time)
 print("saved under:", unified_dir)
 # predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_016_Dispersion_Model/Bo_1/E_predicted_Bo_1.npy')
 # predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_016_Dispersion_Model/Bo_1/t_E_predicted_Bo_1.npy')
-predicted_E = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_1\E_predicted_Bo_1.npy')
-predicted_time = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_1\t_E_predicted_Bo_1.npy')
-plt.plot(predicted_time, predicted_E, label='$E_{CNN}$', color='orange')
-plt.plot(expected_time, expected_E, label='$E_{th,disp}$', color='purple', linestyle='--')
-plt.xlabel('$t$ / $s$')
-plt.ylabel('$E$ / $1$')
-plt.xlim((predicted_time.min(), predicted_time.max()))
-plt.ylim((0, 1.1))  
-plt.xlim(0,100)
-plt.legend()
-current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"Figure_E_{current_date}.png", dpi=300)
-plt.show()
+#predicted_E = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_1\E_predicted_Bo_1.npy')
+#predicted_time = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_1\t_E_predicted_Bo_1.npy')
+#plt.plot(predicted_time, predicted_E, label='$E_{CNN}$', color='orange')
+#plt.plot(expected_time, expected_E, label='$E_{th,disp}$', color='purple', linestyle='--')
+#plt.xlabel('$t$ / $s$')
+#plt.ylabel('$E$ / $1$')
+#plt.xlim((predicted_time.min(), predicted_time.max()))
+#plt.ylim((0, 1.1))  
+#plt.xlim(0,100)
+#plt.legend()
+#current_date = datetime.datetime.now().strftime("%Y%m%d")
+#plt.savefig(f"Figure_E_{current_date}.png", dpi=300)
+#plt.show()
 
 import torch
 import matplotlib.pyplot as plt
@@ -281,14 +281,14 @@ ax1.plot(
 )
 ax1.set_ylabel(r"$x$ / $1$", )
 ax1.legend(loc='best')
-ax1.set_xlim((0, 20))  
+ax1.set_xlim((0, 50))  
 ax1.set_ylim((-0.1, 1.1))  
 ax2.plot(t_E, E_expected_np, label=r"$E_{(t)}$", color=ICIWcolors.KELLYGREEN)
 ax2.plot(t_E, E, label=r"$\hat{E}_{(t)}$", color="black", linestyle="--")
 ax2.set_xlabel(r"$t$ / $s$")
 ax2.set_ylabel(r"$E$ / $1$")
 ax2.legend(loc='best')
-ax2.set_xlim((0, 20))  
+ax2.set_xlim((0, 50))  
 ax2.set_ylim((-0.1, 1.1)) 
 current_date = datetime.datetime.now().strftime("%Y%m%d")
 plt.savefig(f"Profiles_Bo3_{current_date}.png", dpi=300)
