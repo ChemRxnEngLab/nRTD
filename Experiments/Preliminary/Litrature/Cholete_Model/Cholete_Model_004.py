@@ -36,7 +36,7 @@ for beta in beta_values:
     #print(f"beta: {beta}, Integral of E: {np.sum(E)}")
     c_out_full = np.convolve(c_0, E_c_normalized, mode="full")
     t_conv_full = np.linspace(t[0] + t[0], t[-1] + t[-1], len(c_out_full))
-    valid_indices = t_conv_full <= 50
+    valid_indices = t_conv_full <= 100
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
     Bo_dir = os.path.join(base_dir, f'beta{beta}_100sc')
