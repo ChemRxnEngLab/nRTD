@@ -25,7 +25,7 @@ c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
 
-beta_values = np.array([0.1,0.3,0.9])
+beta_values = np.array([0.1,0.3,0.8,0.9])
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model'
 
 for beta in beta_values:
