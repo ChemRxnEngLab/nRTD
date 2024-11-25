@@ -2,22 +2,29 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = os.path.expanduser("lib")
 sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-from nRTD import RTDModule
+module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+sys.path.append(module_path)
+from nRTD.rtd_fitting_2 import RTDModule
+from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
-import sympy as sp
 import os
 import datetime
+import sympy as sp
+from sympy import ceiling
+from ICIW_Plots import make_square_ax, cm2inch
 
-epoch=10000
 if wandb.run is not None:
     wandb.finish()
+
+epoch=10000
+t_e_1=30
 ## Data Simulation for the 1st model
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Disc_variation'
 def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
@@ -73,11 +80,12 @@ first_layer_CNN_dir = os.path.join(base_dir, 'CNN_1st')
 os.makedirs(first_layer_CNN_dir, exist_ok=True)
 
 #discretization_confg = [(167,83,83),(200, 99, 100), (334, 166, 167),(100,49,50)]
-discretization_confg_second = [(100,49,50),(200,99,100),(300,149,150),(400,199,200),(500,249,250)]
+discretization_confg_second = [(100,51,50),(200,101,100),(300,151,150),(400,201,200),(500,251,250)]
 c_conv_results = {}
 #c_conv_first = {}
 
 for n_disc_o, kernel_size, n_disc in discretization_confg_second:
+    n_e_1=kernel_size
     if n_disc_o == 100:
         data_time_out = np.load(os.path.join(tau_l_dir, f'Tau_{tau_l}_Laminar_Flow_Model_Disc_100_time.npy'))
         data_concentration_out = np.load(os.path.join(tau_l_dir, f'Tau_{tau_l}_Laminar_Flow_Model_Disc_100_concentration.npy'))
@@ -104,22 +112,22 @@ for n_disc_o, kernel_size, n_disc in discretization_confg_second:
     t_input = torch.linspace(0, 30, n_disc)
     c_in = torch.zeros((1, 1, n_disc))
     c_in[:, :, t_input > 5] = 1
-    
     c_out_list = [c_out]
     t_conv_list = [t_conv]
     c_out = torch.cat(c_out_list, dim=0)
     t_conv = torch.cat(t_conv_list, dim=0)
 
     model = RTDModule(
-        kernel_size=kernel_size,
-        learning_rate=1e-3,
+        kernel_sizes=[n_e_1],
+        kernel_times=[(0.0, t_e_1)],
+        learning_rate=1e-4,
         use_scheduler=True,
         scheduler_kwargs={"factor": 0.5, "patience": 80},
     )
 
     c_conv = model(c_in)
     E = model.net.E[0]
-    t_E = torch.linspace(0, 30, model.kernel_size)
+    t_E =torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
     E /= E.max()
     print(model(c_in).size())
     
@@ -139,7 +147,7 @@ for n_disc_o, kernel_size, n_disc in discretization_confg_second:
     
 
     E = model.net.E[0]
-    t_E = torch.linspace(0, 30, model.kernel_size)
+    t_E =torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
     E = E / E.max()
     E_laminar=E_laminar/ E_laminar.max()
     
