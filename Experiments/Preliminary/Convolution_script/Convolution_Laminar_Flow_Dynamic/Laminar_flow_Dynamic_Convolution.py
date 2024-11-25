@@ -1,23 +1,31 @@
+import matplotlib.pyplot as plt
+import numpy.typing as npt
 import sys
 import os
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = os.path.expanduser("lib")
 sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
-import matplotlib.pyplot as plt
 import numpy as np
 import wandb
-from nRTD import RTDModule
+module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+sys.path.append(module_path)
+from nRTD.rtd_fitting_2 import RTDModule
+from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
-import numpy.typing as npt
+import os
+import datetime
+import sympy as sp
+from sympy import ceiling
+from ICIW_Plots import make_square_ax, cm2inch
 
 if wandb.run is not None:
     wandb.finish()
 module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 sys.path.append(module_path)
 
-epoch=10000
+epoch=17000
 laminar_model_dir='/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_Laminar_Flow_Dynamic'
 tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model_dynamic/tau_5.0'
 t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
@@ -44,15 +52,19 @@ print(f"c_in size: {c_in.size()}")
 print(f"c_out size: {c_out.size()}")
 print(f"t_conv size: {t_conv.size()}")
 
+n_e_1=151
+t_e_1=75
+
 model = RTDModule(
-    kernel_size=149,
-    learning_rate=10e-3,
+    kernel_sizes=[n_e_1],
+    kernel_times=[(0.0, t_e_1)],
+    learning_rate=1e-4,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(0, 75, model.kernel_size)
+t_E =torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
 E = E / E.max()
 
 j = 0  
@@ -104,9 +116,9 @@ trainer.test(model, dl)
 
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(0, 75, model.kernel_size)
+t_E =torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
 E = E / E.max()
-t_E_np = np.linspace(0, 75, 400)
+t_E_np = np.linspace(0, 75, 151)
 
 def expected_formula(t):
     return np.where(t >= 2.5, (2.5**2) / (2 * (t**3)), 0)
@@ -167,7 +179,7 @@ plt.ylabel('E')
 plt.xlim((predicted_time.min(), predicted_time.max()))
 plt.ylim((0, 1.1))  
 plt.legend()
-plt.savefig('E_saved_09102024.png', dpi=300)
+plt.savefig('E_saved_25112024.png', dpi=300)
 plt.show()
 # print("c_in_conv)",c_conv_in_50)
 # print("expected_time",expected_time)

@@ -320,9 +320,9 @@ model_2 = RTDModule(
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
 c_conv_2 = model_2(c_2_in)
-E = model_2.net.E[0]
+E_2 = model_2.net.E[0]
 t_E_2 = torch.linspace(0, t_e_2, int(model_2.kernel_sizes[0]))
-E = E / E.max()
+E_2 = E_2 / E_2.max()
 ds_2 =TensorDataset(c_2_in.float(), c_out_l_a.float())
 dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 
@@ -339,12 +339,10 @@ trainer = pl.Trainer(
 # )
 trainer.fit(model_2, dl_2)
 trainer.test(model_2, dl_2)
-c_conv_2 = model_2(c_2_in)
 E_2 = model_2.net.E[0]
+c_conv_2 = model_2(c_2_in)
 c_conv_2_results[n_2_out] = c_conv_2.detach().numpy()
 #E = model_2.net.E[0]
-t_E_2 = torch.linspace(0, t_e_2,  int(model_2.kernel_sizes[0]))
-E_2 = E_2 / E_2.max()
 ####Plotting
 fig, ax1 = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
 ax1.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), label="Input Signal", color="blue", linestyle="--")
