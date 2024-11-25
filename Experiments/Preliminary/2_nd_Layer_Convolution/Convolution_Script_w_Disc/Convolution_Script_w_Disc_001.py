@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Nov 26 00:24:32 2024
+
+@author: tuanaoyuncu
+"""
+
 import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
@@ -30,8 +38,8 @@ coefficients = {
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2}
 
-epoch_1=17000
-epoch_2=200000
+epoch_1=1
+epoch_2=1
 learning_rate=1e-4
 
 
@@ -357,6 +365,34 @@ ax1.set_ylabel('Concentration')
 ax1.set_xlabel('Time')
 ax1.legend()
 
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes
+import datetime
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
+from ICIW_Plots import make_square_ax, cm2inch
+from ICIW_Plots import make_rect_ax
+plt.style.use("ICIWstyle")
+fig = plt.figure(figsize=(Elsevier_Sizes.single_column["in"], 12 * cm2inch))
+ax = make_rect_ax(
+    fig,
+    ax_width=7.3 * cm2inch,
+    ax_height=5 * cm2inch,
+    # left_h=0.2,  # These arguments control the spacing of the axis
+    # bottom_v=0.2, # not supplying them wil place the axes in the middle of the figure
+    xlabel=r"$t$ / $s$",
+    ylabel=r"$E$ / $1$"
+)
+ax.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), )
+ax.plot(t_1_in_reshaped, c_1_in_reshaped, label=r"$x_{0(t)}$",color=ICIWcolors.CERULEAN)
+ax.plot(t_conv_reshaped, c_conv_reshaped, label="$\hat{x}_{1(t)}$",color="purple",linestyle="--")
+ax.plot(t_conv_reshaped, c_out_l_reshaped, label=r"$x_{1(t)}$",color=ICIWcolors.DRAB)
+ax.plot(t_out_l_a.squeeze().numpy(), c_conv_2.detach().squeeze().numpy(), label="$\hat{x}_{2(t)}$", color="black", linestyle="--")
+ax.plot(t_out_l_a.squeeze().numpy(), c_out_l_a.squeeze().numpy(), label=r"$x_{2(t)}$", color=ICIWcolors.FLAME)
+ax1.set_xlim((0, 30))
+ax1.set_ylim((-0.1, 1.1))
+plt.show()
+
 #### General Plotting
 E_Adler_normalized = E_Adler / np.max(E_Adler)
 E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
@@ -367,23 +403,40 @@ t_adler = t_values_Adler if isinstance(t_values_Adler, np.ndarray) else t_values
 t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
 t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
 
-plt.figure(figsize=(10, 6))
-plt.plot(t_learned_1, E_learned_1, label="$E_1$", color="black")
-plt.plot(t_learned_2, E_learned_2, label="$E_2$", color="red")
-# plt.plot(t_l, E_laminar, label="E Laminar Layer 1", color="blue")
-#plt.plot(t_l_a, E_laminar_a_normalized, label="E Laminar Layer 2", color="green")
-# plt.plot(t_adler, E_Adler_normalized, label="E Adler", color="orange")
-print("t_learned_1",t_learned_1.shape)
-print("t_learned_2",t_learned_2.shape)
-print("E_learned_1", E_learned_1.shape)
-print("E_learned_2", E_learned_2.shape)
-# Set plot labels and legend
-plt.xlabel("Time")
-plt.ylabel("E")
-plt.xlim((0, 20))
-plt.ylim((0, 1.1))
-plt.legend()
+plt.style.use("ICIWstyle")
+fig = plt.figure(figsize=(Elsevier_Sizes.single_column["in"], 12 * cm2inch))
+ax = make_rect_ax(
+    fig,
+    ax_width=7.3 * cm2inch,
+    ax_height=5 * cm2inch,
+    # left_h=0.2,  # These arguments control the spacing of the axis
+    # bottom_v=0.2, # not supplying them wil place the axes in the middle of the figure
+    xlabel=r"$t$ / $s$",
+    ylabel=r"$E$ / $1$"
+)
+ax.plot(t_learned_1, E_learned_1, label="$\hat{E}_{1(t)}$", color="purple")
+ax.plot(t_learned_2, E_learned_2, label="$\hat{E}_{2(t)}$", color=ICIWcolors.FLAME)
+ax1.set_xlim((0, 30))
+ax1.set_ylim((-0.1, 1.1))
 plt.show()
+
+# plt.figure(figsize=(10, 6))
+# plt.plot(t_learned_1, E_learned_1, label="$E_1$", color="purple")
+# plt.plot(t_learned_2, E_learned_2, label="$E_2$", color="red")
+# # plt.plot(t_l, E_laminar, label="E Laminar Layer 1", color="blue")
+# #plt.plot(t_l_a, E_laminar_a_normalized, label="E Laminar Layer 2", color="green")
+# # plt.plot(t_adler, E_Adler_normalized, label="E Adler", color="orange")
+# print("t_learned_1",t_learned_1.shape)
+# print("t_learned_2",t_learned_2.shape)
+# print("E_learned_1", E_learned_1.shape)
+# print("E_learned_2", E_learned_2.shape)
+# # Set plot labels and legend
+# plt.xlabel("Time")
+# plt.ylabel("E")
+# plt.xlim((0, 20))
+# plt.ylim((0, 1.1))
+# plt.legend()
+# plt.show()
 #Plotting the test/loss
 y_1 = [1.11e-7, 9.077e-6]
 x_1 = [50, 200]
