@@ -20,12 +20,12 @@ def Cholete_E (t: npt.NDArray[np.float64], alpha: float, beta: float, tau: float
     E_c=(1-alpha)*k*np.exp(-k*t)
     return E_c
     
-t = np.linspace(0, 50, 200)
+t = np.linspace(0, 100, 200)
 c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
 
-beta_values = np.array([0.1,0.3,0.8,0.9])
+beta_values = np.array([0.9])
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model'
 
 for beta in beta_values:
@@ -39,7 +39,7 @@ for beta in beta_values:
     valid_indices = t_conv_full <= 50
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
-    Bo_dir = os.path.join(base_dir, f'beta{beta}_nn')
+    Bo_dir = os.path.join(base_dir, f'beta{beta}_100sc')
     os.makedirs(Bo_dir, exist_ok=True)
     np.save(os.path.join(Bo_dir, 'time.npy'), t_conv)
     np.save(os.path.join(Bo_dir, 'concentration.npy'), c_out)
