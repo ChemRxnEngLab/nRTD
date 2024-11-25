@@ -2,21 +2,23 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-module_path = r"D:\Tuana\nRTD\lib"
+module_path = os.path.expanduser("lib")
 sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-from nRTD.rtd_fitting import RTDModule 
-#from nRTD import RTDModule
+module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+sys.path.append(module_path)
+from nRTD.rtd_fitting_2 import RTDModule
+from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
 import os
 import datetime
 import sympy as sp
 from sympy import ceiling
-
+from ICIW_Plots import make_square_ax, cm2inch
 
 if wandb.run is not None:
     wandb.finish()
@@ -28,19 +30,21 @@ coefficients = {
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2}
 
-epoch_1=15000
-epoch_2=15000
-learning_rate=1e-3
+epoch_1=17000
+epoch_2=200000
+learning_rate=1e-4
 
+
+#base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_Convolution'
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
 n_in_1, n_out_1, n_out_2, n_e_1, n_e_2 = sp.symbols("n_in_1 n_out_1 n_out_2 n_e_1 n_e_2", positive=True, real=True)
 t_1, t_lam, t_adl, t_e_1, t_e_2 = sp.symbols("t_1, t_lam, t_adl, t_e_1, t_e_2", positive=True, real=True)
 equations = [
     t_1 - t_lam + t_e_1,
-    n_in_1 - n_out_1 + n_e_1 + 1,
+    n_in_1 - n_out_1 + n_e_1 -1,
     n_in_1 / t_1 - n_e_1 / t_e_1,
     t_lam - t_adl + t_e_2,
-    n_out_1 - n_out_2 + n_e_2 + 1,
+    n_out_1 - n_out_2 + n_e_2 - 1,
     n_e_2 * t_lam - n_out_1 * t_e_2]
 for equation in equations:
     print(equation)
@@ -234,7 +238,8 @@ print("c_out shape:", c_out.shape)
 print("t_conv shape:", t_conv.shape) 
  
 model = RTDModule(
-        kernel_size=n_e_1,
+        kernel_sizes=[n_e_1],
+        kernel_times=[(0.0, t_e_1)],
         learning_rate=learning_rate,
         use_scheduler=True,
         scheduler_kwargs={"factor": 0.5, "patience": 80},
@@ -249,7 +254,7 @@ c_conv = model(c_1_in)
 print("c_1_in",c_1_in.shape)
 print("c_conv",c_conv.shape)
 E = model.net.E[0]
-t_E = torch.linspace(0, float(t_e_1), int(model.kernel_size))
+t_E = torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
 E /= E.max()
 print(model(c_1_in).size())
 ds = TensorDataset(c_1_in.float(), c_out_l.float())
@@ -264,7 +269,7 @@ c_conv = model(c_1_in)
 c_conv_results[n_1_out] = c_conv.detach().numpy()
 print("c_conv_results",c_conv.detach().numpy().shape)
 E = model.net.E[0]
-t_E = torch.linspace(0, float(t_e_1), int(model.kernel_size))
+t_E = torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
 E = E / E.max()
 
 t_1_in_reshaped = t_1_in.squeeze().numpy()
@@ -308,14 +313,15 @@ print(c_out_l_a.shape)
 print(t_out_l_a.shape)
 # Initialize the model
 model_2 = RTDModule(
-    kernel_size=n_e_2,
+    kernel_sizes=[n_e_2],
+    kernel_times=[(0.0, t_e_2)],
     learning_rate=learning_rate,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
 c_conv_2 = model_2(c_2_in)
 E = model_2.net.E[0]
-t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
+t_E_2 = torch.linspace(0, t_e_2, int(model_2.kernel_sizes[0]))
 E = E / E.max()
 ds_2 =TensorDataset(c_2_in.float(), c_out_l_a.float())
 dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
@@ -337,7 +343,7 @@ c_conv_2 = model_2(c_2_in)
 E_2 = model_2.net.E[0]
 c_conv_2_results[n_2_out] = c_conv_2.detach().numpy()
 #E = model_2.net.E[0]
-t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
+t_E_2 = torch.linspace(0, t_e_2,  int(model_2.kernel_sizes[0]))
 E_2 = E_2 / E_2.max()
 ####Plotting
 fig, ax1 = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
@@ -345,6 +351,8 @@ ax1.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), label="Input Signal
 ax1.plot(t_out_l_a.squeeze().numpy(), c_out_l_a.squeeze().numpy(), label="Expected Output", color="green")
 ax1.plot(t_out_l_a.squeeze().numpy(), c_conv_2.detach().squeeze().numpy(), label="Predicted Output", color="red", linestyle="--")
 ax1.plot(t_E_2, E_2, label="E_predict", color="purple", linestyle="--")
+print(t_E_2.shape)
+print(E_2.shape)
 ax1.set_xlim((0, 30))
 ax1.set_ylim((0, 1.1))
 ax1.set_ylabel('Concentration')
