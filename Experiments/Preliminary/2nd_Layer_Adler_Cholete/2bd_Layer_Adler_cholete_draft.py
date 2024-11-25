@@ -29,10 +29,10 @@ coefficients = {
     'tau_p_val': np.array([2]), 
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2}
-epoch_1=50000
+epoch_1=30000
 epoch_2=20000
 epoch_3=epoch_1
-learning_rate=1e-4
+learning_rate=1e-3
 disc_n_1_out=200
 
 # base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
@@ -259,7 +259,7 @@ print(f"Shape of t_conv_Adleroutsupp for discretization: {t_conv_Adler.shape}")
 #NN
 wandb_logger = pl_loggers.WandbLogger(
     project="nRTD",
-    log_model=True,name=f'Layer_1_n_1_out_{disc_n_1_out}_LC_learning_rate_{learning_rate}_1st_epoch_{epoch_1}',
+    log_model=True,name=f'AdCh_Layer_1_n_1_out_{disc_n_1_out}_LC_learning_rate_{learning_rate}_1st_epoch_{epoch_1}',
     reinit=True
 )
 c_conv_1_results = {}
@@ -281,15 +281,9 @@ t_conv = torch.cat(t_conv_list, dim=-1)
 model = RTDModule(
     kernel_sizes=[n_e_1],
     kernel_times=[(0.0, t_e_1)],
-    learning_rate=1e-4,
+    learning_rate=learning_rate,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},)
-
-wandb_logger = pl_loggers.WandbLogger(
-project="nRTD",name=f'Adler_2nd_epoch_1_{epoch_1}_1st',
-log_model=True,
-reinit=True
-)
 
 c_conv = model(c_1_in)
 print("c_1_in",c_1_in.shape)
@@ -354,7 +348,7 @@ print(t_out_ch.shape)
 model_2 = RTDModule(
     kernel_sizes=[n_e_2],
     kernel_times=[(0.0, t_e_2)],
-    learning_rate=1e-4,
+    learning_rate=learning_rate,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
@@ -386,11 +380,11 @@ trainer = pl.Trainer(
 
 trainer.fit(model_2, dl_2)
 trainer.test(model_2, dl_2)
-c_conv_2 = model_2(c_2_in)
-c_conv_2_results[n_2_out] = c_conv_2.detach().numpy()  
 E_2 = model_2.net.E[0]
 t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_sizes[0])
 E_2 = E_2 / E_2.max()
+c_conv_2 = model_2(c_2_in)
+c_conv_2_results[n_2_out] = c_conv_2.detach().numpy()  
 fig, ax1 = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
 ax1.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), label="Input Signal", color="blue", linestyle="--")
 ax1.plot(t_out_ch.squeeze().numpy(), c_out_ch.squeeze().numpy(), label="Expected Output", color="green")
