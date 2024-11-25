@@ -2,19 +2,23 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = os.path.expanduser("lib")
 sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-from nRTD import RTDModule
+module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+sys.path.append(module_path)
+from nRTD.rtd_fitting_2 import RTDModule
+from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
 import os
 import datetime
 import sympy as sp
 from sympy import ceiling
+from ICIW_Plots import make_square_ax, cm2inch
 
 # if wandb.run is not None:
 #     wandb.finish()
@@ -25,21 +29,22 @@ coefficients = {
     'tau_p_val': np.array([2]), 
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2}
-epoch_1=15000
-epoch_2=15000
+epoch_1=50000
+epoch_2=20000
 epoch_3=epoch_1
-learning_rate=1e-3
+learning_rate=1e-4
 disc_n_1_out=200
 
-base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
+# base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
+base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_Convolution'
 n_in_1, n_out_1, n_out_2, n_e_1, n_e_2 = sp.symbols("n_in_1 n_out_1 n_out_2 n_e_1 n_e_2", positive=True, real=True)
 t_1, t_adl, t_ch, t_e_1, t_e_2 = sp.symbols("t_1, t_lam, t_adl, t_e_1, t_e_2", positive=True, real=True)
 equations = [
     t_1 - t_adl + t_e_1,
-    n_in_1 - n_out_1 + n_e_1 + 1,
+    n_in_1 - n_out_1 + n_e_1 - 1,
     n_in_1 / t_1 - n_e_1 / t_e_1,
     t_adl - t_ch + t_e_2,
-    n_out_1 - n_out_2 + n_e_2 + 1,
+    n_out_1 - n_out_2 + n_e_2 - 1,
     n_e_2 * t_adl - n_out_1 * t_e_2]
 for equation in equations:
     print(equation)
@@ -274,13 +279,14 @@ c_out = torch.cat(c_out_list, dim=-1)
 t_conv = torch.cat(t_conv_list, dim=-1)
  
 model = RTDModule(
-        kernel_size=n_e_1,
-        learning_rate=1e-3,
-        use_scheduler=True,
-        scheduler_kwargs={"factor": 0.5, "patience": 80},)
+    kernel_sizes=[n_e_1],
+    kernel_times=[(0.0, t_e_1)],
+    learning_rate=1e-4,
+    use_scheduler=True,
+    scheduler_kwargs={"factor": 0.5, "patience": 80},)
 
 wandb_logger = pl_loggers.WandbLogger(
-project="nRTD",name=f'epoch_1_{epoch_1}_1st',
+project="nRTD",name=f'Adler_2nd_epoch_1_{epoch_1}_1st',
 log_model=True,
 reinit=True
 )
@@ -289,7 +295,7 @@ c_conv = model(c_1_in)
 print("c_1_in",c_1_in.shape)
 print("c_conv",c_conv.shape)
 E = model.net.E[0]
-t_E = torch.linspace(0, float(t_e_1), int(model.kernel_size))
+t_E = torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
 E /= E.max()
 print(model(c_1_in).size())
 ds = TensorDataset(c_1_in.float(), c_out_adl.float())
@@ -304,7 +310,7 @@ c_conv = model(c_1_in)
 c_conv_1_results[n_1_out] = c_conv.detach().numpy()
 print("c_conv_results",c_conv.detach().numpy().shape)
 E = model.net.E[0]
-t_E = torch.linspace(0, float(t_e_1), int(model.kernel_size))
+t_E = torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
 E = E / E.max()
 
 # Plotting
@@ -327,7 +333,7 @@ wandb.finish()
 ##Second Layer
 wandb_logger = pl_loggers.WandbLogger(
     project="nRTD",
-    log_model=True,name=f'Layer_2_n_1_out_{disc_n_1_out}_LC_learning_rate_{learning_rate}_2nd_epoch_{epoch_2}',
+    log_model=True,name=f'Layer_2_CH_n_1_out_{disc_n_1_out}_LC_learning_rate_{learning_rate}_2nd_epoch_{epoch_2}',
     reinit=True
 )
 c_conv_2_results = {}
@@ -346,15 +352,17 @@ print(c_out_ch.shape)
 print(t_out_ch.shape)
 
 model_2 = RTDModule(
-    kernel_size=n_e_2,
-    learning_rate=1e-3,
+    kernel_sizes=[n_e_2],
+    kernel_times=[(0.0, t_e_2)],
+    learning_rate=1e-4,
     use_scheduler=True,
-    scheduler_kwargs={"factor": 0.5, "patience": 80},)
+    scheduler_kwargs={"factor": 0.5, "patience": 80},
+)
 
 c_conv_2 = model_2(c_2_in)
 print(c_conv_2.shape)
 E_2 = model_2.net.E[0]  
-t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
+t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_sizes[0])
 E_2 = E_2 / E_2.max()
 print(E_2.shape)
 print(t_E_2.shape)
@@ -381,7 +389,7 @@ trainer.test(model_2, dl_2)
 c_conv_2 = model_2(c_2_in)
 c_conv_2_results[n_2_out] = c_conv_2.detach().numpy()  
 E_2 = model_2.net.E[0]
-t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_size)
+t_E_2 = torch.linspace(0, t_e_2, model_2.kernel_sizes[0])
 E_2 = E_2 / E_2.max()
 fig, ax1 = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
 ax1.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), label="Input Signal", color="blue", linestyle="--")
