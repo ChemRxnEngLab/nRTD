@@ -391,6 +391,8 @@ ax.plot(t_out_l_a.squeeze().numpy(), c_conv_2.detach().squeeze().numpy(), label=
 ax.plot(t_out_l_a.squeeze().numpy(), c_out_l_a.squeeze().numpy(), label=r"$x_{2(t)}$", color=ICIWcolors.FLAME)
 ax1.set_xlim((0, 30))
 ax1.set_ylim((-0.1, 1.1))
+current_date = datetime.datetime.now().strftime("%Y%m%d")
+plt.savefig(f"2nd_Layer_Ch_and_Adl_{current_date}.png", dpi=300)
 plt.show()
 
 #### General Plotting
