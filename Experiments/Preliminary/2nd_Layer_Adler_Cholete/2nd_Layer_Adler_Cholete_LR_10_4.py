@@ -11,7 +11,7 @@ import numpy as np
 import wandb
 module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 sys.path.append(module_path)
-from nRTD.rtd_fitting_3 import RTDModule
+from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
 import os
@@ -32,9 +32,9 @@ coefficients = {
 # epoch_1=30000
 # epoch_2=20000
 epoch_1=30000
-epoch_2=400000
+epoch_2=200000
 epoch_3=epoch_1
-learning_rate=1e-4
+learning_rate=1e-3
 disc_n_1_out=200
 
 # base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
