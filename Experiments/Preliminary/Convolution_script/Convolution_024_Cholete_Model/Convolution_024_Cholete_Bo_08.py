@@ -23,7 +23,7 @@ if wandb.run is not None:
     wandb.finish()
 
 #Bo_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model/beta0.9_nn'
-Bo_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Cholete_Model\beta0.8_n'
+Bo_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Cholete_Model\beta0.8_nn'
 t_conv_tau = torch.tensor(np.load(os.path.join(Bo_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(Bo_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 

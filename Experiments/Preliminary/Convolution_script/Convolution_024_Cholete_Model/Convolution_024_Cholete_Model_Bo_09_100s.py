@@ -22,11 +22,12 @@ from sympy import ceiling
 if wandb.run is not None:
     wandb.finish()
 
-Bo_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Cholete_Model\beta0.1_n'
+#Bo_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model/beta0.9_nn'
+Bo_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Cholete_Model\beta0.9_100sc'
 t_conv_tau = torch.tensor(np.load(os.path.join(Bo_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(Bo_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
-epoch=38000
+epoch=19000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -63,9 +64,9 @@ sub_dict = {
     # n_out_1,
     n_out_1: 200,
     # n_e_1,
-    t_i: 25,
-    t_o:50,
-    t_e_1:25,
+    t_i: 50,
+    t_o:100,
+    t_e_1:50,
 }
 result_dict = {}
 
@@ -122,25 +123,7 @@ c_conv = model(c_in)
 E = model.net.E[0]
 E = E / E.max()
 j = 0  
-plt.figure()
-plt.plot(t_input, c_in[j, 0, :].numpy(), label="SF", color="blue")
-for i in range(c_out.size(1)):
-    plt.plot(
-        t_conv[j, i, :].numpy(),
-        c_out[j, i, :].numpy(),
-        label="Tau 5.0",
-        color="green")
-plt.plot(
-    t_conv[j, 0, :].numpy(),
-    c_conv[j, 0, :].detach().numpy(),
-    label="Predicted",
-    color="red",
-)
-plt.plot(t_E, E, label="E", color="orange")
-plt.legend()
-plt.xlim((0, 40))
-plt.ylim((0, 1.1))
-plt.show()
+
 print(model(c_in).size())
 ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=20, shuffle=True)
@@ -191,7 +174,7 @@ def Cholete_E (t: npt.NDArray[np.float64], alpha: float, beta: float, tau: float
 t_exp = np.linspace(0, t_e_1, n_e_1)
 c_0_exp = np.zeros_like(t_exp)
 c_0_exp[t_exp > 5] = 1
-beta_values = np.array([0.1])
+beta_values = np.array([0.9])
 for beta in beta_values:
     F,E_e = Cholete(t_exp, 0.2, beta, 5,5)
     E_c_e = Cholete_E(t_exp, 0.2, beta, 5)
@@ -223,14 +206,14 @@ ax1.plot(
     label="Predicted",
     color="red",linestyle="-."
 )
-ax1.set_xlim((0, 8))
+ax1.set_xlim((0, 30))
 ax1.set_ylim((0, 1.1))
 ax1.set_ylabel('Concentration')
 ax1.set_xticks(np.arange(0, 7, 1)) 
 ax1.legend()
 ax1.tick_params(labelbottom=False)
 ax2.plot(t_E, E, label="E", color="orange")
-ax2.plot(t_E, E_c_e_normalized/E_c_e_normalized.max(), label="E", color="red")
+ax2.plot(t_E, E_c_e_normalized/E_c_e_normalized.max(), label="E", color="red",linestyle="--")
 #ax2.plot(t_values, E_expected, label="E (Expected )", color="purple", linestyle="--")
 ax2.set_xlabel('t')
 ax2.set_ylabel('E')
@@ -241,10 +224,10 @@ ax2.set_ylim((0, 1.1))
 ax2.legend()
 ax2.set_xticks(np.arange(0, 10, 1))  
 plt.xlabel("Time")
-#save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Cholete_Model"
-#unified_dir = os.path.join(save_dir, f'Bo_{0.9}')
-#os.makedirs(unified_dir, exist_ok=True)
-#plt.savefig(os.path.join(unified_dir, 'Figure_Cholete_09.png'), dpi=300)
+# save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_015_Cholete_Model"
+# unified_dir = os.path.join(save_dir, f'Bo_{0.9}')
+# os.makedirs(unified_dir, exist_ok=True)
+# plt.savefig(os.path.join(unified_dir, 'Figure_Cholete_09.png'), dpi=300)
 plt.show()
 print("E",E.shape)
 print("E_c_e_normalized",E_c_e_normalized.shape)
@@ -280,15 +263,15 @@ ax1.plot(
 )
 ax1.set_ylabel(r"$x$ / $1$", )
 ax1.legend(loc='best')
-ax1.set_xlim((0, 15))  
+ax1.set_xlim((0, 30))  
 ax1.set_ylim((-0.1, 1.1))  
 ax2.plot(t_E, E_c_e_normalized/E_c_e_normalized.max(), label=r"$E_{(t)}$", color=ICIWcolors.KELLYGREEN)
 ax2.plot(t_E, E, label=r"$\hat{E}_{(t)}$", color="black", linestyle="--")
 ax2.set_xlabel(r"$t$ / $s$")
 ax2.set_ylabel(r"$E$ / $1$")
 ax2.legend(loc='best')
-ax2.set_xlim((0, 15))  
+ax2.set_xlim((0, 30))  
 ax2.set_ylim((-0.1, 1.1)) 
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"Profile_Ch_01_{current_date}.png", dpi=300)
+plt.savefig(f"Profile_Ch_09_100s_{current_date}.png", dpi=300)
 plt.show()

@@ -31,8 +31,8 @@ coefficients = {
     'alpha_val': 0.2}
 # epoch_1=30000
 # epoch_2=20000
-epoch_1=1
-epoch_2=1
+epoch_1=30000
+epoch_2=200000
 epoch_3=epoch_1
 learning_rate=1e-3
 disc_n_1_out=200
