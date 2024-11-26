@@ -25,8 +25,8 @@ if wandb.run is not None:
 # module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 # sys.path.append(module_path)
 
-adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1_2210'
-epoch=15000
+adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1_2611'
+epoch=33000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -63,9 +63,9 @@ sub_dict = {
     # n_out_1,
     n_out_1: 200,
     # n_e_1,
-    t_i: 30,
-    t_o:70,
-    t_e_1:40,
+    t_i: 40,
+    t_o:100,
+    t_e_1:60,
 }
 result_dict = {}
 
@@ -294,7 +294,7 @@ import ICIW_Plots.colors as ICIWcolors
 from ICIW_Plots.figures import Elsevier_Sizes
 import datetime
 
-fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 12 * cm2inch))
+fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 16 * cm2inch))
 ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_{0(t)}$", color=ICIWcolors.CERULEAN)
 for i in range(c_out.size(1)):
     ax1.plot(
@@ -312,14 +312,14 @@ ax1.plot(
 )
 ax1.set_ylabel(r"$x$ / $1$", )
 ax1.legend(loc='best')
-ax1.set_xlim((0, 20))  
+ax1.set_xlim((0, 35))  
 ax1.set_ylim((-0.1, 1.1))  
 ax2.plot(t_E, E, label=r"$\hat{E}_{(t)}$",color="black" , linestyle="--")
 ax2.plot(t_E, E_expected, label=r"$E_{(t)}$", color=ICIWcolors.CRIMSON)
 ax2.set_xlabel(r"$t$ / $s$")
 ax2.set_ylabel(r"$E$ / $1$")
 ax2.legend(loc='best')
-ax2.set_xlim((0, 20))  
+ax2.set_xlim((0, 35))  
 ax2.set_ylim((-0.1, 1.1)) 
 current_date = datetime.datetime.now().strftime("%Y%m%d")
 plt.savefig(f"Profiles_tau_1_{current_date}.png", dpi=300)
