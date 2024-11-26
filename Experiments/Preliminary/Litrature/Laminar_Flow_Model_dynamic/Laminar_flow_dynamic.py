@@ -9,7 +9,7 @@ base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Lit
 
 
 def input_function(t: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-    return 0.5 * (1 - np.cos(1.2 * t))
+    return 0.5 * (1.3 - np.cos(1.3 * t))
 def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
     E = np.zeros_like(t)
     E[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
@@ -31,8 +31,8 @@ c_out_noisy = c_out + noise
 
 tau_dir = os.path.join(base_dir, f'tau_{tau}')
 os.makedirs(tau_dir, exist_ok=True)
-np.save(os.path.join(tau_dir, 'time.npy'), t_conv)
-np.save(os.path.join(tau_dir, 'concentration.npy'), c_out_noisy)
+# np.save(os.path.join(tau_dir, 'time.npy'), t_conv)
+# np.save(os.path.join(tau_dir, 'concentration.npy'), c_out_noisy)
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
 ax1.plot(t, E/E.max(), label=f'Laminar Flow E (tau = {tau})', color="red")
 ax1.set_ylim(0, 1.1)
