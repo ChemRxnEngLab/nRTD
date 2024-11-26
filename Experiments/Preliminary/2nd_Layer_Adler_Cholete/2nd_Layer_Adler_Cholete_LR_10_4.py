@@ -34,7 +34,7 @@ coefficients = {
 epoch_1=30000
 epoch_2=400000
 epoch_3=epoch_1
-learning_rate=1e-3
+learning_rate=1e-4
 disc_n_1_out=200
 
 # base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
@@ -448,7 +448,7 @@ ax.legend(loc='best')
 ax.set_xlim((0, 30))
 ax.set_ylim((-0.1, 1.1))
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"2nd_Layer_Chh_Profiles{current_date}.png", dpi=300)
+plt.savefig(f"2nd_Layer_Chh_Profiles_LR{current_date}.png", dpi=300)
 plt.show()
 
 
@@ -499,7 +499,7 @@ ax.legend(loc='best')
 ax.set_xlim((0, 30))
 ax.set_ylim((-0.1, 1.1))
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"2nd_Layer_Ch_E{current_date}.png", dpi=300)
+plt.savefig(f"2nd_Layer_Ch_E_LR{current_date}.png", dpi=300)
 plt.show()
 
 # #Plotting the test/loss

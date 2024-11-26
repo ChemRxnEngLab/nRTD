@@ -38,9 +38,9 @@ coefficients = {
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2}
 
-epoch_1=20000
+epoch_1=40000
 epoch_2=200000
-learning_rate=1e-4
+learning_rate=1e-3
 
 
 #base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_Convolution'
@@ -393,7 +393,7 @@ ax.legend(loc='best')
 ax.set_xlim((0, 30))
 ax.set_ylim((-0.1, 1.1))
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"2nd_Layer_Laminar_Profiles{current_date}.png", dpi=300)
+plt.savefig(f"2nd_Layer_Laminar_Profiles_LR{current_date}.png", dpi=300)
 plt.show()
 
 #### General Plotting
@@ -423,7 +423,7 @@ ax.legend(loc='best')
 ax.set_xlim((0, 30))
 ax.set_ylim((-0.1, 1.1))
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"2nd_Layer_Lam_E{current_date}.png", dpi=300)
+plt.savefig(f"2nd_Layer_Lam_E_LR{current_date}.png", dpi=300)
 plt.show()
 
 # plt.figure(figsize=(10, 6))

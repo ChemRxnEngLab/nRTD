@@ -28,7 +28,7 @@ coefficients = {
     "beta_val": np.array([0.1]),
     "alpha_val": 0.2,
 }
-epoch = 1
+epoch = 100000
 
 base_dir = "Experiments/Preliminary/2_nd_Layer_Convolution"
 n_in_1, n_out_1, n_out_2, n_e_1, n_e_2 = sp.symbols(
@@ -398,7 +398,7 @@ print("c_1_in.float()", c_1_in.float().shape)
 print("c_out_l.float()", c_out_adl.float().shape)
 dl = DataLoader(ds, batch_size=1, shuffle=True)
 trainer = pl.Trainer(
-    accelerator="auto", max_epochs=epoch, logger=wandb_logger, deterministic=True
+    accelerator="auto", max_epochs=40000, logger=wandb_logger, deterministic=True
 )
 # trainer = pl.Trainer(accelerator="auto", max_epochs=epoch,deterministic=True)
 trainer.fit(model, dl)

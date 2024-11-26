@@ -32,7 +32,7 @@ from ICIW_Plots import make_square_subplots
 if wandb.run is not None:
     wandb.finish()
 
-epoch=1
+epoch=20000
 t_e_1=30
 ## Data Simulation for the 1st model
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Disc_variation'
