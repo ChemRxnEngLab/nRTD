@@ -131,3 +131,8 @@ wandb/
 **/lightning_logs
 **.ckpt
 .DS_Store
+Experiments/Preliminary/Convolution_script/Convolution_025_Unified_time_Model/Unified_time_delay_details.rtf
+Experiments/Preliminary/.DS_Store
+Experiments/Preliminary/.DS_Store
+Experiments/Preliminary/Litrature/.DS_Store
+Experiments/Preliminary/Convolution_script/.DS_Store
