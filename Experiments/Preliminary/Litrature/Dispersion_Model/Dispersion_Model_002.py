@@ -28,10 +28,10 @@ for Bo in Bo_values:
     print(f"Bo: {Bo}, E= {np.trapz(E, t)}")
     c_out_full = np.convolve(c_0, E / np.sum(E), mode="full")
     t_conv_full = np.linspace(t[0] + t[0], t[-1] + t[-1], len(c_out_full))
-    valid_indices = t_conv_full <= 140
+    valid_indices = t_conv_full <= 240
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
-    Bo_dir = os.path.join(base_dir, f'Bo{Bo}_200disc_240s')
+    Bo_dir = os.path.join(base_dir, f'Bo{Bo}200dis_240s')
     os.makedirs(Bo_dir, exist_ok=True)
     print("c_out",c_out.shape)
     print("t_conv_full",t_conv.shape)
@@ -39,37 +39,4 @@ for Bo in Bo_values:
     np.save(os.path.join(Bo_dir, 'time.npy'), t_conv)
     np.save(os.path.join(Bo_dir, 'concentration.npy'), c_out)
 
-    ax1.plot(t, E, label=f'Bo {Bo:}')
-    ax2.plot(
-        np.linspace(0, 150, len(c_out)),
-        c_out,
-        label=f'Bo {Bo:}'
-    )
-ax1.set_xlabel('t')
-ax1.set_ylabel('E')
-ax1.legend()
-
-ax2.plot(t, c_0, label='c_0', linestyle='--', color='black')
-ax2.set_xlim(0,120)
-ax2.set_ylim(0, 1.1)
-ax2.set_xlabel('t')
-ax2.set_ylabel('C')
-ax2.legend()
-
-plt.tight_layout()
-#plt.savefig('dispersion_model_001_300.png', dpi=300)
-plt.show()
-
-t_conv = np.load(os.path.join(Bo_dir, 'time.npy'))
-c_out = np.load(os.path.join(Bo_dir, 'concentration.npy'))
-
-for Bo in Bo_values:
-    Bo_dir = os.path.join(base_dir, f'Bo{Bo}')
-    t_conv = np.load(os.path.join(Bo_dir, 'time.npy'))
-    c_out = np.load(os.path.join(Bo_dir, 'concentration.npy'))
-    print(f"Time array shape: {t_conv.shape}")
-    print(f"Concentration array shape: {c_out.shape}")
-
-print(f"\nResults for Bo = {Bo:}:")
-print(f"Time: {t_conv[:10]}...")
-print(f"Concentration: {c_out[:10]}...")
+    

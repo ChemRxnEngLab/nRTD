@@ -30,10 +30,10 @@ if wandb.run is not None:
 module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 sys.path.append(module_path)
 
-tau_5_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Dispersion_Model\Bo1_200disc_140s'
+tau_5_dir =r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Dispersion_Model\Bo1_200disc_240s'
 #tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo3_200disc_140s'
 
-epoch=24000
+epoch=1
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -70,9 +70,9 @@ sub_dict = {
     # n_out_1,
     n_out_1: 200,
     # n_e_1,
-    t_i: 70,
-    t_o:140,
-    t_e_1:70,
+    t_i: 120,
+    t_o:240,
+    t_e_1:120,
 }
 result_dict = {}
 
@@ -227,7 +227,7 @@ plt.show()
 
 #save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model"
 save_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model'
-unified_dir = os.path.join(save_dir, f'Bo_{1}_2411')
+unified_dir = os.path.join(save_dir, f'Bo_{1}_2711')
 os.makedirs(unified_dir, exist_ok=True)
 
 predicted_E = E
@@ -244,7 +244,7 @@ print("saved under:", unified_dir)
 predicted_E = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_1\E_predicted_Bo_1.npy')
 predicted_time = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_1\t_E_predicted_Bo_1.npy')
 plt.plot(predicted_time, predicted_E, label='$E_{CNN}$', color='orange')
-plt.plot(expected_time, expected_E, label='$E_{th,disp}$', color='purple', linestyle='--')
+plt.plot(t_E_np, expected_E, label='$E_{th,disp}$', color='purple', linestyle='--')
 plt.xlabel('$t$ / $s$')
 plt.ylabel('$E$ / $1$')
 plt.xlim((predicted_time.min(), predicted_time.max()))
@@ -264,33 +264,34 @@ import datetime
 plt.style.use("ICIWstyle")
 
 fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 12 * cm2inch))
-ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_{0(t)}$", color=ICIWcolors.CERULEAN)
+ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
 for i in range(c_out.size(1)):
     ax1.plot(
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
-        label=r"$x_{(t)}$",
-       color=ICIWcolors.DRAB
+        label=r"$x(t)$",
+        color=ICIWcolors.DRAB
     )
 ax1.plot(
     t_conv[0, 0, :].numpy(),
     c_conv[0, 0, :].detach().numpy(),
-    label=r"$\hat{x}_{(t)}$",
+    label=r"$\hat{x}(t)$",
     color="purple",
     linestyle="--"
 )
 ax1.set_ylabel(r"$x$ / $1$", )
 ax1.legend(loc='best')
-ax1.set_xlim((0, 70))  
+ax1.set_xlim((0, 120))  
 ax1.set_ylim((-0.1, 1.1))  
-ax2.plot(t_E, E_expected_np, label=r"$E_{(t)}$", color=ICIWcolors.KELLYGREEN)
-ax2.plot(t_E, E, label=r"$\hat{E}_{(t)}$", color="black", linestyle="--")
+ax2.plot(t_E_np, E_expected_np, label=r"$E(t)$", color=ICIWcolors.KELLYGREEN)
+ax2.plot(t_E, E, label=r"$\hat{E}(t)$", color="black", linestyle="--")
 ax2.set_xlabel(r"$t$ / $s$")
 ax2.set_ylabel(r"$E$ / $1$")
 ax2.legend(loc='best')
-ax2.set_xlim((0, 70))  
+ax2.set_xlim((0, 120))  
 ax2.set_ylim((-0.1, 1.1)) 
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"Profiles_Bo1_{current_date}.png", dpi=300)
+plt.savefig(os.path.join(save_dir,f"Profile_Bo1{current_date}.png"), dpi=300)
 plt.show()
+
 
