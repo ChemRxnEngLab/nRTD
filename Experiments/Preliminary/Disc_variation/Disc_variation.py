@@ -11,7 +11,7 @@ import numpy as np
 import wandb
 module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 sys.path.append(module_path)
-from nRTD.rtd_fitting_2 import RTDModule
+from nRTD.rtd_fitting_3 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
 import os
@@ -23,10 +23,10 @@ from ICIW_Plots import make_square_ax, cm2inch
 if wandb.run is not None:
     wandb.finish()
 
-epoch=1
+epoch=14000
 t_e_1=30
 ## Data Simulation for the 1st model
-base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Disc_variation'
+base_dir = r"D:\Tuana\nRTD\Experiments\Prelimina\/Disc_variation'
 def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
     E_laminar = np.zeros_like(t)
     E_laminar[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
@@ -34,17 +34,17 @@ def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float6
 
 tau_l = 5.0
 # discretization_Laminar = [100,200, 334, 500,167,166]
-discretization_Laminar = [100,200,300,400,500]
+discretization_Laminar = [51,101,151,201,251]
 
 for disc in discretization_Laminar:
-    t_l = np.linspace(0, 60, disc, endpoint=True)  
+    t_l = np.linspace(0, 30, disc, endpoint=True)  
     c_0_l = np.zeros_like(t_l)
     c_0_l[t_l > 5] = 1  
     E_laminar = laminarflow(t_l, tau_l)
     E_laminar = E_laminar / E_laminar.max()
     c_out_l_full = np.convolve(c_0_l, E_laminar / np.sum(E_laminar), mode="full")
     t_conv_l_full = np.linspace(t_l[0] + t_l[0], t_l[-1] + t_l[-1], len(c_out_l_full))
-    valid_indices = t_conv_l_full <= 60
+    valid_indices = t_conv_l_full <= 30
     t_conv_l = t_conv_l_full[valid_indices]
     c_out_l = c_out_l_full[valid_indices]
 
@@ -179,7 +179,6 @@ for n_disc_o, kernel_size, n_disc in discretization_confg_second:
     ax2.set_xlabel('Time')
     ax2.set_ylabel('E')
     ax2.legend()
-
     plt.savefig(os.path.join(first_layer_CNN_dir, f'Profile_{current_date}_1st_Convolution_Layer_{n_disc_o}.png'), dpi=300)
     plt.show()
    

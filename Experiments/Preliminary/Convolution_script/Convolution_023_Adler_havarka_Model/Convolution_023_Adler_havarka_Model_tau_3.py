@@ -11,7 +11,7 @@ import numpy as np
 import wandb
 module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 sys.path.append(module_path)
-from nRTD.rtd_fitting_3 import RTDModule
+from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
 import os
@@ -25,10 +25,8 @@ if wandb.run is not None:
 # module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 # sys.path.append(module_path)
 
-
-adler_dir = r'D:\Tuana\nRTD\Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_3_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1_2611'
-#adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_3_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1_2210'
-epoch=26000
+adler_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Adler_havarka_Model\tau_a_val_3_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1_26_11'
+epoch=33000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -67,7 +65,7 @@ sub_dict = {
     # n_e_1,
     t_i: 35,
     t_o:70,
-    t_e_1:35
+    t_e_1:35,
 }
 result_dict = {}
 
@@ -149,9 +147,10 @@ print(model(c_in).size())
 ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=20, shuffle=True)
 
+wandb.init()
 wandb_logger = pl_loggers.WandbLogger(
     project="nRTD",
-    log_model=True,name="tau3_adl"
+    log_model=True
 )
 
 trainer = pl.Trainer(
@@ -206,15 +205,42 @@ inverse_laplace_results = compute_inverse_laplace(coefficients, t_plot)
 E_expected = inverse_laplace_results[0]['E_t']
 E_expected =E_expected /E_expected.max()
 
+# plt.figure()
+# plt.plot(t_input, c_in[0, 0, :].numpy(), label="c_in", color="blue")
+
+# for i in range(c_out.size(1)):
+#     plt.plot(
+#         t_conv[0, i, :].numpy(),
+#         c_out[0, i, :].numpy(),
+#         label="tau_a_val_1_tau_p_val_2",
+#         color="green",
+#     )
+
+# plt.plot(
+#     t_conv[0, 0, :].numpy(),
+#     c_conv[0, 0, :].detach().numpy(),
+#     label="c_predicted",
+#     color="red",
+# )
+# plt.plot(t_E, E, label="E", color="orange")
+# plt.plot(t_plot, E_expected, label="E_predicted", color="purple", linestyle="--")
+# plt.xlim((0, 50))
+# plt.ylim((0, 1.1))
+# plt.legend()
+# ax = plt.gca()  
+# ax.set_xticks(np.arange(0, 10, 1))  
+# plt.savefig("Figure_Adler_havarka_Model_tau_a_val_1_tau_p_val_2_200disc_001")
+# plt.show()
+
 fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(10, 8))
 fig.subplots_adjust(hspace=0)  
 ax1.plot(t_input, c_in[0, 0, :].numpy(), label="$SF$", color="blue")
-ax1.plot(t_conv[0, 0, :].numpy(), c_conv[0, 0, :].detach().numpy(), color="red",label=r'$x_{CNN,lam}$')
+ax1.plot(t_conv[0, 0, :].numpy(), c_conv[0, 0, :].detach().numpy(), color="red",label=r'$x_{CNN,adl}$')
 for i in range(c_out.size(1)):
     ax1.plot(
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
-        label=r'$x_{th,lam}$',
+        label=r'$x_{th,adl}$,$tau_a=1$',
         color="black", linestyle="--", linewidth=2.2
     )
 ax1.set_xlim((0, 31))
@@ -222,16 +248,16 @@ ax1.set_ylim((0, 1.1))
 ax1.set_ylabel('$x$ / $1$')
 ax1.legend()
 ax1.tick_params(labelbottom=False)
-ax2.plot(t_E, E, label="$E_{CNN,lam}$",  color="red")
+ax2.plot(t_E, E, label="$E_{CNN,adl}$",  color="red")
 ax2.set_xlabel('$t$ / $s$')
 ax2.set_ylabel('$E$ / $1$')
-ax2.plot(t_plot, E_expected, label='$E_{th,lam}$', color='black',linestyle="--", linewidth=2.2)
+ax2.plot(t_plot, E_expected, label='$E_{th,adl}$', color='black',linestyle="--", linewidth=2.2)
 ax2.set_xlim((0, 31))
 ax2.set_ylim((0, 1.1))
 ax2.legend()
 plt.xlabel("$t$ / $s$")
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"Figure_plot_{current_date}.png", dpi=300)
+#plt.savefig(f"Figure_plot_tau_1_adler{current_date}.png", dpi=300)
 plt.show()
 
 
@@ -239,26 +265,14 @@ predicted_E = E
 predicted_time = t_E              
 expected_E = E_expected                 
 expected_time = t_plot
-#save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_023_Adler_havarka_Model"
-save_dir=r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_023_Adler_havarka_Model'
+save_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_023_Adler_havarka_Model"
 np.save(os.path.join(save_dir, 'E_predicted_tau_a_val_3.npy'), predicted_E)
 np.save(os.path.join(save_dir, 't_E_predicted_tau_a_val_3.npy'), predicted_time)
 np.save(os.path.join(save_dir, 'E_expected_tau_a_val_3.npy'), expected_E)
 np.save(os.path.join(save_dir, 't_E_expected_tau_a_val_3.npy'), expected_time)
 
-predicted_E = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_023_Adler_havarka_Model\E_predicted_tau_a_val_3.npy')
-predicted_time = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_023_Adler_havarka_Model\t_E_predicted_tau_a_val_3.npy')
-plt.plot(t_E, E, label="E", color="orange")
-plt.plot(expected_time-1, expected_E, label='E_expected_tau_a_val_1', color='purple', linestyle='--')
-plt.xlabel('t')
-plt.ylabel('E')
-plt.xlim((predicted_time.min(), predicted_time.max()))
-plt.ylim((0, 1.1))  
-plt.xlim(0,25)
-plt.legend()
-plt.xticks(np.arange(0, 10, 1))  
-#plt.savefig(os.path.join(unified_dir, 'E_saved_21102024_tau_a_val_1.png'), dpi=300)
-plt.show()
+#predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_023_Adler_havarka_Model/E_predicted_tau_a_val_1.npy')
+#predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_023_Adler_havarka_Model/t_E_predicted_tau_a_val_1.npy')
 
 
 import torch
@@ -267,38 +281,34 @@ import numpy as np
 import ICIW_Plots.colors as ICIWcolors
 from ICIW_Plots.figures import Elsevier_Sizes
 import datetime
-from ICIW_Plots import cm2inch
 
 fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 12 * cm2inch))
-ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_{0(t)}$", color=ICIWcolors.CERULEAN)
+ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
 for i in range(c_out.size(1)):
     ax1.plot(
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
-        label=r"$x_{(t)}$",
-        color=ICIWcolors.DRAB
+        label=r"$x{(t)}$",
+       color=ICIWcolors.DRAB
     )
 ax1.plot(
     t_conv[0, 0, :].numpy(),
     c_conv[0, 0, :].detach().numpy(),
-    label=r"$\hat{x}_{(t)}$",
+    label=r"$\hat{x}{(t)}$",
     color="purple",
     linestyle="--"
 )
 ax1.set_ylabel(r"$x$ / $1$", )
 ax1.legend(loc='best')
-ax1.set_xlim((0, 35))  
+ax1.set_xlim((0, 25))  
 ax1.set_ylim((-0.1, 1.1))  
-ax2.plot(t_E, E_expected, label=r"$E_{(t)}$", color=ICIWcolors.KELLYGREEN)
-ax2.plot(t_E, E, label=r"$\hat{E}_{(t)}$", color="black", linestyle="--")
+ax2.plot(expected_time, expected_E, label=r"$E(t)$", color=ICIWcolors.KELLYGREEN)
+ax2.plot(predicted_time, predicted_E, label=r"$\hat{E}(t)$", color="black", linestyle="--")
 ax2.set_xlabel(r"$t$ / $s$")
 ax2.set_ylabel(r"$E$ / $1$")
 ax2.legend(loc='best')
-ax2.set_xlim((0, 35))  
+ax2.set_xlim((0, 25))  
 ax2.set_ylim((-0.1, 1.1)) 
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"Profiles_tau_3_{current_date}.png", dpi=300)
+plt.savefig(os.path.join(save_dir, f"Profiles_tau_3_{current_date}.png"), dpi=300)
 plt.show()
-
-
-

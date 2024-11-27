@@ -26,18 +26,18 @@ def compute_inverse_laplace(coefficients, t_values):
     return results
 
 coefficients = {
-    'tau_a_val': np.array([3]),   
+    'tau_a_val': np.array([1,3]),   
     'tau_p_val': np.array([2]), 
     'tau_m_val': np.array([0.5,1]),
     'beta_val': np.array([0.1])}
 
-t_values = np.linspace(0, 45, 500, endpoint=True)
+t_values = np.linspace(0, 70, 200, endpoint=True)
 results = compute_inverse_laplace(coefficients, t_values)
 c_0 = np.zeros_like(t_values)
 c_0[t_values > 5] = 1
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
 
-base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model'
+base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature/Adler_havarka_Model'
 
 for result in results:
     tau_a_val = result['tau_a_val']
@@ -48,13 +48,13 @@ for result in results:
     E_t_normalized = E_t / np.sum(E_t)
     c_out_full = np.convolve(c_0, E_t_normalized, mode="full")
     t_conv_full = np.linspace(t_values[0] + t_values[0], t_values[-1] + t_values[-1], len(c_out_full))
-    valid_indices = t_conv_full <= 45
+    valid_indices = t_conv_full <= 70
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
-    unified_dir = os.path.join(base_dir, f'tau_a_val_{tau_a_val}_tau_p_val_{tau_p_val}_tau_m_val_{tau_m_val}_beta_val_{beta_val}')
+    unified_dir = os.path.join(base_dir, f'tau_a_val_{tau_a_val}_tau_p_val_{tau_p_val}_tau_m_val_{tau_m_val}_beta_val_{beta_val}_26_11')
     os.makedirs(unified_dir, exist_ok=True)
-    #np.save(os.path.join(unified_dir, 'time.npy'), t_conv)
-    #np.save(os.path.join(unified_dir, 'concentration.npy'), c_out)
+    np.save(os.path.join(unified_dir, 'time.npy'), t_conv)
+    np.save(os.path.join(unified_dir, 'concentration.npy'), c_out)
 
     ax1.plot(t_values, E_t, label=f'tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m_={tau_m_val},beta={beta_val}')
     ax2.plot(t_conv, c_out, label=f'tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m_={tau_m_val},beta={beta_val}')
@@ -74,15 +74,5 @@ plt.tight_layout()
 plt.savefig('unified_time_delay_001.png', dpi=300)
 plt.show()
 
-for result in results:
-    tau_a_val = result['tau_a_val']
-    tau_p_val = result['tau_p_val']
-    tau_m_val = result['tau_m_val']
-    beta_val=results['beta_val']
-    Adler_havarka_dir = os.path.join(base_dir, f'tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m_={tau_m_val},beta={beta_val}')
-    t_conv = np.load(os.path.join(Adler_havarka_dir, 'time.npy'))
-    c_out = np.load(os.path.join(Adler_havarka_dir, 'concentration.npy'))
-    print(f"Results for tau_a={tau_a_val}, tau_p={tau_p_val}, tau_m_={tau_m_val},beta={beta_val}:")
-    print(f"Time: {t_conv[:10]}...")
-    print(f"Concentration: {c_out[:10]}...")
+
 

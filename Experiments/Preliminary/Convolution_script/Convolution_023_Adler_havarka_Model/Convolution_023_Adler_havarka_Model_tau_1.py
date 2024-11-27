@@ -25,7 +25,7 @@ if wandb.run is not None:
 # module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 # sys.path.append(module_path)
 
-adler_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1_2611'
+adler_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Adler_havarka_Model\tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1_26_11'
 epoch=33000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
@@ -63,9 +63,9 @@ sub_dict = {
     # n_out_1,
     n_out_1: 200,
     # n_e_1,
-    t_i: 40,
-    t_o:100,
-    t_e_1:60,
+    t_i: 35,
+    t_o:70,
+    t_e_1:35,
 }
 result_dict = {}
 
@@ -257,7 +257,7 @@ ax2.set_ylim((0, 1.1))
 ax2.legend()
 plt.xlabel("$t$ / $s$")
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"Figure_plot_tau_1_adler{current_date}.png", dpi=300)
+#plt.savefig(f"Figure_plot_tau_1_adler{current_date}.png", dpi=300)
 plt.show()
 
 
@@ -265,27 +265,15 @@ predicted_E = E
 predicted_time = t_E              
 expected_E = E_expected                 
 expected_time = t_plot
-save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_023_Adler_havarka_Model"
+save_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_023_Adler_havarka_Model"
 np.save(os.path.join(save_dir, 'E_predicted_tau_a_val_1.npy'), predicted_E)
 np.save(os.path.join(save_dir, 't_E_predicted_tau_a_val_1.npy'), predicted_time)
 np.save(os.path.join(save_dir, 'E_expected_tau_a_val_1.npy'), expected_E)
 np.save(os.path.join(save_dir, 't_E_expected_tau_a_val_1.npy'), expected_time)
 
-predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_023_Adler_havarka_Model/E_predicted_tau_a_val_1.npy')
-predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_023_Adler_havarka_Model/t_E_predicted_tau_a_val_1.npy')
-plt.plot(t_E, E, label='$E_{CNN,adl}$,$tau_a=1$', color="red")
-plt.plot(expected_time, expected_E, label='$E_{th,adl}$', color='black', linestyle='--')
-plt.xlabel('$t$ / $s$')
-plt.ylabel('$E$ / $1$')
-plt.xlim((predicted_time.min(), predicted_time.max()))
-plt.ylim((0, 1.1))  
-plt.xlim(0,25)
-plt.legend()
-plt.xticks(np.arange(0, 10, 1))  
+#predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_023_Adler_havarka_Model/E_predicted_tau_a_val_1.npy')
+#predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_023_Adler_havarka_Model/t_E_predicted_tau_a_val_1.npy')
 
-current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"E_tau_1_adler_{current_date}.png", dpi=300)
-plt.show()
 
 import torch
 import matplotlib.pyplot as plt
@@ -294,33 +282,33 @@ import ICIW_Plots.colors as ICIWcolors
 from ICIW_Plots.figures import Elsevier_Sizes
 import datetime
 
-fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 16 * cm2inch))
-ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_{0(t)}$", color=ICIWcolors.CERULEAN)
+fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 12 * cm2inch))
+ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
 for i in range(c_out.size(1)):
     ax1.plot(
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
-        label=r"$x_{(t)}$",
-        color=ICIWcolors.KELLYGREEN
+        label=r"$x{(t)}$",
+       color=ICIWcolors.DRAB
     )
 ax1.plot(
     t_conv[0, 0, :].numpy(),
     c_conv[0, 0, :].detach().numpy(),
-    label=r"$\hat{x}_{(t)}$",
-    color=ICIWcolors.FLAME,
+    label=r"$\hat{x}{(t)}$",
+    color="purple",
     linestyle="--"
 )
 ax1.set_ylabel(r"$x$ / $1$", )
 ax1.legend(loc='best')
 ax1.set_xlim((0, 35))  
 ax1.set_ylim((-0.1, 1.1))  
-ax2.plot(t_E, E, label=r"$\hat{E}_{(t)}$",color="black" , linestyle="--")
-ax2.plot(t_E, E_expected, label=r"$E_{(t)}$", color=ICIWcolors.CRIMSON)
+ax2.plot(expected_time, expected_E, label=r"$E(t)$", color=ICIWcolors.KELLYGREEN)
+ax2.plot(predicted_time, predicted_E, label=r"$\hat{E}(t)$", color="black", linestyle="--")
 ax2.set_xlabel(r"$t$ / $s$")
 ax2.set_ylabel(r"$E$ / $1$")
 ax2.legend(loc='best')
 ax2.set_xlim((0, 35))  
 ax2.set_ylim((-0.1, 1.1)) 
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"Profiles_tau_1_{current_date}.png", dpi=300)
+plt.savefig(os.path.join(save_dir, f"Profiles_tau_1_{current_date}.png"), dpi=300)
 plt.show()
