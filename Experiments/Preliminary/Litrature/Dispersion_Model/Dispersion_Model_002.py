@@ -14,12 +14,12 @@ def dispersion(t: npt.NDArray[np.float64], Bo: float, tau: float) -> npt.NDArray
     E = E / tau
     return E
 
-t = np.linspace(0, 240, 200, endpoint=True) #last position
+t = np.linspace(0, 140, 200, endpoint=True) #last position
 c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
 
-Bo_values = np.array([1])
+Bo_values = np.array([1,3,10])
 
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model'
 
@@ -31,7 +31,7 @@ for Bo in Bo_values:
     valid_indices = t_conv_full <= 140
     t_conv = t_conv_full[valid_indices]
     c_out = c_out_full[valid_indices]
-    Bo_dir = os.path.join(base_dir, f'Bo{Bo}_200disc_240s')
+    Bo_dir = os.path.join(base_dir, f'Bo{Bo}_200disc_140s')
     os.makedirs(Bo_dir, exist_ok=True)
     print("c_out",c_out.shape)
     print("t_conv_full",t_conv.shape)

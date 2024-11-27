@@ -62,8 +62,8 @@ for result in results:
     c_out = c_out_full[valid_indices]
     filename_time = f'time_J{J_val}_tau{tau_val}_alpha{alpha_val}.npy'
     filename_conc = f'concentration_J{J_val}_tau{tau_val}_alpha{alpha_val}.npy'
-    # np.save(os.path.join(base_dir, filename_time), t_conv)
-    # np.save(os.path.join(base_dir, filename_conc), c_out)
+    np.save(os.path.join(base_dir, filename_time), t_conv)
+    np.save(os.path.join(base_dir, filename_conc), c_out)
     print(f"integral E_t: {np.trapz(E_t, t)}")
     ax1.plot(t, E_t, label=f'J={J_val}, tau={tau_val}, alpha={alpha_val}')
     ax2.plot(t_conv, c_out, label=f'J={J_val}, tau={tau_val}, alpha={alpha_val}')
@@ -72,7 +72,6 @@ ax1.set_xlabel('t')
 ax1.set_ylabel('E(t)')
 ax1.legend()
 ax2.set_xlabel('t')
-ax2.set_xlim(0,30)
 ax2.set_ylabel('c(t)')
 ax2.legend()
 plt.tight_layout()
