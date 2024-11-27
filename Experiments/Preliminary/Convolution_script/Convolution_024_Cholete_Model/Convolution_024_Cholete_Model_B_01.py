@@ -250,6 +250,18 @@ print("E",E.shape)
 print("E_c_e_normalized",E_c_e_normalized.shape)
 #####
 
+predicted_E = E
+predicted_time = t_E.numpy()               
+expected_E = E_c_e_normalized                   
+expected_time = t_conv_e
+save_dir =r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_024_Cholete_Model"
+np.save(os.path.join(save_dir, 'E_predicted_01.npy'), predicted_E)
+np.save(os.path.join(save_dir, 't_E_predicted_01.npy'), predicted_time)
+np.save(os.path.join(save_dir, 'E_expected_01.npy'), expected_E)
+np.save(os.path.join(save_dir, 't_E_expected_01.npy'), expected_time)
+#np.save(os.path.join(save_dir, 'c_conv_in.npy'),c_conv )
+print("saved under:", save_dir)
+
 import torch
 import matplotlib.pyplot as plt
 import numpy as np
@@ -263,32 +275,32 @@ from ICIW_Plots import make_square_ax, cm2inch
 plt.style.use("ICIWstyle")
 
 fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 12 * cm2inch))
-ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_{0(t)}$", color=ICIWcolors.CERULEAN)
+ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
 for i in range(c_out.size(1)):
     ax1.plot(
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
-        label=r"$x_{(t)}$",
+        label=r"$x(t)$",
        color=ICIWcolors.DRAB
     )
 ax1.plot(
     t_conv[0, 0, :].numpy(),
     c_conv[0, 0, :].detach().numpy(),
-    label=r"$\hat{x}_{(t)}$",
+    label=r"$\hat{x}(t)$",
     color="purple",
     linestyle="--"
 )
 ax1.set_ylabel(r"$x$ / $1$", )
 ax1.legend(loc='best')
-ax1.set_xlim((0, 15))  
+ax1.set_xlim((0, 30))  
 ax1.set_ylim((-0.1, 1.1))  
-ax2.plot(t_E, E_c_e_normalized/E_c_e_normalized.max(), label=r"$E_{(t)}$", color=ICIWcolors.KELLYGREEN)
-ax2.plot(t_E, E, label=r"$\hat{E}_{(t)}$", color="black", linestyle="--")
+ax2.plot(t_E, E_c_e_normalized/E_c_e_normalized.max(), label=r"$E(t)$", color=ICIWcolors.KELLYGREEN)
+ax2.plot(t_E, E, label=r"$\hat{E}(t)$", color="black", linestyle="--")
 ax2.set_xlabel(r"$t$ / $s$")
 ax2.set_ylabel(r"$E$ / $1$")
 ax2.legend(loc='best')
-ax2.set_xlim((0, 15))  
+ax2.set_xlim((0, 30))  
 ax2.set_ylim((-0.1, 1.1)) 
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"Profile_Ch_01_{current_date}.png", dpi=300)
+plt.savefig(os.path.join(save_dir,f"Profile_Ch_01_100s_{current_date}.png"), dpi=300)
 plt.show()

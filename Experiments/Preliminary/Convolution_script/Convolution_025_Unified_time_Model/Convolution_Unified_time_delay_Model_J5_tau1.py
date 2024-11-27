@@ -31,8 +31,6 @@ if wandb.run is not None:
 tau_5_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Unified_time_delay'
 #tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Unified_time_delay'
 
-
-
 epoch=28000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
@@ -180,6 +178,7 @@ E = model.net.E[0]
 t_E =torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
 E = E / E.max()
 t_plot = torch.linspace(0, t_e_1, n_e_1).numpy()
+save_dir =r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_025_Unified_time_Model"
 
 import torch
 import matplotlib.pyplot as plt
@@ -209,18 +208,18 @@ E_expected = E_expected / E_expected.max()
 plt.style.use("ICIWstyle")
 
 fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 12 * cm2inch))
-ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_{0(t)}$", color=ICIWcolors.CERULEAN)
+ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
 for i in range(c_out.size(1)):
     ax1.plot(
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
-        label=r"$x_{(t)}$",
+        label=r"$x(t)$",
         color=ICIWcolors.DRAB
     )
 ax1.plot(
     t_conv[0, 0, :].numpy(),
     c_conv[0, 0, :].detach().numpy(),
-    label=r"$\hat{x}_{(t)}$",
+    label=r"$\hat{x}(t)$",
     color="purple",
     linestyle="--"
 )
@@ -228,13 +227,23 @@ ax1.set_ylabel(r"$x$ / $1$", )
 ax1.legend(loc='best')
 ax1.set_xlim((0, 20))  
 ax1.set_ylim((-0.1, 1.1))  
-ax2.plot(t_E, E_expected, label=r"$E_{(t)}$", color=ICIWcolors.KELLYGREEN)
-ax2.plot(t_E, E, label=r"$\hat{E}_{(t)}$", color="black", linestyle="--")
+ax2.plot(t_E, E_expected, label=r"$E(t)$", color=ICIWcolors.KELLYGREEN)
+ax2.plot(t_E, E, label=r"$\hat{E}(t)$", color="black", linestyle="--")
 ax2.set_xlabel(r"$t$ / $s$")
 ax2.set_ylabel(r"$E$ / $1$")
 ax2.legend(loc='best')
 ax2.set_xlim((0, 20))  
 ax2.set_ylim((-0.1, 1.1)) 
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"Profiles_5_1_{current_date}.png", dpi=300)
+plt.savefig(os.path.join(save_dir,f"Profile__J5_tau_1_{current_date}.png"), dpi=300)
 plt.show()
+
+predicted_E = E
+predicted_time = t_E.numpy()                                 
+expected_time = t_conv
+np.save(os.path.join(save_dir, 'E_predicted_J5_tau_1.npy'), E_expected)
+np.save(os.path.join(save_dir, 't_E_predicted_J5_tau_1.npy'), predicted_time)
+np.save(os.path.join(save_dir, 'E_expected_J5_tau_1.npy'), E_expected)
+np.save(os.path.join(save_dir, 't_E_expected_J5_tau_1.npy'), expected_time)
+
+print("saved under:", save_dir)
