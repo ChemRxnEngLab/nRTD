@@ -24,10 +24,12 @@ if wandb.run is not None:
     wandb.finish()
 # module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 # sys.path.append(module_path)
-laminar_model_dir=r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_021_Laminar_Flow_Model\Convolution_021_Laminar_Flow_Model.py"
-tau_5_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Laminar_Flow_Model\tau_5.0_disc_200_100s"
+# laminar_model_dir=r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_021_Laminar_Flow_Model\Convolution_021_Laminar_Flow_Model.py"
+# tau_5_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Laminar_Flow_Model\tau_5.0_disc_200_100s"
+tau_5_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0_disc_200_100s"
 
-epoch=21000
+
+epoch=1
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -216,7 +218,8 @@ predicted_time = t_E.numpy()
 expected_E = E_expected_np                   
 expected_time = t_E_np
 c_conv_in_50=c_conv.detach().numpy()
-save_dir =r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_021_Laminar_Flow_Model"
+#save_dir =r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_021_Laminar_Flow_Model"
+save_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model"
 np.save(os.path.join(save_dir, 'E_predicted.npy'), predicted_E)
 np.save(os.path.join(save_dir, 't_E_predicted.npy'), predicted_time)
 np.save(os.path.join(save_dir, 'E_expected.npy'), expected_E)
@@ -252,7 +255,7 @@ from ICIW_Plots import make_square_ax, cm2inch
 
 plt.style.use("ICIWstyle")
 
-fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 12 * cm2inch))
+fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 10 * cm2inch))
 ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
 for i in range(c_out.size(1)):
     ax1.plot(
@@ -270,16 +273,157 @@ ax1.plot(
 )
 ax1.set_ylabel(r"$x$ / $1$", )
 ax1.legend(loc='best')
-ax1.set_xlim((0, 35))  
+ax1.set_xlim((0, 25))  
 ax1.set_ylim((-0.1, 1.1))  
 ax2.plot(expected_time, expected_E, label=r"$E(t)$", color=ICIWcolors.KELLYGREEN)
 ax2.plot(predicted_time, predicted_E, label=r"$\hat{E}(t)$", color="black", linestyle="--")
 ax2.set_xlabel(r"$t$ / $s$")
 ax2.set_ylabel(r"$E$ / $1$")
 ax2.legend(loc='best')
-ax2.set_xlim((0, 35))  
+ax2.set_xlim((0, 25))  
 ax2.set_ylim((-0.1, 1.1)) 
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(os.path.join(save_dir, f"Profile_Laminar_{current_date}.png"), dpi=300)
+plt.savefig(os.path.join(save_dir, f"test_2_{current_date}.png"), dpi=300)
 plt.show()
 
+from ICIW_Plots import make_square_subplots
+import matplotlib.pyplot as plt
+fig = plt.figure()
+axs = make_square_subplots(
+    fig=fig,
+    ax_width=3 * cm2inch,
+    ax_layout=(3, 2), 
+    h_sep=1.5 * cm2inch,
+    v_sep=1 * cm2inch,
+    sharex=True,
+    sharey=False,
+    xlabel=["$x_1$", "$x_2$"],
+    ylabel=[
+        ["$y_1$", "$y_2$"], 
+        ["$y_4$", "$y_5$"],
+    ]
+)
+
+for i in range(c_out.size(1)):
+    axs[0, 0].plot(
+        t_conv[0, i, :].numpy(),
+        c_out[0, i, :].numpy(),
+        label=r"$x(t)$",
+        color=ICIWcolors.CERULEAN 
+    )
+axs[0, 0].plot(
+    t_conv[0, 0, :].numpy(),
+    c_conv[0, 0, :].detach().numpy(),
+    label=r"$\hat{x}(t)$",
+    color="purple",
+    linestyle="--"
+)
+axs[0, 0].set_ylabel(r"$x$ / $1$")
+axs[0, 0].legend(loc="best")
+axs[0, 0].set_xlim((0, 50))
+axs[0, 0].set_ylim((-0.1, 1.1))
+
+axs[1, 0].plot(
+    expected_time, expected_E, label=r"$E(t)$", color=ICIWcolors.KELLYGREEN 
+)
+axs[1, 0].plot(
+    predicted_time, predicted_E, label=r"$\hat{E}(t)$", color="black", linestyle="--"
+)
+axs[1, 0].set_xlabel(r"$t$ / $s$")
+axs[1, 0].set_ylabel(r"$E$ / $1$")
+axs[1, 0].legend(loc="best")
+axs[1, 0].set_xlim((0, 50))
+axs[1, 0].set_ylim((-0.1, 1.1))
+plt.show()
+
+
+from ICIW_Plots import make_square_subplots
+import matplotlib.pyplot as plt
+
+fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 23 * cm2inch))  # Increased figure height for better spacing
+axs = make_square_subplots(
+    fig=fig,
+    ax_width=6 * cm2inch,
+    ax_layout=(3, 2),  
+    h_sep=2. * cm2inch,  
+    v_sep=1.3 * cm2inch, 
+    sharex=True,
+    sharey=False,
+    xlabel=["$x_1$", "$x_2$"], 
+    ylabel=[
+        ["$y_1$", "$y_2$"],  
+        ["$y_3$", "$y_4$"], 
+        ["$y_5$", "$y_6$"],  
+    ]
+)
+
+for i in range(c_out.size(1)):
+    axs[0, 0].plot(
+        t_conv[0, i, :].numpy(),
+        c_out[0, i, :].numpy(),
+        label=r"$x(t)$",
+        color="green"
+    )
+axs[0, 0].plot(
+    t_conv[0, 0, :].numpy(),
+    c_conv[0, 0, :].detach().numpy(),
+    label=r"$\hat{x}(t)$",
+    color="purple",
+    linestyle="--"
+)
+axs[0, 0].set_ylabel(r"$x$ / $1$")
+axs[0, 0].legend(loc="best")
+axs[0, 0].set_xlim((0, 25))
+axs[0, 0].set_ylim((-0.1, 1.1))
+axs[0, 1].plot(
+    expected_time, expected_E, label=r"$E(t)$", color="green"
+)
+axs[0, 1].plot(
+    predicted_time, predicted_E, label=r"$\hat{E}(t)$", color="black", linestyle="--"
+)
+axs[0, 1].set_xlabel(r"$t$ / $s$")
+axs[0, 1].set_ylabel(r"$E$ / $1$")
+axs[0, 1].legend(loc="best")
+axs[0, 1].set_xlim((0, 25))
+axs[0, 1].set_ylim((-0.1, 1.1))
+current_date = datetime.datetime.now().strftime("%Y%m%d")
+plt.savefig(os.path.join(save_dir, f"test_3_{current_date}.png"), dpi=300)
+plt.show()
+
+
+
+
+
+
+
+# fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 16 * cm2inch), ax_width=7.3 * cm2inch,
+#     ax_height=5)
+# ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
+# for i in range(c_out.size(1)):
+#     ax1.plot(
+#         t_conv[0, i, :].numpy(),
+#         c_out[0, i, :].numpy(),
+#         label=r"$x{(t)}$",
+#        color=ICIWcolors.DRAB
+#     )
+# ax1.plot(
+#     t_conv[0, 0, :].numpy(),
+#     c_conv[0, 0, :].detach().numpy(),
+#     label=r"$\hat{x}{(t)}$",
+#     color="purple",
+#     linestyle="--"
+# )
+# ax1.set_ylabel(r"$x$ / $1$", )
+# ax1.legend(loc='best')
+# ax1.set_xlim((0, 35))  
+# ax1.set_ylim((-0.1, 1.1))  
+# ax2.plot(expected_time, expected_E, label=r"$E(t)$", color=ICIWcolors.KELLYGREEN)
+# ax2.plot(predicted_time, predicted_E, label=r"$\hat{E}(t)$", color="black", linestyle="--")
+# ax2.set_xlabel(r"$t$ / $s$")
+# ax2.set_ylabel(r"$E$ / $1$")
+# ax2.legend(loc='best')
+# ax2.set_xlim((0, 35))  
+# ax2.set_ylim((-0.1, 1.1)) 
+# current_date = datetime.datetime.now().strftime("%Y%m%d")
+# plt.savefig(os.path.join(save_dir, f"test_{current_date}.png"), dpi=300)
+# plt.show()
