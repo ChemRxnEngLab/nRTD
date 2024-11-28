@@ -25,11 +25,11 @@ if wandb.run is not None:
 # module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 # sys.path.append(module_path)
 # laminar_model_dir=r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_021_Laminar_Flow_Model\Convolution_021_Laminar_Flow_Model.py"
-# tau_5_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Laminar_Flow_Model\tau_5.0_disc_200_100s"
-tau_5_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0_disc_200_100s"
+tau_5_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Laminar_Flow_Model\tau_5.0_disc_200_100s"
+#tau_5_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0_disc_200_100s"
 
 
-epoch=1
+epoch=20000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -218,8 +218,8 @@ predicted_time = t_E.numpy()
 expected_E = E_expected_np                   
 expected_time = t_E_np
 c_conv_in_50=c_conv.detach().numpy()
-#save_dir =r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_021_Laminar_Flow_Model"
-save_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model"
+save_dir =r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_021_Laminar_Flow_Model"
+#save_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model"
 np.save(os.path.join(save_dir, 'E_predicted.npy'), predicted_E)
 np.save(os.path.join(save_dir, 't_E_predicted.npy'), predicted_time)
 np.save(os.path.join(save_dir, 'E_expected.npy'), expected_E)
