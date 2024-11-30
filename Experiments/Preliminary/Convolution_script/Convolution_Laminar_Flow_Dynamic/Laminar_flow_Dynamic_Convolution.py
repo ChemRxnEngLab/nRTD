@@ -25,7 +25,7 @@ if wandb.run is not None:
 module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 sys.path.append(module_path)
 
-epoch=17000
+epoch=1
 laminar_model_dir='/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_Laminar_Flow_Dynamic'
 tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model_dynamic/tau_5.0'
 t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
@@ -154,7 +154,7 @@ ax2.set_xlim((0,10))
 ax2.set_ylim((0, 1.1))
 ax2.legend()
 plt.xlabel("Time")
-plt.savefig('Figure_connected_plot_21102024.png', dpi=300)
+# plt.savefig('Figure_connected_plot_21102024.png', dpi=300)
 plt.show()
 
 # Saving of E and time
