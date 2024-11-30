@@ -50,9 +50,9 @@ for i in i_values:
     i_str = f"{i:.2f}".replace('.', '_')  # Format i for filenames
     save_dir=os.path.join(tau_dir,f"variation_{i_str}")
     os.makedirs(save_dir, exist_ok=True)
-    np.save(os.path.join(save_dir, f'time_{i_str}.npy'), t_conv)
-    np.save(os.path.join(save_dir, f'concentration_{i_str}.npy'), c_out_noisy)
-
+    np.save(os.path.join(save_dir, f'time.npy'), t_conv)
+    np.save(os.path.join(save_dir, f'concentration.npy'), c_out_noisy)
+    np.save(os.path.join(save_dir, f'input_function.npy'), input_function)
     # # Plot results for each i
     # fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
 
