@@ -29,7 +29,7 @@ def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float6
 
 for i in range(num_datasets):
     disc = discretization_Laminar[0]
-    t_l = np.linspace(0, 60, disc, endpoint=True)
+    t_l = np.linspace(0, 100, disc, endpoint=True)
     c_0_l = np.zeros_like(t_l)
     c_0_l[t_l > 5] = 1
 
@@ -37,7 +37,7 @@ for i in range(num_datasets):
     E_laminar /= E_laminar.max()
     c_out_l_full = np.convolve(c_0_l, E_laminar / np.sum(E_laminar), mode="full")
     t_conv_l_full = np.linspace(t_l[0] + t_l[0], t_l[-1] + t_l[-1], len(c_out_l_full))
-    valid_indices = t_conv_l_full <= 60
+    valid_indices = t_conv_l_full <= 100
     t_conv_l = t_conv_l_full[valid_indices]
     c_out_l = c_out_l_full[valid_indices]
 

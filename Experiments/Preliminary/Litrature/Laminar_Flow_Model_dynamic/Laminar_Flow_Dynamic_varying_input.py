@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import numpy.typing as npt
 import os
+from scipy.interpolate import interp1d
 
 # Parameters
 noise_level = 0.001
@@ -15,8 +16,10 @@ def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float6
     E[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
     return E
 
+
 # Time vector
 t = np.linspace(0, 150, 300)
+t_75 = np.linspace(0, 75, 150)
 
 # Generate laminar flow E
 E = laminarflow(t, tau)
@@ -31,9 +34,12 @@ for i in i_values:
     # Define the input function with i-dependent step
     def input_function(t: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         return 0.5 * (np.sin(t - (np.pi / 2)+i) + 1)  # Input depends on i
-
-    # Compute input function
+    t_150=150
+    c_0_75 = input_function(t_75)
     input_func = input_function(t)
+    # interpolation = interp1d(t_75, c_0_75, kind='linear')
+    # input_func_150 = interpolation(t_150)
+    
 
     # Perform convolution
     c_out_full = np.convolve(input_func, E_normalized, mode="full")
@@ -52,7 +58,8 @@ for i in i_values:
     os.makedirs(save_dir, exist_ok=True)
     np.save(os.path.join(save_dir, f'time.npy'), t_conv)
     np.save(os.path.join(save_dir, f'concentration.npy'), c_out_noisy)
-    np.save(os.path.join(save_dir, f'input_function.npy'), input_function)
+    np.save(os.path.join(save_dir, f'input_function_interp.npy'), c_0_75)
+    print(c_0_75)
     # # Plot results for each i
     # fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
 
