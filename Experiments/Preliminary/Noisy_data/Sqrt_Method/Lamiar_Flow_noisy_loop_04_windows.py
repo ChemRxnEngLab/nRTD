@@ -1,34 +1,55 @@
+import matplotlib.pyplot as plt
+import numpy.typing as npt
+import sys
+import os
+module_path = os.path.expanduser("lib")
+sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
-import numpy as np
-import matplotlib.pyplot as plt
-import sys
-module_path = r"D:\Tuana\nRTD\lib"
-sys.path.append(module_path)
-from nRTD import RTDModule
 import lightning.pytorch as pl
-from lightning.pytorch import loggers as pl_loggers
+import numpy as np
 import wandb
+module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+sys.path.append(module_path)
+from nRTD.rtd_fitting_2 import RTDModule
+from nRTD.rtd_net_4 import RTDNet
+from lightning.pytorch import loggers as pl_loggers
 import os
+import datetime
+import sympy as sp
+from sympy import ceiling
+from ICIW_Plots import make_square_ax, cm2inch
 
-
+if wandb.run is not None:
+    wandb.finish()
 #if wandb.run is not None:
 #    wandb.finish()
-os.chdir(r"D:\Tuana\nRTD\Experiments\Preliminary\Noisy_data\Sqrt_Method")
+#os.chdir(r"D:\Tuana\nRTD\Experiments\Preliminary\Noisy_data\Sqrt_Method")
 
-    
-epoch=10000
+# os.chdir("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method")
+
+
+epoch=20000
+t_e_1=50
 n_disc = 100
-t_input = torch.linspace(0, 30, n_disc)
+t_input = torch.linspace(0, 50, n_disc)
 c_in = torch.zeros((100, 1, n_disc))
 c_in[:, :, t_input > 5] = 1
 
-test_file_numbers = range(30, 100)
+test_file ="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0_disc_200_100s"
+save_dir="Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method"
+t_conv_path = os.path.join(test_file, "time.npy")
+c_out_path = os.path.join(test_file, "concentration.npy")
+t_conv_test = torch.tensor(np.load(t_conv_path), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+c_out_test = torch.tensor(np.load(c_out_path), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+
+#test_file_numbers = range(30, 100)
 
 def load_data(file_numbers):
     c_out_list = []
     t_conv_list = []
-    dataset_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Noisy_data\Sqrt_Method\Tau_5.0_Laminar_Flow_Model_Dataset"
+    #dataset_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Noisy_data\Sqrt_Method\Tau_5.0_Laminar_Flow_Model_Dataset"
+    dataset_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method/Tau_5.0_Laminar_Flow_Model_Dataset"
 
     for i in file_numbers: 
         t_conv_path = os.path.join(dataset_dir, f"Tau_5.0_Disc_200_time_Dataset_{i}.npy")
@@ -47,10 +68,14 @@ def load_data(file_numbers):
     t_conv_tensor = torch.cat(t_conv_list, dim=0)
     c_out_tensor = torch.cat(c_out_list, dim=0)
     return t_conv_tensor, c_out_tensor
+print("c_in",c_in.shape)
+print("c_out_test",c_out_test.shape)
 
-t_conv_test, c_out_test = load_data(test_file_numbers)
-test_ds = TensorDataset(c_in[30:100], c_out_test)  
-test_dl = DataLoader(test_ds, batch_size=30, shuffle=False)
+c_in_test = c_in[:1, :, :]  
+print("After adjustment - c_in_test shape:", c_in_test.shape)
+test_ds = TensorDataset(c_in_test, c_out_test)
+test_dl = DataLoader(test_ds, batch_size=1, shuffle=False)
+
 
 train_file_configurations = [30,40,50,60,70,80,90,100]
 
@@ -60,8 +85,9 @@ for num_train_files in train_file_configurations:
     train_ds = TensorDataset(c_in[:num_train_files], c_out_train)
     train_dl = DataLoader(train_ds, batch_size=2)
     model = RTDModule(
-        kernel_size=99,
-        learning_rate=1e-3,
+        kernel_sizes=[101],
+        kernel_times=[(0.0, 50)],
+        learning_rate=1e-4,
         use_scheduler=True,
         scheduler_kwargs={"factor": 0.5, "patience": 80},
     )
@@ -79,8 +105,6 @@ for num_train_files in train_file_configurations:
         deterministic=True,
         log_every_n_steps=1 
     )
-
-    
     
     print(f"Training with {num_train_files} training files.")
     trainer.fit(model, train_dl)
@@ -88,8 +112,7 @@ for num_train_files in train_file_configurations:
 
     c_conv = model(c_in[:num_train_files])  
     E = model.net.E[0] / model.net.E[0].max()
-    t_E = torch.linspace(0, 30, model.kernel_size)
-    
+    t_E =torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
     plt.figure(figsize=(10, 6))
     plt.plot(t_input, c_in[0, 0, :].numpy(), label="Input Signal (SF)", color="blue")
 
@@ -102,6 +125,6 @@ for num_train_files in train_file_configurations:
     plt.xlim((0, 30))
     plt.ylim((0, 2))
     plt.legend()
-    plt.title(f"Model Behavior with {num_train_files} Training Files")
+    plt.savefig(os.path.join(save_dir, f"Noisy_data_{current_date}.png"), dpi=300)
     plt.show()
     wandb.finish()
