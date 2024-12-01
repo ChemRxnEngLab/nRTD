@@ -65,9 +65,9 @@ sub_dict = {
     # n_out_1,
     n_out_1: 500,
     # n_e_1,
-    t_i: 20,
-    t_o:46,
-    t_e_1:26,
+    t_i: 28,
+    t_o:56,
+    t_e_1:28,
 }
 result_dict = {}
 
@@ -107,9 +107,9 @@ t_conv_list = []
 # file_numbers = range(1, 21, 2)
 
 for i, file_num in enumerate(file_numbers):
-    t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_t_processed.npy"
+    t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_t_processed_500.npy"
     # t_conv_path = f"Data/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_t_processed.npy"
-    c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_x_processed.npy"
+    c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_x_processed_500.npy"
     # c_out_path = f"Data/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_x_processed.npy"
 
     print(f"Processing files: {t_conv_path}, {c_out_path}")
