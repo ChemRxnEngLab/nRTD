@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Nov 25 21:25:12 2023
-
-@author: tuanaoyuncu
-"""
-
 import numpy as np
 import scipy as sc
 import matplotlib.pyplot as plt
@@ -13,12 +5,12 @@ from pathlib import Path
 
 WD = Path("/Users/tuanaoyuncu/Documents/GitHub/nRTD")
 DATA = WD / "Data"
-PWD=DATA /"0001"/ "C_001" / "H_135_C1" / "S_010_C1" 
+PWD=DATA /"0001"/ "C_001" / "H_085_C1" / "S_009_C1" 
 
 def process_data(file_num):
 
-    x_file_path = PWD / f"TOA_MGA_20231020_010_{file_num:06d}_x.npy"
-    t_file_path = PWD / f"TOA_MGA_20231020_010_{file_num:06d}_t.npy"
+    x_file_path = PWD / f"TOA_MGA_20231020_009_{file_num:06d}_x.npy"
+    t_file_path = PWD / f"TOA_MGA_20231020_009_{file_num:06d}_t.npy"
 
 
     x = np.load(x_file_path)
@@ -49,8 +41,8 @@ def process_data(file_num):
     # x_evel = f(t_evel)
 
 
-    np.save(PWD / f"TOA_MGA_20231020_010_{file_num:06d}_t_processed_2nlayer_200.npy", t_pretty)
-    np.save(PWD / f"TOA_MGA_20231020_010_{file_num:06d}_x_processed_2nlayer_200.npy", x_evel)
+    np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_200_disc.npy", t_pretty)
+    np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_200_disc.npy", x_evel)
 
 
     plt.plot(t_pretty, x_evel, label=file_num)

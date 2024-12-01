@@ -1,19 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Dec  1 20:44:40 2024
-
-@author: tuanaoyuncu
-"""
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Nov 25 21:25:12 2023
-
-@author: tuanaoyuncu
-"""
-
 import numpy as np
 import scipy as sc
 import matplotlib.pyplot as plt

@@ -23,7 +23,8 @@ from ICIW_Plots import make_square_ax, cm2inch
 if wandb.run is not None:
     wandb.finish()
     
-save_dir=r"D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_exp\0001\H_135"
+save_dir=r"D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_exp\0001\H_085"
+
 learning_rate=1e-3
 n_in_1, n_out_1, n_out_2, n_e_1, n_e_2 = sp.symbols("n_in_1 n_out_1 n_out_2 n_e_1 n_e_2", positive=True, real=True)
 t_1, t_lam, t_adl, t_e_1, t_e_2 = sp.symbols("t_1, t_lam, t_adl, t_e_1, t_e_2", positive=True, real=True)
@@ -109,8 +110,8 @@ c_conv_results = {}
 n_disc = n_in_1
 t_input = torch.linspace(0, t_1, n_1_in)
 c_in = torch.zeros((20, 1, n_1_in))
-c_in[::2, :, t_input > 1] = 0.0333
-c_in[1::2, :, t_input < 1] = 0.0333
+c_in[::2, :, t_input > 1] = 0.05
+c_in[1::2, :, t_input < 1] = 0.05
 file_numbers = range(1, 21)
 c_out_list = []
 t_conv_list = []
@@ -119,8 +120,8 @@ t_conv_list = []
 for i, file_num in enumerate(file_numbers):
     # t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1/TOA_MGA_20231020_010_{file_num:06d}_t_processed_2nlayer_200.npy"
     # c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1/TOA_MGA_20231020_010_{file_num:06d}_x_processed_2nlayer_200.npy"
-    t_conv_path= r"D:\Tuana\nRTD\Experiments\Data\0001\C_001\H_135_C1\S_010_C1\TOA_MGA_20231020_010_{file_num:06d}_t_processed_2nlayer_200.npy"
-    c_out_path =r"D:\Tuana\nRTD\Experiments\Data\0001\C_001\H_135_C1\S_010_C1\TOA_MGA_20231020_010_{file_num:06d}_x_processed_2nlayer_200.npy"
+    t_conv_path= r"D:\Tuana\nRTD\Experiments\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_200_disc.npy"
+    c_out_path =r"D:\Tuana\nRTD\Experiments\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_200_disc.npy"
     
     print(f"Processing files: {t_conv_path}, {c_out_path}")
 
@@ -140,6 +141,7 @@ plt.show()
 print(f"c_in size: {c_in.size()}")
 print(f"c_out size: {c_out.size()}")
 print(f"t_conv size: {t_conv.size()}")
+print(t_conv)
 
 model = RTDModule(
     kernel_sizes=[n_e_1],
@@ -239,8 +241,8 @@ print("c_in",c_out.shape)
 for i, file_num in enumerate(file_numbers):
     # t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_t_processed.npy"
     # c_out_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_x_processed.npy"
-    t_conv_path_2= r"D:\Tuana\nRTD\Experiments\Data\0001\C_002\H_135_C2\S_013_C2\TOA_MGA_20231020_013_{file_num:06d}_t_processed.npy"
-    c_out_path_2 =r"D:\Tuana\nRTD\Experiments\Data\0001\C_002\H_135_C2\S_013_C2\TOA_MGA_20231020_013_{file_num:06d}_x_processed.npy"
+    t_conv_path_2= r"D:\Tuana\nRTD\Experiments\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_t_processed_500.npy"
+    c_out_path_2 =r"D:\Tuana\nRTD\Experiments\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_x_processed_500.npy"
     
     print(f"Processing files: {t_conv_path_2}, {c_out_path_2}")
 

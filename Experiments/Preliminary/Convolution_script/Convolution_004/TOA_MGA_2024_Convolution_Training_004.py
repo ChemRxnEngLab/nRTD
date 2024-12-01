@@ -1,5 +1,4 @@
 import sys
-
 sys.path.append("/Users/tuanaoyuncu/Documents/GitHub/nRTD/lib")
 # sys.path.append("lib")
 import torch
@@ -10,7 +9,6 @@ import matplotlib.pyplot as plt
 from nRTD import RTDModule
 import numpy as np
 import wandb
-
 
 n_disc = 377
 t_input = torch.linspace(0, 31, n_disc)
