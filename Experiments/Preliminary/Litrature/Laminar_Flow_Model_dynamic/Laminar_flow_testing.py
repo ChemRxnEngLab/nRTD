@@ -9,11 +9,11 @@ def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float6
     E[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
     return E
 
-t = np.linspace(0, 150, 300, endpoint=True)
+t = np.linspace(0, 300, 500, endpoint=True)
 c_0 = np.zeros_like(t)
 c_0[t > 5] = 1
 
-t_1 = np.linspace(0, 75, 150, endpoint=True)
+t_1 = np.linspace(0, 150, 250, endpoint=True)
 c_0_1 = np.zeros_like(t_1)
 c_0_1[t_1 > 5] = 1
 

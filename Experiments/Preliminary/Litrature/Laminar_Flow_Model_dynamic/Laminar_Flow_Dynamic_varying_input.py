@@ -18,8 +18,8 @@ def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float6
 
 
 # Time vector
-t = np.linspace(0, 150, 300)
-t_75 = np.linspace(0, 75, 150)
+t = np.linspace(0, 300, 500)
+t_75 = np.linspace(0, 150, 250)
 
 # Generate laminar flow E
 E = laminarflow(t, tau)

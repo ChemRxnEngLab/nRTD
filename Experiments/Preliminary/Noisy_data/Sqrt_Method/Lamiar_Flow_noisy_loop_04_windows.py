@@ -9,8 +9,12 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
+
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
+
 from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
@@ -29,31 +33,36 @@ if wandb.run is not None:
 # os.chdir("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method")
 
 
-epoch=20000
+epoch=1500
 t_e_1=50
 n_disc = 100
 t_input = torch.linspace(0, 50, n_disc)
 c_in = torch.zeros((100, 1, n_disc))
 c_in[:, :, t_input > 5] = 1
 
-test_file ="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0_disc_200_100s"
-save_dir="Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method"
+#test_file ="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0_disc_200_100s"
+#save_dir="Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method"
+
+test_file =r"D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Laminar_Flow_Model\tau_5.0_disc_200_100s"
+save_dir=r"D:\Tuana\nRTD\Experiments\Preliminary\Noisy_data\Sqrt_Method"
+
 t_conv_path = os.path.join(test_file, "time.npy")
 c_out_path = os.path.join(test_file, "concentration.npy")
 t_conv_test = torch.tensor(np.load(t_conv_path), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_test = torch.tensor(np.load(c_out_path), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-
+print(t_conv_test)
 #test_file_numbers = range(30, 100)
 
 def load_data(file_numbers):
     c_out_list = []
     t_conv_list = []
-    #dataset_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Noisy_data\Sqrt_Method\Tau_5.0_Laminar_Flow_Model_Dataset"
-    dataset_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method/Tau_5.0_Laminar_Flow_Model_Dataset"
+    dataset_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Noisy_data\Sqrt_Method\Tau_5.0_Laminar_Flow_Model_Dataset"
+    #dataset_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method/Tau_5.0_Laminar_Flow_Model_Dataset"
 
     for i in file_numbers: 
         t_conv_path = os.path.join(dataset_dir, f"Tau_5.0_Disc_200_time_Dataset_{i}.npy")
         c_out_path = os.path.join(dataset_dir, f"Tau_5.0_Disc_200_concentration_noisy_Dataset_{i}.npy")
+    
         
         if not (os.path.exists(t_conv_path) and os.path.exists(c_out_path)):
             print(f"Warning: Files for dataset {i} do not exist.")
@@ -77,7 +86,7 @@ test_ds = TensorDataset(c_in_test, c_out_test)
 test_dl = DataLoader(test_ds, batch_size=1, shuffle=False)
 
 
-train_file_configurations = [30,40,50,60,70,80,90,100]
+train_file_configurations = [20,40,60,70,80,100]
 
 for num_train_files in train_file_configurations:
     train_file_numbers = range(1, num_train_files + 1)
@@ -87,7 +96,7 @@ for num_train_files in train_file_configurations:
     model = RTDModule(
         kernel_sizes=[101],
         kernel_times=[(0.0, 50)],
-        learning_rate=1e-4,
+        learning_rate=1e-3,
         use_scheduler=True,
         scheduler_kwargs={"factor": 0.5, "patience": 80},
     )
@@ -111,13 +120,14 @@ for num_train_files in train_file_configurations:
     test_results = trainer.test(model, test_dl)
 
     c_conv = model(c_in[:num_train_files])  
-    E = model.net.E[0] / model.net.E[0].max()
+    E = model.net.E[0]
     t_E =torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
+    E = E / E.max()
     plt.figure(figsize=(10, 6))
     plt.plot(t_input, c_in[0, 0, :].numpy(), label="Input Signal (SF)", color="blue")
 
     for i in range(num_train_files):
-        plt.plot(t_conv_train[i, 0, :].numpy(), c_out_train[i, 0, :].numpy(), 
+        plt.plot(t_conv_train[1, 0, :].numpy(), c_out_train[1, 0, :].numpy(), 
                  label=f"Training Data {i+1}", color="green")
     
     plt.plot(t_conv_train[0, 0, :].numpy(), c_conv[0, 0, :].detach().numpy(), label="Predicted", color="red")
@@ -125,6 +135,7 @@ for num_train_files in train_file_configurations:
     plt.xlim((0, 30))
     plt.ylim((0, 2))
     plt.legend()
+    current_date = datetime.datetime.now().strftime("%Y%m%d")
     plt.savefig(os.path.join(save_dir, f"Noisy_data_{current_date}.png"), dpi=300)
     plt.show()
     wandb.finish()
