@@ -65,9 +65,9 @@ sub_dict = {
     # n_out_1,
     n_out_1: 500,
     # n_e_1,
-    t_i: 25,
-    t_o:51,
-    t_e_1:26,
+    t_i: 20,
+    t_o:41,
+    t_e_1:21,
 }
 result_dict = {}
 
@@ -96,14 +96,8 @@ print("t_o =", t_o)
 print("t_i =", t_i)
 print("t_e_1 =", t_e_1)
 
-
-
-
-
-
-n_disc = 245
-t_input = torch.linspace(0, 25, n_disc)
-c_in = torch.zeros((20, 1, n_disc))
+t_input = torch.linspace(0, t_i, n_in_1)
+c_in = torch.zeros((20, 1, n_in_1))
 c_in[::2, :, t_input > 1] = 0.1
 c_in[1::2, :, t_input < 1] = 0.1
 file_numbers = range(1, 21)
@@ -112,8 +106,8 @@ t_conv_list = []
 # file_numbers = range(1, 21, 2)
 
 for i, file_num in enumerate(file_numbers):
-    t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001 / H_085_C1 / S_009_C1 /TOA_MGA_20231020_009_{file_num:06d}_t_processed.npy"
-    c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001 / H_085_C1 / S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_x_processed.npy"
+    t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_t_processed.npy"
+    c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_x_processed.npy"
 
     print(f"Processing files: {t_conv_path}, {c_out_path}")
 
@@ -137,7 +131,7 @@ print(f"t_conv size: {t_conv.size()}")
 model = RTDModule(
     kernel_sizes=[n_e_1],
     kernel_times=[(0.0, t_e_1)],
-    learning_rate=1e-4,
+    learning_rate=1e-3,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
@@ -224,8 +218,8 @@ plt.plot(
     color="red",
 )
 plt.plot(t_E, E, label="E", color="orange")
-plt.xlim((0, 22))
-plt.ylim((0, 0.2))
+plt.xlim((0, 51))
+plt.ylim((0, 0.01))
 plt.legend()
 
 # fig = plt.gcf()

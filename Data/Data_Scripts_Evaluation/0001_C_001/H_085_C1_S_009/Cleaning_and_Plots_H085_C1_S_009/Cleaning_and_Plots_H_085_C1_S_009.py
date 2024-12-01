@@ -13,31 +13,44 @@ from pathlib import Path
 
 WD = Path("/Users/tuanaoyuncu/Documents/GitHub/nRTD")
 DATA = WD / "Data"
-PWD=DATA /"0001"/ "C_001" / "H_085_C1" / "S_009_C1" 
+PWD=DATA /"0001"/ "C_001" / "H_135_C1" / "S_010_C1" 
 
 def process_data(file_num):
 
-    x_file_path = PWD / f"TOA_MGA_20231020_009_{file_num:06d}_x.npy"
-    t_file_path = PWD / f"TOA_MGA_20231020_009_{file_num:06d}_t.npy"
+    x_file_path = PWD / f"TOA_MGA_20231020_010_{file_num:06d}_x.npy"
+    t_file_path = PWD / f"TOA_MGA_20231020_010_{file_num:06d}_t.npy"
 
 
     x = np.load(x_file_path)
     t = np.load(t_file_path)
     
-    print("Dimensions of x:", x.shape)
-    print("Dimensions of t:", t.shape)
+    # print("Dimensions of x:", x.shape)
+    # print("Dimensions of t:", t.shape)
 
 
     f = sc.interpolate.interp1d(t, x[0, :])
-    t_n = t[-1]
-    t_b = t_n - 41
-    t_evel = np.linspace(t_b, t_n, 500)
-    t_pretty = t_evel - t_b
+    t_end_2=t[-71]
+    t_end = t[-1]
+    t_start = t_end - 41
+    print(t_end)
+    print(t_start)
+    print(t_end_2)
+    t_evel = np.linspace(t_start, t_end_2, 200)
+    t_pretty = t_evel - t_start
     x_evel = f(t_evel)
+    print(t_pretty)
 
 
-    #np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_t_processed.npy", t_pretty)
-    #np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_x_processed.npy", x_evel)
+    # f = sc.interpolate.interp1d(t, x[0, :])
+    # t_n = t[-1]
+    # t_b = t_n - 41
+    # t_evel = np.linspace(t_b, t_n, 500)
+    # t_pretty = t_evel - t_b
+    # x_evel = f(t_evel)
+
+
+    np.save(PWD / f"TOA_MGA_20231020_010_{file_num:06d}_t_processed_2nlayer_200.npy", t_pretty)
+    np.save(PWD / f"TOA_MGA_20231020_010_{file_num:06d}_x_processed_2nlayer_200.npy", x_evel)
 
 
     plt.plot(t_pretty, x_evel, label=file_num)

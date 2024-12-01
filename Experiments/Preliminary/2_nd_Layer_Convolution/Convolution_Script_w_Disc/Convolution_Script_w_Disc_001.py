@@ -40,7 +40,7 @@ coefficients = {
 
 epoch_1=1
 epoch_2=1
-learning_rate=1e-4
+learning_rate=1e-3
 
 
 #base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_Convolution'
@@ -392,7 +392,7 @@ ax.plot(t_out_l_a.squeeze().numpy(), c_out_l_a.squeeze().numpy(), label=r"$x_{2(
 ax1.set_xlim((0, 30))
 ax1.set_ylim((-0.1, 1.1))
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(f"2nd_Layer_Ch_and_Adl_{current_date}.png", dpi=300)
+#plt.savefig(f"2nd_Layer_Ch_and_Adl_{current_date}.png", dpi=300)
 plt.show()
 
 #### General Plotting

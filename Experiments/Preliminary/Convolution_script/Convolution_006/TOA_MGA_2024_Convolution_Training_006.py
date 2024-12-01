@@ -4,17 +4,101 @@ sys.path.append("/Users/tuanaoyuncu/Documents/GitHub/nRTD/lib")
 # sys.path.append("lib")
 import torch
 from torch.utils.data import TensorDataset, DataLoader, random_split
-import lightning.pytorch as pl
-from lightning.pytorch import loggers as pl_loggers
 import matplotlib.pyplot as plt
-from nRTD import RTDModule
+import numpy.typing as npt
+import sys
+import os
+module_path = os.path.expanduser("lib")
+sys.path.append(module_path)
+import torch
+from torch.utils.data import TensorDataset, DataLoader
+import lightning.pytorch as pl
 import numpy as np
 import wandb
+module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+sys.path.append(module_path)
+from nRTD.rtd_fitting_3 import RTDModule
+from nRTD.rtd_net_4 import RTDNet
+from lightning.pytorch import loggers as pl_loggers
+import os
+import datetime
+import sympy as sp
+from sympy import ceiling
+from ICIW_Plots import cm2inch
 
+if wandb.run is not None:
+    wandb.finish()
 
-n_disc = 377
-t_input = torch.linspace(0, 41, n_disc)
-c_in = torch.zeros((20, 1, n_disc))
+n_in_1, n_out_1, n_e_1, = sp.symbols(
+    "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
+)
+t_i, t_o, t_e_1 = sp.symbols(
+    "t_i, t_o, t_e_1 ", positive=True, real=True
+)
+equations = [
+    t_i - t_o + t_e_1,
+    n_in_1 - n_out_1 + n_e_1 - 1,
+    n_in_1 / t_i - n_e_1 / t_e_1,
+]
+for equation in equations:
+    print(equation)
+solution_set = sp.solve(
+    equations, (n_in_1, n_out_1, n_e_1, t_o), dict=True
+)
+print(solution_set)
+solution_set = sp.solve(
+    equations,
+    n_in_1,
+    # n_out_1,
+    n_e_1,
+    # t_in,
+    #t_o,
+    # t_e_1,
+    dict=True,
+)
+solution = solution_set[0]
+print(len(solution_set))
+for _, val in solution.items():
+    print(val)
+sub_dict = {
+    # n_in_1,
+    # n_out_1,
+    n_out_1: 500,
+    # n_e_1,
+    t_i: 20,
+    t_o:46,
+    t_e_1:26,
+}
+result_dict = {}
+
+for key, value in solution.items():
+    print(f"{key} = {value}")
+    evaluated_value = value.subs(sub_dict)
+    if evaluated_value.free_symbols:
+        print(
+            f"Cannot fully evaluate {key}: remaining symbols {evaluated_value.free_symbols}"
+        )
+    else:
+        result_dict[key] = (float(sp.N(evaluated_value)))
+        print(f"Updated {key}: {result_dict[key]}")
+print(result_dict)
+n_in_1 = int(sp.floor(result_dict.get(n_in_1, None))) 
+n_1_out = result_dict.get(n_out_1, sub_dict.get(n_out_1))
+n_e_1 = int(ceiling(result_dict.get(n_e_1, None))) 
+t_o = result_dict.get(t_o, sub_dict.get(t_o))
+t_i = sub_dict.get(t_i)
+t_e_1 = sub_dict.get(t_e_1)
+t_e = t_e_1
+print("n_in_1 =", n_in_1)
+print("n_1_out =", n_1_out)
+print("n_e_1 =", n_e_1)
+print("t_o =", t_o)
+print("t_i =", t_i)
+print("t_e_1 =", t_e_1)
+
+n_disc = n_in_1
+t_input = torch.linspace(0, t_i, n_in_1)
+c_in = torch.zeros((20, 1, n_in_1))
 c_in[::2, :, t_input > 1] = 0.0333
 c_in[1::2, :, t_input < 1] = 0.0333
 file_numbers = range(1, 21)
@@ -48,14 +132,15 @@ print(f"c_out size: {c_out.size()}")
 print(f"t_conv size: {t_conv.size()}")
 
 model = RTDModule(
-    kernel_size=122,
-    learning_rate=10e-3,
+    kernel_sizes=[n_e_1],
+    kernel_times=[(0.0, t_e_1)],
+    learning_rate=1e-3,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(0, 10, model.kernel_size)
+t_E =torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
 j = 2
 
 plt.figure()
@@ -115,7 +200,7 @@ trainer.test(model, dl)  ### check it maybe you will see changes??
 
 c_conv = model(c_in)
 E = model.net.E[0]
-t_E = torch.linspace(0, 10, model.kernel_size)
+t_E =torch.linspace(0, float(t_e_1), int(model.kernel_sizes[0]))
 
 plt.figure()
 plt.plot(t_input, c_in[0, 0, :].numpy(), label="SF", color="blue")
