@@ -33,7 +33,7 @@ if wandb.run is not None:
 # os.chdir("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method")
 
 
-epoch=1500
+epoch=15000
 t_e_1=50
 n_disc = 100
 t_input = torch.linspace(0, 50, n_disc)
@@ -92,7 +92,8 @@ for num_train_files in train_file_configurations:
     train_file_numbers = range(1, num_train_files + 1)
     t_conv_train, c_out_train = load_data(train_file_numbers)
     train_ds = TensorDataset(c_in[:num_train_files], c_out_train)
-    train_dl = DataLoader(train_ds, batch_size=2)
+    train_dl = DataLoader(train_ds, batch_size=num_train_files)
+
     model = RTDModule(
         kernel_sizes=[101],
         kernel_times=[(0.0, 50)],
@@ -136,6 +137,6 @@ for num_train_files in train_file_configurations:
     plt.ylim((0, 2))
     plt.legend()
     current_date = datetime.datetime.now().strftime("%Y%m%d")
-    plt.savefig(os.path.join(save_dir, f"Noisy_data_{current_date}.png"), dpi=300)
+    plt.savefig(os.path.join(save_dir, f"Noisy_data_{current_date}_{num_train_files}.png"), dpi=300)
     plt.show()
     wandb.finish()
