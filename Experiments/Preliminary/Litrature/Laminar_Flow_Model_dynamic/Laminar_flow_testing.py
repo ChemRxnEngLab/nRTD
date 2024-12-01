@@ -27,7 +27,7 @@ print(f"tau: {tau}, integral E: {np.trapz(E, t)}")
 
 c_out_full = np.convolve(c_0, E / np.sum(E), mode="full")
 t_conv_full = np.linspace(t[0] + t[0], t[-1] + t[-1], len(c_out_full))
-valid_indices = t_conv_full <= 150
+valid_indices = t_conv_full <= 300
 t_conv = t_conv_full[valid_indices]
 c_out = c_out_full[valid_indices]
 # tau_dir = os.path.join(base_dir, f'tau_{tau}_disc_200_100s')

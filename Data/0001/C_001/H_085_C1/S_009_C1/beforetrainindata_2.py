@@ -12,11 +12,12 @@ from pathlib import Path
 
 WD = Path("/Users/tuanaoyuncu/Documents/GitHub/nRTD")
 DATA = WD / "Data"
-PWD = DATA / "C_001" / "H_085_C1" / "S_009_C1" 
+#PWD = DATA / "0001"/"C_001" / "H_085_C1" / "S_009_C1" 
+PWD = DATA / "0001"/"C_002" / "H_085_C2" / "S_012_C2" 
 
 def process_data(file_num):
-    x_file_path = PWD / f"TOA_MGA_20231020_009_{file_num:06d}_x_processed.npy"
-    t_file_path = PWD / f"TOA_MGA_20231020_009_{file_num:06d}_t_processed.npy"
+    x_file_path = PWD / f"TOA_MGA_20231020_012_{file_num:06d}_x_processed.npy"
+    t_file_path = PWD / f"TOA_MGA_20231020_012_{file_num:06d}_t_processed.npy"
 
     # Load _x.npy and _t.npy
     x = np.load(x_file_path)

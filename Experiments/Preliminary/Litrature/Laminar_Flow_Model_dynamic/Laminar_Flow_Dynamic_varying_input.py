@@ -34,7 +34,6 @@ for i in i_values:
     # Define the input function with i-dependent step
     def input_function(t: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         return 0.5 * (np.sin(t - (np.pi / 2)+i) + 1)  # Input depends on i
-    t_150=150
     c_0_75 = input_function(t_75)
     input_func = input_function(t)
     # interpolation = interp1d(t_75, c_0_75, kind='linear')
