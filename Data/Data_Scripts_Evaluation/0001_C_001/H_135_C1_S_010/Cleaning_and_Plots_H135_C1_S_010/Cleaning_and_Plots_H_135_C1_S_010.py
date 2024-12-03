@@ -7,6 +7,7 @@ WD = Path("/Users/tuanaoyuncu/Documents/GitHub/nRTD")
 DATA = WD / "Data"
 PWD=DATA /"0001"/ "C_001" / "H_135_C1" / "S_010_C1" 
 
+
 def process_data(file_num):
     # Construct file paths for _x.npy and _t.npy
     x_file_path = PWD / f"TOA_MGA_20231020_010_{file_num:06d}_x.npy"

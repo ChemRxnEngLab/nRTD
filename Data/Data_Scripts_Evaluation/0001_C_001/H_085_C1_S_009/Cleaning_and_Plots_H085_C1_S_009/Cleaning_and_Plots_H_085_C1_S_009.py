@@ -12,7 +12,6 @@ def process_data(file_num):
     x_file_path = PWD / f"TOA_MGA_20231020_009_{file_num:06d}_x.npy"
     t_file_path = PWD / f"TOA_MGA_20231020_009_{file_num:06d}_t.npy"
 
-
     x = np.load(x_file_path)
     t = np.load(t_file_path)
     
