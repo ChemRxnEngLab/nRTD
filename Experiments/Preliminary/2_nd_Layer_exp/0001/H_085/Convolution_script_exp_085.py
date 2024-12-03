@@ -2,14 +2,16 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-module_path = os.path.expanduser("lib")
-sys.path.append(module_path)
+#module_path = os.path.expanduser("lib")
+#sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 from nRTD.rtd_fitting_3 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
@@ -120,8 +122,8 @@ t_conv_list = []
 for i, file_num in enumerate(file_numbers):
     # t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1/TOA_MGA_20231020_010_{file_num:06d}_t_processed_2nlayer_200.npy"
     # c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1/TOA_MGA_20231020_010_{file_num:06d}_x_processed_2nlayer_200.npy"
-    t_conv_path= r"D:\Tuana\nRTD\Experiments\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_200_disc.npy"
-    c_out_path =r"D:\Tuana\nRTD\Experiments\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_200_disc.npy"
+    t_conv_path= rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_200_disc.npy"
+    c_out_path =rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_200_disc.npy"
     
     print(f"Processing files: {t_conv_path}, {c_out_path}")
 
@@ -189,7 +191,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=2,
+    max_epochs=10000,
     logger=wandb_logger, deterministic=True
 )
 trainer.fit(model, dl)
@@ -241,9 +243,9 @@ print("c_in",c_out.shape)
 for i, file_num in enumerate(file_numbers):
     # t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_t_processed.npy"
     # c_out_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_x_processed.npy"
-    t_conv_path_2= r"D:\Tuana\nRTD\Experiments\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_t_processed_500.npy"
-    c_out_path_2 =r"D:\Tuana\nRTD\Experiments\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_x_processed_500.npy"
-    
+    t_conv_path_2= rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_t_processed_500.npy"
+    c_out_path_2 =rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_x_processed_500.npy"
+
     print(f"Processing files: {t_conv_path_2}, {c_out_path_2}")
 
     t_conv_2 = (
@@ -277,7 +279,7 @@ dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=2,
+    max_epochs=10000,
     logger=wandb_logger,
     deterministic=True,
 )
@@ -329,102 +331,60 @@ plt.savefig(os.path.join(save_dir,f"Figure_C_002_H_135_C2{current_date}.png"), d
 plt.show()
 plt.show()
 
-# import ICIW_Plots.colors as ICIWcolors
-# from ICIW_Plots.figures import Elsevier_Sizes
-# import datetime
-# import ICIW_Plots.colors as ICIWcolors
-# from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
-# from ICIW_Plots import make_square_ax, cm2inch
-# from ICIW_Plots import make_rect_ax
-# plt.style.use("ICIWstyle")
-# fig = plt.figure(figsize=(Elsevier_Sizes.single_column["in"], 12 * cm2inch))
-# ax = make_rect_ax(
-#     fig,
-#     ax_width=7.3 * cm2inch,
-#     ax_height=5 * cm2inch,
-#     # left_h=0.2,  # These arguments control the spacing of the axis
-#     # bottom_v=0.2, # not supplying them wil place the axes in the middle of the figure
-#     xlabel=r"$t$ / $s$",
-#     ylabel=r"$E$ / $1$"
-# )
-# ax.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), )
-# ax.plot(t_1_in_reshaped, c_1_in_reshaped, label=r"$x_{0(t)}$",color=ICIWcolors.CERULEAN)
-# ax.plot(t_conv_reshaped, c_conv_reshaped, label="$\hat{x}_{1(t)}$",color="purple",linestyle="--")
-# ax.plot(t_conv_reshaped, c_out_l_reshaped, label=r"$x_{1(t)}$",color=ICIWcolors.DRAB)
-# ax.plot(t_out_l_a.squeeze().numpy(), c_conv_2.detach().squeeze().numpy(), label="$\hat{x}_{2(t)}$", color="black", linestyle="--")
-# ax.plot(t_out_l_a.squeeze().numpy(), c_out_l_a.squeeze().numpy(), label=r"$x_{2(t)}$", color=ICIWcolors.FLAME)
-# ax1.set_xlim((0, 30))
-# ax1.set_ylim((-0.1, 1.1))
-# current_date = datetime.datetime.now().strftime("%Y%m%d")
-# #plt.savefig(f"2nd_Layer_Ch_and_Adl_{current_date}.png", dpi=300)
-# plt.show()
+plt.style.use("ICIWstyle")
+fig = plt.figure(figsize=(Elsevier_Sizes.single_column["in"], 12 * cm2inch))
+ax = make_rect_ax(
+    fig,
+    ax_width=7.3 * cm2inch,
+    ax_height=5 * cm2inch,
+    # left_h=0.2,  # These arguments control the spacing of the axis
+    # bottom_v=0.2, # not supplying them wil place the axes in the middle of the figure
+    xlabel=r"$t$ / $s$",
+    ylabel=r"$E$ / $1$"
+)
 
-# #### General Plotting
-# E_Adler_normalized = E_Adler / np.max(E_Adler)
-# E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
-# E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
+ax.plot(t_input, c_in[0, 0, :].numpy(), label=r"$x_{0(t)}$",color=ICIWcolors.CERULEAN)
+ax.plot(t_conv[j, i, :].numpy(),
+        c_out[j, i, :].numpy(), label=r"$x_{1(t)}$",color=ICIWcolors.DRAB)
+ax.plot(t_conv[0, 0, :].numpy(),
+    c_conv[0, 0, :].detach().numpy(), label="$\hat{x}_{1(t)}$",color="purple",linestyle="--")
+ax.plot( t_conv[0, 0, :].numpy(),
+    c_conv[0, 0, :].detach().numpy(), label=r"$x_{2(t)}$", color=ICIWcolors.FLAME)
+ax.plot(t_conv_2[0, i, :].numpy(),
+        c_out_2[0, i, :].numpy(), label="$\hat{x}_{2(t)}$", color="black", linestyle="--")
+
+ax.set_xlim((0, 30))
+ax.set_ylim((-0.1, 1.1))
+plt.legend()
+current_date = datetime.datetime.now().strftime("%Y%m%d")
+plt.savefig(os.path.join(save_dir, f"2nd_Layer_185_{current_date}.png"), dpi=300)
+plt.show()
+
+
+E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
+E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
 # E_learned_1 /= np.max(E_learned_1)
 # E_learned_2 /= np.max(E_learned_2)
 # t_adler = t_values_Adler if isinstance(t_values_Adler, np.ndarray) else t_values_Adler.numpy()
-# t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
-# t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
+t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
+t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
 
-# plt.style.use("ICIWstyle")
-# fig = plt.figure(figsize=(Elsevier_Sizes.single_column["in"], 12 * cm2inch))
-# ax = make_rect_ax(
-#     fig,
-#     ax_width=7.3 * cm2inch,
-#     ax_height=5 * cm2inch,
-#     # left_h=0.2,  # These arguments control the spacing of the axis
-#     # bottom_v=0.2, # not supplying them wil place the axes in the middle of the figure
-#     xlabel=r"$t$ / $s$",
-#     ylabel=r"$E$ / $1$"
-# )
-# ax.plot(t_learned_1, E_learned_1, label="$\hat{E}_{1(t)}$", color="purple")
-# ax.plot(t_learned_2, E_learned_2, label="$\hat{E}_{2(t)}$", color=ICIWcolors.FLAME)
-# ax1.set_xlim((0, 30))
-# ax1.set_ylim((-0.1, 1.1))
-# plt.show()
-
-# plt.figure(figsize=(10, 6))
-# plt.plot(t_learned_1, E_learned_1, label="$E_1$", color="purple")
-# plt.plot(t_learned_2, E_learned_2, label="$E_2$", color="red")
-# # plt.plot(t_l, E_laminar, label="E Laminar Layer 1", color="blue")
-# #plt.plot(t_l_a, E_laminar_a_normalized, label="E Laminar Layer 2", color="green")
-# # plt.plot(t_adler, E_Adler_normalized, label="E Adler", color="orange")
-# print("t_learned_1",t_learned_1.shape)
-# print("t_learned_2",t_learned_2.shape)
-# print("E_learned_1", E_learned_1.shape)
-# print("E_learned_2", E_learned_2.shape)
-# # Set plot labels and legend
-# plt.xlabel("Time")
-# plt.ylabel("E")
-# plt.xlim((0, 20))
-# plt.ylim((0, 1.1))
-# plt.legend()
-# plt.show()
-#Plotting the test/loss
-y_1 = [1.11e-7, 9.077e-6]
-x_1 = [50, 200]
-y_2 = [4.64e-7, 1.23e-5]
-x_2 = [50, 200]
-plt.figure(figsize=(10, 6))
-plt.scatter(x_1, y_1, color="black", label="Case 1")
-plt.scatter(x_2, y_2, color="red", label="Case 2")
-plt.xlabel('Number of Discretization')
-plt.ylabel('Test/Loss')
+plt.style.use("ICIWstyle")
+fig = plt.figure(figsize=(Elsevier_Sizes.single_column["in"], 12 * cm2inch))
+ax = make_rect_ax(
+     fig,
+     ax_width=7.3 * cm2inch,
+     ax_height=5 * cm2inch,
+      left_h=0.2,  # These arguments control the spacing of the axis
+      bottom_v=0.2, # not supplying them wil place the axes in the middle of the figure
+     xlabel=r"$t$ / $s$",
+     ylabel=r"$E$ / $1$"
+ )
+ax.plot(t_learned_1, E_learned_1, label="$\hat{E}_{1(t)}$", color="purple")
+ax.plot(t_learned_2, E_learned_2, label="$\hat{E}_{2(t)}$", color=ICIWcolors.FLAME)
+ax.set_xlim((0, 20))
+ax.set_ylim((-0.1, 1.1))
 plt.legend()
+current_date = datetime.datetime.now().strftime("%Y%m%d")
+plt.savefig(os.path.join(save_dir, f"E_085_{current_date}.png"), dpi=300)
 plt.show()
-
-# fig, ax1 = plt.subplots(figsize=(10, 6))
-# ax1.plot(t_1_in_reshaped, c_1_in_reshaped, label=" $c_{in}$", color="blue")
-# ax1.plot(t_conv_reshaped, c_conv_reshaped, label="$c_{p,1}$", color="black", linestyle="--")
-# ax1.plot(t_conv_reshaped, c_out_l_reshaped, label="$c_{o,1}$", color="yellow")
-# ax1.plot(t_conv_values, c_conv_2_values, label="$c_{p,2}$", color="red", linestyle="--")
-# ax1.plot(t_conv_values, c_out_values, label="$c_{o,2}$", color="orange")
-# ax1.set_xlim((0, 30))
-# ax1.set_ylim((0, 1.1))
-# ax1.set_ylabel('Concentration')
-# ax1.set_xlabel('Time')
-# ax1.legend()
-# plt.show()
