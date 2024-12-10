@@ -2,20 +2,20 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-module_path = os.path.expanduser("lib")
-sys.path.append(module_path)
+#module_path = os.path.expanduser("lib")
+#sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
+
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 
-# module_path = r"D:\Tuana\nRTD\lib"
-# sys.path.append(module_path)
-
-from nRTD.rtd_fitting_2 import RTDModule
+from nRTD.rtd_fitting_3 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
 import os
@@ -95,7 +95,7 @@ wandb_logger = pl_loggers.WandbLogger(project="nRTD", log_model=True)
 # Training the model
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=30000,
+    max_epochs=10000,
     logger=wandb_logger,
     deterministic=True,
 )
@@ -182,6 +182,7 @@ print("Sample Testing Output (test_c_out[0]):", test_c_out[0])
 plt.xlabel("Time")
 plt.ylabel("Concentration")
 plt.title("Comparison of c_in, c_out, and c_conv for a Sample")
+plt.xlim(0,50)
 plt.legend()
 plt.grid(True)
 

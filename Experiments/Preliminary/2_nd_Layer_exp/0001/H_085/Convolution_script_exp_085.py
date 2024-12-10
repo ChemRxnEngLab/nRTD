@@ -21,6 +21,13 @@ import datetime
 import sympy as sp
 from sympy import ceiling
 from ICIW_Plots import make_square_ax, cm2inch
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes
+import datetime
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
+from ICIW_Plots import make_square_ax, cm2inch
+from ICIW_Plots import make_rect_ax
 
 if wandb.run is not None:
     wandb.finish()
@@ -348,19 +355,20 @@ ax.plot(t_conv[j, i, :].numpy(),
         c_out[j, i, :].numpy(), label=r"$x_{1(t)}$",color=ICIWcolors.DRAB)
 ax.plot(t_conv[0, 0, :].numpy(),
     c_conv[0, 0, :].detach().numpy(), label="$\hat{x}_{1(t)}$",color="purple",linestyle="--")
-ax.plot( t_conv[0, 0, :].numpy(),
-    c_conv[0, 0, :].detach().numpy(), label=r"$x_{2(t)}$", color=ICIWcolors.FLAME)
-ax.plot(t_conv_2[0, i, :].numpy(),
-        c_out_2[0, i, :].numpy(), label="$\hat{x}_{2(t)}$", color="black", linestyle="--")
+ax.plot( t_conv_2[0, i, :].numpy(),
+    c_out_2[0, i, :].detach().numpy(), label=r"$x_{2(t)}$", color=ICIWcolors.FLAME)
+ax.plot(t_conv_2[0, 0, :].numpy(),
+        c_conv_2[0, 0, :].detach().numpy(), label="$\hat{x}_{2(t)}$", color="black", linestyle="--")
 
 ax.set_xlim((0, 30))
-ax.set_ylim((-0.1, 1.1))
+ax.set_ylim((-0.01, 0.07))
 plt.legend()
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(os.path.join(save_dir, f"2nd_Layer_185_{current_date}.png"), dpi=300)
+plt.savefig(os.path.join(save_dir, f"2nd_085_fitting_3{current_date}.png"), dpi=300)
 plt.show()
 
 
+# E_Adler_normalized = E_Adler / np.max(E_Adler)
 E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
 E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
 # E_learned_1 /= np.max(E_learned_1)
@@ -382,9 +390,10 @@ ax = make_rect_ax(
  )
 ax.plot(t_learned_1, E_learned_1, label="$\hat{E}_{1(t)}$", color="purple")
 ax.plot(t_learned_2, E_learned_2, label="$\hat{E}_{2(t)}$", color=ICIWcolors.FLAME)
-ax.set_xlim((0, 20))
-ax.set_ylim((-0.1, 1.1))
+ax.set_xlim((0, 15))
+ax.set_ylim((-0.1, 0.2))
 plt.legend()
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(os.path.join(save_dir, f"E_085_{current_date}.png"), dpi=300)
+plt.savefig(os.path.join(save_dir, f"2nd_085_E_fitting_3{current_date}.png"), dpi=300)
+
 plt.show()

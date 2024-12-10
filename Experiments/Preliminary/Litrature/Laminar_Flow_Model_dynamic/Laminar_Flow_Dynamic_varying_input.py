@@ -34,6 +34,7 @@ for i in i_values:
     # Define the input function with i-dependent step
     def input_function(t: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         return 0.5 * (np.sin(t - (np.pi / 2)+i) + 1)  # Input depends on i
+    
     c_0_75 = input_function(t_75)
     input_func = input_function(t)
     # interpolation = interp1d(t_75, c_0_75, kind='linear')
@@ -53,12 +54,13 @@ for i in i_values:
     c_out_noisy = c_out + noise
 
     i_str = f"{i:.2f}".replace('.', '_')  # Format i for filenames
-    save_dir=os.path.join(tau_dir,f"variation_{i_str}")
+    save_dir=os.path.join(tau_dir,f"variation_{i_str}_500")
     os.makedirs(save_dir, exist_ok=True)
     np.save(os.path.join(save_dir, f'time.npy'), t_conv)
     np.save(os.path.join(save_dir, f'concentration.npy'), c_out_noisy)
     np.save(os.path.join(save_dir, f'input_function_interp.npy'), c_0_75)
     print(c_0_75)
+    print(c_out_noisy.shape)
     # # Plot results for each i
     # fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
 
