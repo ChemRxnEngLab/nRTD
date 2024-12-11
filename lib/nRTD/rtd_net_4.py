@@ -83,7 +83,7 @@ class RTDNet(nn.Module):
             RTD density functions for compartements
         """
         return [
-            conv.get_parameter("weight")[0, 0, :].flip(0).detach().numpy()
+            conv.get_parameter("weight")[0, 0, :].cpu().flip(0).detach().numpy()
             for conv in self.fn
         ]
 
