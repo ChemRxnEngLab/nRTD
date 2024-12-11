@@ -43,7 +43,7 @@ for i in i_values:
     noise = np.random.normal(0, np.sqrt(variance_scale), c_out.shape)
     c_out_noisy = c_out + noise
 
-    i_str = f"{i:.2f}".replace('.', '_')  # Format i for filenames
+    i_str = f"{i:.3f}".replace('.', '_')  # Format i for filenames
     save_dir=os.path.join(tau_dir,f"variation_{i_str}_500")
     os.makedirs(save_dir, exist_ok=True)
     np.save(os.path.join(save_dir, f'time.npy'), t_conv)
