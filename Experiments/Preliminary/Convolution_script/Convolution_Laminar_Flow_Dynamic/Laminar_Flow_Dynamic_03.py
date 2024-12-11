@@ -38,9 +38,9 @@ c_in_list = []
 c_out_list = []
 
 # Load first 100 variations for training
-for i in np.linspace(0, 1, n_variations):  # n_variations will control the number of files
-    i_str = f"{i:.2f}".replace('.', '_')  # Format i for filenames
-    variation_dir = os.path.join(base_dir, f"variation_{i_str}")  # Directory for each variation
+for i in np.linspace(0, 10, n_variations):  # n_variations will control the number of files
+    i_str = f"{i:.3f}".replace('.', '_')  # Format i for filenames
+    variation_dir = os.path.join(base_dir, f"variation_{i_str}_500")  # Directory for each variation
 
     t_conv = np.load(os.path.join(variation_dir, "time.npy"))
     c_out = np.load(os.path.join(variation_dir, "concentration.npy"))
@@ -191,3 +191,40 @@ plt.grid(True)
 
 # Show the plot
 plt.show()
+import random  # For selecting random indices
+
+# Select 10 random indices
+random_indices = random.sample(range(len(c_in_train)), 10)
+
+# Loop over the 10 random samples and plot them
+for idx in random_indices:
+    # Get the data for the selected index
+    c_in_sample = c_in_train[idx].detach().cpu().numpy()  # input function
+    c_out_sample = c_out_train[idx].detach().cpu().numpy()  # actual output
+    c_conv_sample = c_conv[idx].detach().cpu().numpy()  # predicted output
+
+    # Time vector for the x-axis (assuming it's the same for all)
+    time_vector_in = np.linspace(0, 150, c_in_sample.shape[-1])  # Adjust for `c_in`
+    time_vector_out = np.linspace(0, 300, c_out_sample.shape[-1])  # Adjust for `c_out` and `c_conv`
+
+    # Create a new figure for each sample
+    plt.figure(figsize=(10, 6))
+
+    # Plot the input, actual output, and predicted output
+    plt.plot(time_vector_in, c_in_sample[0], label="c_in (Input)", linestyle='-', color='blue')
+    plt.plot(time_vector_out, c_out_sample[0], label="c_out (Actual Output)", linestyle='--', color='green')
+    plt.plot(time_vector_out, c_conv_sample[0], label="c_conv (Predicted Output)", linestyle='-.', color='orange')
+
+    # Customize the plot
+    plt.xlabel("Time")
+    plt.ylabel("Concentration")
+    plt.title(f"Comparison of c_in, c_out, and c_conv for Sample Index {idx}")
+    plt.xlim(0, 50)  # Adjust if necessary
+    plt.legend()
+    plt.grid(True)
+
+    # Optionally save the plot
+    #plt.savefig(os.path.join(save_dir, f"c_in_c_out_c_conv_sample_{idx}.png"), dpi=300)
+
+    # Show the plot
+    plt.show()
