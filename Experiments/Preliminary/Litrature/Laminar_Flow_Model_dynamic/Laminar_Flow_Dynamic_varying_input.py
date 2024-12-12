@@ -7,7 +7,7 @@ from scipy.interpolate import interp1d
 noise_level = 0.001
 tau = 5.0
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model_dynamic'
-i_values = np.linspace(0, 10, 100) 
+i_values = np.linspace(5,15, 300) 
 
 def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
     E = np.zeros_like(t)
@@ -25,7 +25,12 @@ os.makedirs(tau_dir, exist_ok=True)
 # Loop over i values
 for i in i_values:
     def input_function(t: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return 0.5 * (np.sin(t - (np.pi / 2)+i) + 1)  # Input depends on i
+        # Define the base function
+        base_func = 0.5 * (np.sin(t - (np.pi / 2) + i) + 1)
+        # Zero out the first 5 seconds and the last 5 seconds
+        base_func[t < 5] = 0
+        base_func[t > t[-1] - 5] = 0
+        return base_func
     
     c_0_75 = input_function(t_75)
     input_func = input_function(t)
@@ -44,13 +49,13 @@ for i in i_values:
     c_out_noisy = c_out + noise
 
     i_str = f"{i:.3f}".replace('.', '_')  # Format i for filenames
-    save_dir=os.path.join(tau_dir,f"variation_{i_str}_500")
+    save_dir=os.path.join(tau_dir,f"variation_{i_str}_500_zeros_5_15")
     os.makedirs(save_dir, exist_ok=True)
     np.save(os.path.join(save_dir, f'time.npy'), t_conv)
     np.save(os.path.join(save_dir, f'concentration.npy'), c_out_noisy)
     np.save(os.path.join(save_dir, f'input_function_interp.npy'), c_0_75)
-    # print(c_0_75)
-    # print(c_out_noisy.shape)
+    print(c_0_75)
+    print(c_out_noisy.shape)
     # fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
     # ax1.plot(t, E / E.max(), label=f'Laminar Flow E (tau = {tau})', color="red")
     # ax1.set_ylim(0, 1.1)
