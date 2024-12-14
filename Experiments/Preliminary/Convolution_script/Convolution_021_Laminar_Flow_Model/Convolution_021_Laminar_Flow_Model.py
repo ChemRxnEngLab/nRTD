@@ -107,8 +107,9 @@ c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), 
 n_disc = n_in_1
 t_input = torch.linspace(0, t_i, n_disc)
 c_in = torch.zeros((1, 1, n_disc))
-c_in[::2, :, t_input > 5] = 1
-c_in[1::2, :, t_input < 5] = 1
+c_in[:, :, t_input > 5] = 1
+#c_in[::2, :, t_input > 5] = 1
+#c_in[1::2, :, t_input < 5] = 1
 c_out_list = []
 t_conv_list = []
 c_out_list.append(c_out_tau)
