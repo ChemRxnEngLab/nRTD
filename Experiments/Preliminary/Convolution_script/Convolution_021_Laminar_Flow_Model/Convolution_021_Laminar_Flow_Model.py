@@ -2,15 +2,17 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-module_path = os.path.expanduser("lib")
+#module_path = os.path.expanduser("lib")
+#sys.path.append(module_path)
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
-sys.path.append(module_path)
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
 from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
@@ -29,7 +31,11 @@ tau_5_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Laminar_Flow_Model
 #tau_5_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0_disc_200_100s"
 
 
+<<<<<<< Updated upstream
 epoch=17000
+=======
+epoch=15000
+>>>>>>> Stashed changes
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -119,7 +125,7 @@ print(f"t_conv size: {t_conv.size()}")
 model = RTDModule(
     kernel_sizes=[n_e_1],
     kernel_times=[(0.0, t_e_1)],
-    learning_rate=1e-4,
+    learning_rate=1e-2,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
@@ -152,7 +158,7 @@ print(model(c_in).size())
 ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=20, shuffle=True)
 
-wandb.init()
+#wandb.init()
 wandb_logger = pl_loggers.WandbLogger(
     project="nRTD",
     log_model=True
@@ -226,8 +232,8 @@ np.save(os.path.join(save_dir, 'E_expected.npy'), expected_E)
 np.save(os.path.join(save_dir, 't_E_expected.npy'), expected_time)
 np.save(os.path.join(save_dir, 'c_conv_in.npy'),c_conv_in_50 )
 print("saved under:", save_dir)
-predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model/E_predicted.npy')
-predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model/t_E_predicted.npy')
+#predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model/E_predicted.npy')
+#predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model/t_E_predicted.npy')
 plt.plot(predicted_time, predicted_E, label='$E_{CNN}$', color='orange')
 plt.plot(expected_time, expected_E, label='$E_{th,lam}$', color='purple', linestyle='--')
 plt.xlabel('$t$ / $s$')
