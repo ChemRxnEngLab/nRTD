@@ -9,8 +9,10 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
 from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
@@ -25,6 +27,7 @@ from ICIW_Plots import make_square_ax, cm2inch
 from ICIW_Plots import make_rect_ax
 import datetime
 
+
 if wandb.run is not None:
     wandb.finish()
 module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
@@ -33,7 +36,7 @@ sys.path.append(module_path)
 tau_5_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Dispersion_Model\Bo3_200disc_140s'
 #tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo3_200disc_140s'
 
-epoch=28000
+epoch=26000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -234,10 +237,12 @@ predicted_E = E
 predicted_time = t_E.numpy()               
 expected_E = E_expected_np              
 expected_time = t_E_np
+c_conv_in_50=c_conv.detach().numpy()
 np.save(os.path.join(unified_dir, 'E_predicted_Bo_3.npy'), predicted_E)
 np.save(os.path.join(unified_dir, 't_E_predicted_Bo_3.npy'), predicted_time)
 np.save(os.path.join(unified_dir, 'E_expected_Bo_3.npy'), expected_E)
 np.save(os.path.join(unified_dir, 't_E_expected_Bo_3.npy'), expected_time)
+np.save(os.path.join(save_dir, 'c_conv_in_Bo_3.npy'),c_conv_in_50 )
 print("saved under:", unified_dir)
 # predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_016_Dispersion_Model/Bo_1/E_predicted_Bo_1.npy')
 # predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_016_Dispersion_Model/Bo_1/t_E_predicted_Bo_1.npy')
