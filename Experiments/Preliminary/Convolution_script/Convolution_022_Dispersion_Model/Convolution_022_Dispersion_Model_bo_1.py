@@ -9,8 +9,10 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
 from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
@@ -30,10 +32,10 @@ if wandb.run is not None:
 module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 sys.path.append(module_path)
 
-tau_5_dir =r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Dispersion_Model\Bo1_200disc_240s'
+tau_5_dir =r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Dispersion_Model\Bo1200dis_300s_1412'
 #tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo3_200disc_140s'
 
-epoch=30000
+epoch=18000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -70,9 +72,9 @@ sub_dict = {
     # n_out_1,
     n_out_1: 200,
     # n_e_1,
-    t_i: 120,
-    t_o:240,
-    t_e_1:120,
+    t_i: 150,
+    t_o:300,
+    t_e_1:150,
 }
 result_dict = {}
 
@@ -101,8 +103,8 @@ print("t_o =", t_o)
 print("t_i =", t_i)
 print("t_e_1 =", t_e_1)
 
-t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'time_300.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+c_out_tau = torch.tensor(np.load(os.path.join(tau_5_dir, 'concentration_300.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
 
 n_disc = n_in_1
@@ -123,7 +125,7 @@ print(f"t_conv size: {t_conv.size()}")
 model = RTDModule(
     kernel_sizes=[n_e_1],
     kernel_times=[(0.0, t_e_1)],
-    learning_rate=1e-3,
+    learning_rate=1e-2,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
@@ -133,30 +135,12 @@ c_conv = model(c_in)
 E = model.net.E[0]
 E = E / E.max()
 j = 0  
-plt.figure()
-plt.plot(t_input, c_in[j, 0, :].numpy(), label="SF", color="blue")
-for i in range(c_out.size(1)):
-    plt.plot(
-        t_conv[j, i, :].numpy(),
-        c_out[j, i, :].numpy(),
-        label="Tau 5.0",
-        color="green")
-plt.plot(
-    t_conv[j, 0, :].numpy(),
-    c_conv[j, 0, :].detach().numpy(),
-    label="Predicted",
-    color="red",
-)
-plt.plot(t_E, E, label="E", color="orange")
-plt.legend()
-plt.xlim((0, 40))
-plt.ylim((0, 1.1))
-plt.show()
+
 print(model(c_in).size())
 ds = TensorDataset(c_in, c_out)
 dl = DataLoader(ds, batch_size=20, shuffle=True)
 
-wandb.init()
+#wandb.init()
 wandb_logger = pl_loggers.WandbLogger(
     project="nRTD",
     log_model=True
@@ -227,22 +211,24 @@ plt.show()
 
 #save_dir = "/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model"
 save_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model'
-unified_dir = os.path.join(save_dir, f'Bo_{1}_2711')
+unified_dir = os.path.join(save_dir, f'Bo_{1}_1412')
 os.makedirs(unified_dir, exist_ok=True)
 
 predicted_E = E
 predicted_time = t_E.numpy()               
 expected_E = E_expected_np              
 expected_time = t_E_np
+c_conv_in_50=c_conv.detach().numpy()
 np.save(os.path.join(unified_dir, 'E_predicted_Bo_1.npy'), predicted_E)
 np.save(os.path.join(unified_dir, 't_E_predicted_Bo_1.npy'), predicted_time)
 np.save(os.path.join(unified_dir, 'E_expected_Bo_1.npy'), expected_E)
 np.save(os.path.join(unified_dir, 't_E_expected_Bo_1.npy'), expected_time)
+np.save(os.path.join(unified_dir, 'c_conv_in_Bo_1.npy'),c_conv_in_50 )
 print("saved under:", unified_dir)
-# predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_1_2711/E_predicted_Bo_1.npy')
-# predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_1_2711/t_E_predicted_Bo_1.npy')
-predicted_E = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_1\E_predicted_Bo_1.npy')
-predicted_time = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_1\t_E_predicted_Bo_1.npy')
+# predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_016_Dispersion_Model/Bo_1/E_predicted_Bo_1.npy')
+# predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_016_Dispersion_Model/Bo_1/t_E_predicted_Bo_1.npy')
+predicted_E = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_1_1412\E_predicted_Bo_1.npy')
+predicted_time = np.load(r'D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_022_Dispersion_Model\Bo_1_1412\t_E_predicted_Bo_1.npy')
 plt.plot(predicted_time, predicted_E, label='$E_{CNN}$', color='orange')
 plt.plot(t_E_np, expected_E, label='$E_{th,disp}$', color='purple', linestyle='--')
 plt.xlabel('$t$ / $s$')
