@@ -152,7 +152,7 @@ for n_disc_o, kernel_size, n_disc in discretization_confg:
     ax2.set_xlabel('Time')
     ax2.set_ylabel('E')
     ax2.legend()
-
+    current_date = datetime.datetime.now().strftime("%Y%m%d")
     plt.savefig(os.path.join(first_layer_CNN_dir, f'Profile_{current_date}_1st_Convolution_Layer_{n_disc_o}_sqrdnoicsy.png'), dpi=300)
     plt.show()
     

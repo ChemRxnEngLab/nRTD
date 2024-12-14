@@ -13,14 +13,46 @@ import numpy as np
 
 module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
-
+import matplotlib.pyplot as plt
+import numpy.typing as npt
+import sys
 import os
+module_path = os.path.expanduser("lib")
+sys.path.append(module_path)
+import torch
+from torch.utils.data import TensorDataset, DataLoader
+import lightning.pytorch as pl
+import numpy as np
+import wandb
+module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+sys.path.append(module_path)
+from nRTD.rtd_fitting_2 import RTDModule
+from nRTD.rtd_net_4 import RTDNet
+from lightning.pytorch import loggers as pl_loggers
+import os
+import datetime
+import sympy as sp
+from sympy import ceiling
+from ICIW_Plots import make_square_ax, cm2inch
+import os
+import datetime
 from sympy import ceiling
 from ICIW_Plots import make_square_ax, cm2inch
 import torch
 import numpy as np
 import ICIW_Plots.colors as ICIWcolors
 from ICIW_Plots import make_rect_ax
+from ICIW_Plots import make_square_subplots
+import matplotlib.pyplot as plt
+import torch
+import matplotlib.pyplot as plt
+import numpy as np
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes
+import datetime
+from sympy import ceiling
+from ICIW_Plots import make_square_ax, cm2inch
+save_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Plots"
 
 tau_5_dir_lam="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0_disc_200_100s"
 t_conv_tau = torch.tensor(np.load(os.path.join(tau_5_dir_lam, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
@@ -113,3 +145,169 @@ ax.plot()
 
 ax.legend(loc="best")
 plt.show()
+
+LR=[10,1,1e-1,1e-2,1e-3,1e-4,1e-5]
+error_2=[7.4647e-8,7.46e-8,7.4541e-8,7.4523e-8,7.4537e-8,1.1904e-7,0.00067261]#7.5e-8
+
+# plt.style.use("ICIWstyle")
+
+# fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 24 * cm2inch))  # Increased figure height for better spacing
+# axs = make_square_subplots(
+#     fig=fig,
+#     ax_width=7.5 * cm2inch,
+#     ax_layout=(3, 2),  
+#     h_sep=1.1 * cm2inch,  
+#     v_sep=0.1 * cm2inch, 
+#     sharex=True,
+#     sharey=False,
+#     xlabel=["$x_1$", "$x_2$"], 
+#     ylabel=[
+#         ["$y_1$", "$y_2$"],  
+#         ["$y_3$", "$y_4$"], 
+#         ["$y_5$", "$y_6$"],  
+#     ]
+# )
+# #     sharex=True,
+# #     sharey=True,
+# #     xlabel=["$x_1$", "$x_2$"], 
+# #     ylabel=[["$y_1$"],["$y_1$"],["$y_1$"]]
+         
+    
+# # )
+
+# axs[0, 0].plot(
+#     LR,
+#     error_2,
+#     label=r"$\hat{x}(t)$",
+#     color="purple",
+#     linestyle="--"
+# )
+# axs[0, 0].set_xscale('log')
+# axs[0, 0].set_yscale('log')
+# axs[0, 0].set_xticks(LR)
+# axs[0, 0].set_xticklabels([r'$10^{%d}$' % int(np.log10(x)) if x != 1 else '1' for x in LR])
+# axs[0, 0].set_xlim(min(LR) * 0.5, max(LR) * 2)
+# axs[0, 0].plot()
+# plt.savefig(os.path.join(save_dir, f"test.png"), dpi=300)
+# plt.show()
+#######
+import pandas as pd
+import matplotlib.pyplot as plt
+
+epoch=[100,1000,5000,10000,15000,20000]
+error_epoch=[0.0043839,0.00030317,0.0000012918,7.96e-8,7.4542e-8,7.4542e-8]
+
+file_path = "/Users/tuanaoyuncu/Desktop/epoch_training.csv"
+data = pd.read_csv(file_path)
+selected_values = data.iloc[:, 0].tolist()  
+train_loss_values_63 = data.iloc[:, 4].tolist() 
+
+plt.style.use("ICIWstyle")
+
+fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 10 * cm2inch))  # Increased figure height for better spacing
+axs = make_square_subplots(
+    fig=fig,
+    ax_width=7.5 * cm2inch,#dimension of the plots
+    ax_layout=(1, 2),  
+    h_sep=1.39 * cm2inch,  
+    v_sep=1 * cm2inch, 
+    sharex=False,
+    sharey=False,
+    xlabel=["$Epoch/1$","$Epoch/1$"], 
+    ylabel=
+        [["$Test/loss$","$Train/loss$"]]
+    
+)
+
+axs[0, 0].plot(
+    epoch,
+    error_epoch,'o-',
+    label=r"$\hat{x}(t)$",
+    color=ICIWcolors.FLAME,
+)
+
+axs[0, 0].set_yscale('log')
+axs[0, 1].plot(selected_values, train_loss_values_63,color=ICIWcolors.KELLYGREEN)
+axs[0, 1].set_yscale('log')
+plt.savefig(os.path.join(save_dir, f"epoch.png"), dpi=300)
+plt.show()
+
+
+
+
+#######
+plt.style.use("ICIWstyle")
+
+fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 10 * cm2inch))  # Increased figure height for better spacing
+axs = make_square_subplots(
+    fig=fig,
+    ax_width=7.5 * cm2inch,#dimension of the plots
+    ax_layout=(1, 2),  
+    h_sep=1.3 * cm2inch,  
+    v_sep=1 * cm2inch, 
+    sharex=False,
+    sharey=False,
+    xlabel=["$Epoch$","$Epoch$"], 
+    ylabel=
+        [["$test/loss$","$train/loss$"]]
+    
+)
+
+axs[0, 0].plot(
+    LR,
+    error_2,'o-',
+    label=r"$\hat{x}(t)$",
+    color=ICIWcolors.FLAME,
+)
+axs[0, 0].set_xscale('log')
+axs[0, 0].set_yscale('log')
+axs[0, 0].set_xticks(LR)
+axs[0, 0].set_xticklabels([r'$10^{%d}$' % int(np.log10(x)) if x != 1 else '1' for x in LR])
+axs[0, 0].set_xlim(min(LR) * 0.5, max(LR) * 2)
+
+plt.savefig(os.path.join(save_dir, f"test.png"), dpi=300)
+plt.show()
+#######################
+
+plt.style.use("ICIWstyle")
+
+fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 25 * cm2inch))  # Increased figure height for better spacing
+axs = make_square_subplots(
+    fig=fig,
+    ax_width=7.5 * cm2inch,#dimension of the plots
+    ax_layout=(3, 2),  
+    h_sep=1.3 * cm2inch,  
+    v_sep=1 * cm2inch, 
+    sharex=True,
+    sharey=False,
+    xlabel=["$x_1$", "$x_2$"], 
+    ylabel=[
+        ["$y_1$", "$y_2$"],   ["$y_1$", "$y_2$"],["$y_1$", "$y_2$"]
+    ]
+)
+#     sharex=True,
+#     sharey=True,
+#     xlabel=["$x_1$", "$x_2$"], 
+#     ylabel=[["$y_1$"],["$y_1$"],["$y_1$"]]
+         
+    
+# )
+
+axs[0, 0].plot(
+    LR,
+    error_2,'o-',
+    label=r"$\hat{x}(t)$",
+    color="purple",
+)
+axs[0, 0].set_xscale('$Epoch$')
+axs[0, 0].set_yscale('$test/loss$')
+axs[0, 0].set_xticks(LR)
+axs[0, 0].set_xticklabels([r'$10^{%d}$' % int(np.log10(x)) if x != 1 else '1' for x in LR])
+axs[0, 0].set_xlim(min(LR) * 0.5, max(LR) * 2)
+plt.savefig(os.path.join(save_dir, f"test.png"), dpi=300)
+plt.show()
+
+
+#######################
+###########################
+
