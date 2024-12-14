@@ -265,12 +265,13 @@ predicted_E = E
 predicted_time = t_E              
 expected_E = E_expected                 
 expected_time = t_plot
+c_conv_in_50=c_conv.detach().numpy()
 save_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_023_Adler_havarka_Model"
 np.save(os.path.join(save_dir, 'E_predicted_tau_a_val_1.npy'), predicted_E)
 np.save(os.path.join(save_dir, 't_E_predicted_tau_a_val_1.npy'), predicted_time)
 np.save(os.path.join(save_dir, 'E_expected_tau_a_val_1.npy'), expected_E)
 np.save(os.path.join(save_dir, 't_E_expected_tau_a_val_1.npy'), expected_time)
-
+np.save(os.path.join(save_dir, 'c_conv_in.npy'),c_conv_in_50 )
 #predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_023_Adler_havarka_Model/E_predicted_tau_a_val_1.npy')
 #predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_023_Adler_havarka_Model/t_E_predicted_tau_a_val_1.npy')
 
