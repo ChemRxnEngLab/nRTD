@@ -31,11 +31,9 @@ tau_5_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Laminar_Flow_Model
 #tau_5_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0_disc_200_100s"
 
 
-<<<<<<< Updated upstream
-epoch=17000
-=======
-epoch=15000
->>>>>>> Stashed changes
+
+epoch=1
+
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -232,8 +230,8 @@ np.save(os.path.join(save_dir, 'E_expected.npy'), expected_E)
 np.save(os.path.join(save_dir, 't_E_expected.npy'), expected_time)
 np.save(os.path.join(save_dir, 'c_conv_in.npy'),c_conv_in_50 )
 print("saved under:", save_dir)
-#predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model/E_predicted.npy')
-#predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model/t_E_predicted.npy')
+predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model/E_predicted.npy')
+predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model/t_E_predicted.npy')
 plt.plot(predicted_time, predicted_E, label='$E_{CNN}$', color='orange')
 plt.plot(expected_time, expected_E, label='$E_{th,lam}$', color='purple', linestyle='--')
 plt.xlabel('$t$ / $s$')
@@ -243,7 +241,7 @@ plt.xlim((0, 30))
 plt.ylim((0, 1.1))  
 plt.legend()
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-#plt.savefig(f"E_saved_{current_date}.png", dpi=300)
+plt.savefig(f"E_saved_{current_date}.png", dpi=300)
 plt.show()
 
 print(f"c_conv_in size: {t_E.numpy().shape}")
@@ -289,7 +287,7 @@ ax2.legend(loc='best')
 ax2.set_xlim((0, 25))  
 ax2.set_ylim((-0.1, 1.1)) 
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(os.path.join(save_dir, f"test_2_{current_date}.png"), dpi=300)
+plt.savefig(os.path.join(save_dir, f"Laminar_Flow_Model_{current_date}.png"), dpi=300)
 plt.show()
 
 from ICIW_Plots import make_square_subplots
