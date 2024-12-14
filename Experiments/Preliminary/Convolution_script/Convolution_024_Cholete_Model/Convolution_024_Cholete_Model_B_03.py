@@ -9,8 +9,10 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
 from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
@@ -18,6 +20,12 @@ import os
 import datetime
 import sympy as sp
 from sympy import ceiling
+import matplotlib.pyplot as plt
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
+from ICIW_Plots import make_square_ax, cm2inch
+from ICIW_Plots import make_rect_ax
+import datetime
 
 if wandb.run is not None:
     wandb.finish()
@@ -112,7 +120,7 @@ print(f"t_conv size: {t_conv.size()}")
 model = RTDModule(
     kernel_sizes=[n_e_1],
     kernel_times=[(0.0, t_e_1)],
-    learning_rate=1e-4,
+    learning_rate=1e-2,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
@@ -255,12 +263,13 @@ predicted_time = t_E.numpy()
 expected_E = E_c_e_normalized                   
 expected_time = t_conv_e
 #c_conv=c_conv.detach().numpy()
+c_conv=c_conv.detach().numpy()
 save_dir =r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_024_Cholete_Model"
 np.save(os.path.join(save_dir, 'E_predicted_03.npy'), predicted_E)
 np.save(os.path.join(save_dir, 't_E_predicted_03.npy'), predicted_time)
 np.save(os.path.join(save_dir, 'E_expected_03.npy'), expected_E)
 np.save(os.path.join(save_dir, 't_E_expected_03.npy'), expected_time)
-#np.save(os.path.join(save_dir, 'c_conv_in.npy'),c_conv )
+np.save(os.path.join(save_dir, 'c_conv_in_03.npy'),c_conv )
 print("saved under:", save_dir)
 
 import torch

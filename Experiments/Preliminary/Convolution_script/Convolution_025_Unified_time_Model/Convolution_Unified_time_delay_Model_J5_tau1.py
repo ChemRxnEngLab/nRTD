@@ -9,8 +9,10 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
 from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
@@ -31,7 +33,7 @@ if wandb.run is not None:
 tau_5_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Unified_time_delay'
 #tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Unified_time_delay'
 
-epoch=28000
+epoch=21000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -119,7 +121,7 @@ print(f"t_conv size: {t_conv.size()}")
 model = RTDModule(
     kernel_sizes=[n_e_1],
     kernel_times=[(0.0, t_e_1)],
-    learning_rate=1e-4,
+    learning_rate=1e-2,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
@@ -239,11 +241,14 @@ plt.savefig(os.path.join(save_dir,f"Profile__J5_tau_1_{current_date}.png"), dpi=
 plt.show()
 
 predicted_E = E
-predicted_time = t_E.numpy()                                 
-expected_time = t_conv
+predicted_time = t_E.numpy()               
+expected_E = E_c_e_normalized                   
+expected_time = t_conv_e
+c_conv=c_conv.detach().numpy()
+save_dir =r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_025_Unified_time_Model"
 np.save(os.path.join(save_dir, 'E_predicted_J5_tau_1.npy'), E_expected)
 np.save(os.path.join(save_dir, 't_E_predicted_J5_tau_1.npy'), predicted_time)
 np.save(os.path.join(save_dir, 'E_expected_J5_tau_1.npy'), E_expected)
 np.save(os.path.join(save_dir, 't_E_expected_J5_tau_1.npy'), expected_time)
-
+np.save(os.path.join(save_dir, 'c_conv_in_j5_1.npy'),c_conv )
 print("saved under:", save_dir)

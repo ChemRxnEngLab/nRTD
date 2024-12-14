@@ -9,8 +9,10 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
 from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
@@ -18,16 +20,22 @@ import os
 import datetime
 import sympy as sp
 from sympy import ceiling
+import matplotlib.pyplot as plt
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
+from ICIW_Plots import make_square_ax, cm2inch
+from ICIW_Plots import make_rect_ax
+import datetime
 
 if wandb.run is not None:
     wandb.finish()
 
-#Bo_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model/beta0.9_nn'
+#Bo_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Cholete_Model/beta0.9_100sc'
 Bo_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Cholete_Model\beta0.9_100sc'
 t_conv_tau = torch.tensor(np.load(os.path.join(Bo_dir, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_tau = torch.tensor(np.load(os.path.join(Bo_dir, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 
-epoch=20000
+epoch=16000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
@@ -113,7 +121,7 @@ print(f"t_conv size: {t_conv.size()}")
 model = RTDModule(
     kernel_sizes=[n_e_1],
     kernel_times=[(0.0, t_e_1)],
-    learning_rate=1e-4,
+    learning_rate=1e-2,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
@@ -237,12 +245,13 @@ predicted_time = t_E.numpy()
 expected_E = E_c_e_normalized                   
 expected_time = t_conv_e
 #c_conv=c_conv.detach().numpy()
+c_conv=c_conv.detach().numpy()
 save_dir =r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_024_Cholete_Model"
 np.save(os.path.join(save_dir, 'E_predicted_09_100s.npy'), predicted_E)
 np.save(os.path.join(save_dir, 't_E_predicted_09_100s.npy'), predicted_time)
 np.save(os.path.join(save_dir, 'E_expected_09_100s.npy'), expected_E)
 np.save(os.path.join(save_dir, 't_E_expected_09_100s.npy'), expected_time)
-#np.save(os.path.join(save_dir, 'c_conv_in.npy'),c_conv )
+np.save(os.path.join(save_dir, 'c_conv_in_09.npy'),c_conv )
 print("saved under:", save_dir)
 
 #####
