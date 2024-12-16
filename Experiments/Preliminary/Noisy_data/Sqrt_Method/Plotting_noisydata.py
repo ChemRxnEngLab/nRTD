@@ -207,7 +207,7 @@ plt.style.use("ICIWstyle")
 fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 10 * cm2inch))  # Increased figure height for better spacing
 axs = make_square_subplots(
     fig=fig,
-    ax_width=7.5 * cm2inch,#dimension of the plots
+    ax_width=7 * cm2inch,#dimension of the plots
     ax_layout=(1, 2),  
     h_sep=1.39 * cm2inch,  
     v_sep=1 * cm2inch, 
@@ -229,7 +229,7 @@ axs[0, 0].plot(
 axs[0, 0].set_yscale('log')
 axs[0, 1].plot(selected_values, train_loss_values_63,color=ICIWcolors.KELLYGREEN)
 axs[0, 1].set_yscale('log')
-plt.savefig(os.path.join(save_dir, f"epoch.png"), dpi=300)
+plt.savefig(os.path.join(save_dir, f"epoch_1512.png"), dpi=300)
 plt.show()
 
 
