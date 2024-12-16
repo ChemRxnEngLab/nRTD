@@ -40,10 +40,10 @@ expected_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preli
 Bo_1 = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo10_200disc_140s'
 t_conv_Bo_1 = torch.tensor(np.load(os.path.join(Bo_1, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_Bo_1 = torch.tensor(np.load(os.path.join(Bo_1, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-predicted_c_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_10_1412/c_conv_in_Bo_10.npy')
-predicted_time_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_10_1412/t_E_predicted_Bo_10.npy')
-predicted_E_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_10_1412/E_predicted_Bo_10.npy')
-expected_E_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_10_1412/E_expected_Bo_10.npy')
+predicted_c_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_10)/c_conv_in_Bo_10.npy')
+predicted_time_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_10)/t_E_predicted_Bo_10.npy')
+predicted_E_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_10)/E_predicted_Bo_10.npy')
+expected_E_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_10)/E_expected_Bo_10.npy')
 ########
 Adler = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1_26_11'
 t_conv_Adler = torch.tensor(np.load(os.path.join(Adler, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
