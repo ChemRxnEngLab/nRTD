@@ -17,8 +17,6 @@ import os
 from datetime import datetime
 import sympy as sp
 from sympy import ceiling
-
-
 if wandb.run is not None:
     wandb.finish()
     
