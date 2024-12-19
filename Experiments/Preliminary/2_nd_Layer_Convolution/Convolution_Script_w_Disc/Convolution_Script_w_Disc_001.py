@@ -17,7 +17,7 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
@@ -38,9 +38,9 @@ coefficients = {
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2}
 
-epoch_1=1
-epoch_2=1
-learning_rate=1e-3
+epoch_1=15000
+epoch_2=200000
+learning_rate=1e-2
 
 
 #base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_Convolution'
@@ -82,10 +82,10 @@ sub_dict = {
     n_out_1: 200,
     # n_e_1,
     # n_e_2,
-    t_1:30,
+    t_1:51,
     # t_lam,
-    t_adl:120,
-    t_e_1:40,
+    t_adl:150,
+    t_e_1:50,
     #t_e_2,
 }
 result_dict = {}
