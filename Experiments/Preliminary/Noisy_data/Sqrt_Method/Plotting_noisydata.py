@@ -123,28 +123,68 @@ print(c_conv_100_1d.shape)
 files=[1,20,40,60,80,100]
 error=[4.8193e-5,2.0946e-6,1.0367e-6,7.7302e-7,6.4032e-7,5.2123e-7]#7.5e-8
 
-plt.style.use("ICIWstyle")
-fig = plt.figure()
-ax = make_rect_ax(
-    fig,
-    ax_width=7.3 * cm2inch,
-    ax_height=5 * cm2inch,
-    xlabel="$number of dataset$",
-    ylabel="$test/loss / 1$",
+fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 10 * cm2inch))  # Increased figure height for better spacing
+axs = make_square_subplots(
+    fig=fig,
+    ax_width=7 * cm2inch,#dimension of the plots
+    ax_layout=(1, 2),  
+    h_sep=1.39 * cm2inch,  
+    v_sep=1 * cm2inch, 
+    sharex=False,
+    sharey=False,
+    xlabel=["$Epoch/1$","$t/1$"], 
+    ylabel=
+        [["$Test/loss$","$C/1$"]]
+    
 )
 
-# ax.plot.semilogy(
-#     files, 
-#     error,
-#     label=r"Conv_model",
-#     color="black",
-# )
 
-ax.semilogy(files, error,'o-', label="Conv_model", color="black")
-ax.plot()
+axs[0, 0].plot(files, error,'o-', color=ICIWcolors.FLAME)
+axs[0, 1].plot(
+    t_conv_tau_1d,
+    c_out_tau_1d,
+    label=r"$x(t)$",
+    color="purple",
+    )
+axs[0, 1].plot(
+    t_conv_tau_1d,  # Ensure this is 1D
+    predicted_c_1d,
+    label=r"$\hat{x}(t)$",
+    color=ICIWcolors.KELLYGREEN,linestyle="--",
+)
 
-ax.legend(loc="best")
+axs[0, 1].plot(
+    t_conv_tau_1d,  # Ensure this is also 1D
+    c_conv_1_1d,
+    label=r"$\hat{x}_{noisy,1}(t)$",
+    color=ICIWcolors.FLAME,linestyle="--",
+)
+
+axs[0, 1].plot(
+    t_conv_tau_1d,  # Ensure this is also 1D
+    c_conv_100_first_config,
+    label=r"$\hat{x}_{noisy,100}(t)$",
+    color="#A0CFCF",linestyle="--",
+)
+
+axs[0, 1].set_xlim((0, 55))
+# axs[1, 0].set_ylim((-0.1, 1.1))
+axs[0, 0].set_yscale('log')
+
+#ax.plot()
+axs[0, 1].legend(loc="best")  # For the second subplot
+plt.savefig(os.path.join(save_dir, f"noisy.png"), dpi=300)
 plt.show()
+
+
+
+
+
+
+
+
+
+
 
 LR=[10,1,1e-1,1e-2,1e-3,1e-4,1e-5]
 error_2=[7.4647e-8,7.46e-8,7.4541e-8,7.4523e-8,7.4537e-8,1.1904e-7,0.00067261]#7.5e-8
@@ -222,7 +262,6 @@ axs = make_square_subplots(
 axs[0, 0].plot(
     epoch,
     error_epoch,'o-',
-    label=r"$\hat{x}(t)$",
     color=ICIWcolors.FLAME,
 )
 

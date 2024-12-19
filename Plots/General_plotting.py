@@ -37,13 +37,13 @@ predicted_time = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/P
 predicted_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model/E_predicted.npy')
 expected_E = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_021_Laminar_Flow_Model/E_expected.npy')
 ######
-Bo_1 = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo10_200disc_140s'
+Bo_1 = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo_100_50'
 t_conv_Bo_1 = torch.tensor(np.load(os.path.join(Bo_1, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
 c_out_Bo_1 = torch.tensor(np.load(os.path.join(Bo_1, 'concentration.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-predicted_c_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_10)/c_conv_in_Bo_10.npy')
-predicted_time_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_10)/t_E_predicted_Bo_10.npy')
-predicted_E_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_10)/E_predicted_Bo_10.npy')
-expected_E_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_10)/E_expected_Bo_10.npy')
+predicted_c_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_100/c_conv_in_Bo_100.npy')
+predicted_time_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_100/t_E_predicted_Bo_10.npy')
+predicted_E_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_100/E_predicted_Bo_10.npy')
+expected_E_Bo_1 = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_022_Dispersion_Model/Bo_100/E_expected_Bo_10.npy')
 ########
 Adler = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Adler_havarka_Model/tau_a_val_1_tau_p_val_2_tau_m_val_0.4000000000000001_beta_val_0.1_26_11'
 t_conv_Adler = torch.tensor(np.load(os.path.join(Adler, 'time.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
@@ -137,19 +137,19 @@ axs = make_square_subplots(
 axs[0, 0].plot(
     t_conv_tau_1d,
     c_out_tau_1d,
-    label=r"$x_{Laminar}(t)$",
+    label=r"$C_{Laminar}(t)$",
    color=ICIWcolors.DRAB
 )
 axs[0, 0].plot(
     t_conv_tau_1d,  # Ensure this is 1D
     predicted_c_1d,
-    label=r"$\hat{x}_{Laminar}(t)$",
+    label=r"$\hat{C}_{Laminar}(t)$",
     color="purple",
     linestyle="--"
 )
 
-axs[0, 0].plot(t_input, c_in[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
-axs[0, 0].text(-0.1, 0.87, "(a)", transform=axs[0, 0].transAxes, fontsize=11)  # Add label
+axs[0, 0].plot(t_input, c_in[0, 0, :].numpy(), label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
+# axs[0, 0].text(-0.1, 0.87, "(a)", transform=axs[0, 0].transAxes, fontsize=11)  # Add label
 
 axs[0, 1].plot(
     predicted_time,  # Ensure this is also 1D
@@ -165,18 +165,18 @@ axs[0, 1].set_xlim((0, 20))
 axs[1, 0].plot(
     t_conv_Bo_1,
     c_out_Bo_1,
-    label=r"$x_{Dispersion}(t)$",
+    label=r"$C_{Dispersion}(t)$",
    color=ICIWcolors.DRAB
 )
 axs[1, 0].plot(
     t_conv_Bo_1,  # Ensure this is 1D
     predicted_c_Bo_1,
-    label=r"$\hat{x}_{Dispersion}(t)$",
+    label=r"$\hat{C}_{Dispersion}(t)$",
     color="purple",
     linestyle="--")
 
 
-axs[1, 0].plot(t_input_Bo, c_in_Bo[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
+axs[1, 0].plot(t_input_Bo, c_in_Bo[0, 0, :].numpy(), label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
 
 
 
@@ -199,18 +199,18 @@ axs[1, 1].set_xlim((0, 80))
 axs[2, 0].plot(
     t_conv_Adler,
     c_out_Adler,
-    label=r"$x_{Adler}(t)$",
+    label=r"$C_{Adler}(t)$",
    color=ICIWcolors.DRAB
 )
 axs[2, 0].plot(
     t_conv_Adler,  # Ensure this is 1D
     predicted_c_Adler,
-    label=r"$\hat{x}_{Adler}(t)$",
+    label=r"$\hat{C}_{Adler}(t)$",
     color="purple",
     linestyle="--"
 )
 
-axs[2, 0].plot(t_input_Adler, c_in_Adler[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
+axs[2, 0].plot(t_input_Adler, c_in_Adler[0, 0, :].numpy(), label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
 
 axs[2, 1].plot(
     predicted_time_Adler,  # Ensure this is also 1D
@@ -254,18 +254,18 @@ axs = make_square_subplots(
 axs[0, 0].plot(
     t_conv_Cholete,
     c_out_Cholete,
-    label=r"$x_{Cholete}(t)$",
+    label=r"$C_{Cholete}(t)$",
    color=ICIWcolors.DRAB
 )
 axs[0, 0].plot(
     t_conv_Cholete,  # Ensure this is 1D
     predicted_c_Cholete,
-    label=r"$\hat{x}_{Cholete}(t)$",
+    label=r"$\hat{C}_{Cholete}(t)$",
     color="purple",
     linestyle="--"
 )
 
-axs[0, 0].plot(t_input, c_in[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
+axs[0, 0].plot(t_input, c_in[0, 0, :].numpy(), label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
 axs[0, 1].plot(
     predicted_time_Cholete,  # Ensure this is also 1D
     expected_E_Cholete, label=r"$E_{Cholete}(t)$", color=ICIWcolors.KELLYGREEN
@@ -278,18 +278,18 @@ axs[0, 1].plot(
 axs[1, 0].plot(
     t_conv_Unified,
     c_out_Unified,
-    label=r"$x_{Unified}(t)$",
+    label=r"$C_{Unified}(t)$",
     color=ICIWcolors.DRAB
 )
 axs[1, 0].plot(
     t_conv_Unified,  # Ensure this is 1D
     predicted_c_Unified,
-    label=r"$\hat{x}_{Unified}(t)$",
+    label=r"$\hat{C}_{Unified}(t)$",
     color="purple",
     linestyle="--")
 
 
-axs[1, 0].plot(t_input_Bo, c_in_Bo[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
+axs[1, 0].plot(t_input_Unified, c_in_Unified[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
 
 
 
