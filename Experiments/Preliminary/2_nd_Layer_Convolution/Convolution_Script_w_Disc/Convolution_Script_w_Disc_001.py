@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Nov 26 00:24:32 2024
-
-@author: tuanaoyuncu
-"""
-
 import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
@@ -28,8 +20,7 @@ import sympy as sp
 from sympy import ceiling
 from ICIW_Plots import make_square_ax, cm2inch
 
-if wandb.run is not None:
-    wandb.finish()
+
 #Parameters
 tau_l = 5.0
 coefficients = {
@@ -41,10 +32,11 @@ coefficients = {
 epoch_1=15000
 epoch_2=200000
 learning_rate=1e-2
+learning_rate_2=1e-2
 
 
-#base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_Convolution'
-base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
+base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_Convolution'
+#base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
 n_in_1, n_out_1, n_out_2, n_e_1, n_e_2 = sp.symbols("n_in_1 n_out_1 n_out_2 n_e_1 n_e_2", positive=True, real=True)
 t_1, t_lam, t_adl, t_e_1, t_e_2 = sp.symbols("t_1, t_lam, t_adl, t_e_1, t_e_2", positive=True, real=True)
 equations = [
@@ -323,7 +315,7 @@ print(t_out_l_a.shape)
 model_2 = RTDModule(
     kernel_sizes=[n_e_2],
     kernel_times=[(0.0, t_e_2)],
-    learning_rate=learning_rate,
+    learning_rate=learning_rate_2,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
