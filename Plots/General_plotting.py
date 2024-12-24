@@ -62,12 +62,12 @@ predicted_E_Cholete= np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experimen
 expected_E_Cholete= np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_024_Cholete_Model/E_expected_01.npy')
 ###########
 Unified = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Unified_time_delay'
-t_conv_Unified = torch.tensor(np.load(os.path.join(Unified, 'time_J5_tau1_alpha0.2_200.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-c_out_Unified = torch.tensor(np.load(os.path.join(Unified, 'concentration_J5_tau1_alpha0.2_200.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-predicted_c_Unified = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_025_Unified_time_Model/c_conv_in_j5_1.npy')
-predicted_time_Unified = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_025_Unified_time_Model/t_E_predicted_J5_tau_1.npy')
-predicted_E_Unified= np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_025_Unified_time_Model/E_predicted_J5_tau_1.npy')
-expected_E_Unified= np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_025_Unified_time_Model/E_expected_J5_tau_1.npy')
+t_conv_Unified = torch.tensor(np.load(os.path.join(Unified, 'time_J5_tau3_alpha0.2_200.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+c_out_Unified = torch.tensor(np.load(os.path.join(Unified, 'concentration_J5_tau3_alpha0.2_200.npy')), dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+predicted_c_Unified = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_025_Unified_time_Model/c_conv_in_j5_3.npy')
+predicted_time_Unified = np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_025_Unified_time_Model/t_E_predicted_J5_tau_3.npy')
+predicted_E_Unified= np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_025_Unified_time_Model/E_predicted_J5_tau_3.npy')
+expected_E_Unified= np.load('/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Convolution_script/Convolution_025_Unified_time_Model/E_expected_J5_tau_3.npy')
 n_disc=100
 t_input = torch.linspace(0, 50, n_disc)
 c_in = torch.zeros((1, 1, n_disc))

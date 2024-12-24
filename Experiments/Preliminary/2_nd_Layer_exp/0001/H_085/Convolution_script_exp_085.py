@@ -127,10 +127,10 @@ t_conv_list = []
 
 
 for i, file_num in enumerate(file_numbers):
-    # t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1/TOA_MGA_20231020_010_{file_num:06d}_t_processed_2nlayer_200.npy"
-    # c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1/TOA_MGA_20231020_010_{file_num:06d}_x_processed_2nlayer_200.npy"
-    t_conv_path= rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_200_disc.npy"
-    c_out_path =rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_200_disc.npy"
+    t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1/TOA_MGA_20231020_010_{file_num:06d}_t_processed_2nlayer_200.npy"
+    c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1/TOA_MGA_20231020_010_{file_num:06d}_x_processed_2nlayer_200.npy"
+    # t_conv_path= rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_200_disc.npy"
+    # c_out_path =rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_200_disc.npy"
     
     print(f"Processing files: {t_conv_path}, {c_out_path}")
 
@@ -198,7 +198,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=10000,
+    max_epochs=1,
     logger=wandb_logger, deterministic=True
 )
 trainer.fit(model, dl)
@@ -231,7 +231,7 @@ plt.ylim((0, 0.2))
 plt.legend()
 wandb.finish()
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(os.path.join(save_dir,f"Figure_C_001_H_135_C1{current_date}.png"), dpi=300)
+# plt.savefig(os.path.join(save_dir,f"Figure_C_001_H_135_C1{current_date}.png"), dpi=300)
 plt.show()
 
 ###Second CNN
@@ -248,10 +248,10 @@ c_2_in=torch.tensor(c_out).float()
 print("c_in",c_out.shape)
 
 for i, file_num in enumerate(file_numbers):
-    # t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_t_processed.npy"
-    # c_out_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_x_processed.npy"
-    t_conv_path_2= rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_t_processed_500.npy"
-    c_out_path_2 =rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_x_processed_500.npy"
+    t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_t_processed.npy"
+    c_out_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_x_processed.npy"
+    #t_conv_path_2= rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_t_processed_500.npy"
+    # c_out_path_2 =rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_x_processed_500.npy"
 
     print(f"Processing files: {t_conv_path_2}, {c_out_path_2}")
 
@@ -286,7 +286,7 @@ dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=10000,
+    max_epochs=1,
     logger=wandb_logger,
     deterministic=True,
 )
@@ -332,9 +332,9 @@ ax1.set_ylim((0, 0.2))
 ax1.set_ylabel('Concentration')
 ax1.set_xlabel('Time')
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(os.path.join(save_dir,f"Figure_C_002_H_135_C2{current_date}.png"), dpi=300)
+# plt.savefig(os.path.join(save_dir,f"Figure_C_002_H_135_C2{current_date}.png"), dpi=300)
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(os.path.join(save_dir,f"Figure_C_002_H_135_C2{current_date}.png"), dpi=300)
+# plt.savefig(os.path.join(save_dir,f"Figure_C_002_H_135_C2{current_date}.png"), dpi=300)
 plt.show()
 plt.show()
 
@@ -364,7 +364,7 @@ ax.set_xlim((0, 30))
 ax.set_ylim((-0.01, 0.07))
 plt.legend()
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(os.path.join(save_dir, f"2nd_085_fitting_3{current_date}.png"), dpi=300)
+# plt.savefig(os.path.join(save_dir, f"2nd_085_fitting_3{current_date}.png"), dpi=300)
 plt.show()
 
 
@@ -394,6 +394,6 @@ ax.set_xlim((0, 15))
 ax.set_ylim((-0.1, 0.2))
 plt.legend()
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-plt.savefig(os.path.join(save_dir, f"2nd_085_E_fitting_3{current_date}.png"), dpi=300)
+# plt.savefig(os.path.join(save_dir, f"2nd_085_E_fitting_3{current_date}.png"), dpi=300)
 
 plt.show()
