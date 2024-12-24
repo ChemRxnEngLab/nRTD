@@ -245,7 +245,9 @@ c_out_list_2 = []
 t_conv_list_2 = []
 t_2_in=torch.tensor(t_conv).float()
 c_2_in=torch.tensor(c_out).float()
+print(c_out.shape)
 print("c_in",c_out.shape)
+print(E.shape)
 
 for i, file_num in enumerate(file_numbers):
     t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_t_processed.npy"
