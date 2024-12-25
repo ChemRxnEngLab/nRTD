@@ -378,7 +378,7 @@ t_adler = t_values_Adler if isinstance(t_values_Adler, np.ndarray) else t_values
 t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
 t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
 
-
+plt.style.use("ICIWstyle")
 import ICIW_Plots.colors as ICIWcolors
 from ICIW_Plots.figures import Elsevier_Sizes
 import datetime
@@ -394,7 +394,7 @@ axs = make_square_subplots(
     h_sep=1.3 * cm2inch,  
     v_sep=1 * cm2inch, 
     sharex=True,
-    sharey=False,
+    sharey=True,
     xlabel=[r"$t$ / $s$", r"$t$ / $s$"], 
     ylabel=
         [r"$C$ / $1$"
@@ -442,7 +442,7 @@ axs[0, 1].plot(
 
 
 axs[0, 0].set_xlim((0, 35)) 
-axs[0, 1].set_xlim((0, 35)) 
+axs[0, 1].set_xlim((0, 20)) 
 axs[0, 0].legend(loc="best")
 axs[0, 1].legend(loc="best")
 plt.savefig(os.path.join(base_dir, f"Test_2ndlayer.png"), dpi=300)
