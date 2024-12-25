@@ -420,58 +420,95 @@ ax1.set_xlabel('Time')
 ax1.legend()
 plt.show()
 
+E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
+E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
+E_learned_1 /= np.max(E_learned_1)
+E_learned_2 /= np.max(E_learned_2)
+#t_adler = t_values_Adler if isinstance(t_values_Adler, np.ndarray) else t_values_Adler.numpy()
+t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
+t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
+
+
+t_values_Adler_l_p = np.linspace(0, t_e_1, n_e_1, endpoint=True)
+results_out = compute_inverse_laplace(coefficients, t_values_Adler_l_p)
+c_0_adl_p = np.zeros_like(t_values_Adler_l_p)
+c_0_adl_p[t_values_Adler_l_p > 5] = 1
+
+for result in results_out:
+    tau_a_val = result['tau_a_val']
+    tau_p_val = result['tau_p_val']
+    tau_m_val = result['tau_m_val']
+    beta_val = result['beta_val']
+    E_Adler_out_p = result['E_t']
+    if E_Adler_out_p.shape[0] != t_values_Adler_l_p.shape[0]:
+        if E_Adler_out_p.shape[0] > t_values_Adler_l_p.shape[0]:
+            E_Adler_out_p = E_Adler_out_p[:len(t_values_Adler_l_p)]
+        else:
+            E_Adler_out_p = np.pad(E_Adler_out_p, (0, len(t_values_Adler_l_p) - len(E_Adler_out_p)), 'constant')
+        E_Adler_out_p=E_Adler_out_p/E_Adler_out_p.max()
+    E_Adler_normalized_out_p=E_Adler_out_p/E_Adler_out_p.max()
+####
+
+t_values_Adler_pp = np.linspace(0, t_e_2, n_e_2, endpoint=True)
+results = compute_inverse_laplace(coefficients, t_values_Adler_pp)
+
+for result in results:
+    tau_a_val = result['tau_a_val']
+    tau_p_val = result['tau_p_val']
+    tau_m_val = result['tau_m_val']
+    beta_val = result['beta_val']
+    
+    E_Adler_pp = result['E_t']
+    if E_Adler_pp.shape[0] != t_values_Adler_pp.shape[0]:
+        if E_Adler_pp.shape[0] > t_values_Adler_pp.shape[0]:
+            E_Adler_pp = E_Adler_pp[:len(t_values_Adler_pp)]
+        else:
+            E_Adler_pp = np.pad(E_Adler_pp, (0, len(t_values_Adler_pp) - len(E_Adler_pp)), 'constant')
+        E_Adler_pp=E_Adler_pp/E_Adler_pp.max()
+    E_Adler_normalized_1_pp=E_Adler_pp/np.sum(E_Adler_pp)
+t_values_Adler_l_c_pp = np.linspace(0, t_e_2, n_e_2, endpoint=True)
+results_out = compute_inverse_laplace(coefficients, t_values_Adler_l_c_pp)
+c_1_adl_pp = np.zeros_like(t_values_Adler_l_c_pp)
+c_1_adl_pp[t_values_Adler_l_c_pp > 5] = 1
+c_out_full_Adler_pp = np.convolve(c_1_adl_pp, E_Adler_normalized_1_pp, mode="full")
+t_conv_full_Adler_pp = np.linspace(t_values_Adler_l_c_pp[0] + t_values_Adler_l_c_pp[0], t_values_Adler_l_c_pp[-1] +t_values_Adler_l_c_pp[-1], len(c_out_full_Adler_pp))
+valid_indices = t_conv_full_Adler_pp <= t_e_2 # Adjust time limit as needed
+t_conv_Adler_pp = t_conv_full_Adler_pp[valid_indices]
+c_out_Adler_pp = c_out_full_Adler_pp[valid_indices]
+
+def Cholete(t: npt.NDArray[np.float64], alpha: float, beta: float, tau: float, g: float) -> npt.NDArray[np.float64]: 
+    print(f"tau = {tau}")
+    print(f"alpha = {alpha}")
+    print(f"beta = {beta}")
+    H = np.where(t < g, 0, 1)
+    k = ((1 - alpha) / (beta * tau))
+    exp_term = (1 - alpha) * np.exp(k * (tau - t))
+    F = alpha * H - exp_term + (1 - alpha)
+    F[F < 0] = 0
+    E = np.gradient(F,t)  
+    return F,E
+def Cholete_E (t: npt.NDArray[np.float64], alpha: float, beta: float, tau: float)-> npt.NDArray[np.float64]:
+    k = ((1 - alpha) / (beta * tau))
+    E_c=(1-alpha)*k*np.exp(-k*t)
+    return E_c
+    
+t_pp = t_conv_Adler_pp
+c_0_pp = c_out_Adler_pp
+
+beta_values = np.array([0.3])
+for beta in beta_values:
+    F,E = Cholete(t_pp, 0.2, beta, 5,5)
+    E_c_pp = Cholete_E(t_pp, 0.2, beta, 5)
+    #E_t_normalized = E / np.sum(E)
+    E_c_normalized_pp = E_c_pp / E_c_pp.max()
+
 
 import ICIW_Plots.colors as ICIWcolors
 from ICIW_Plots.figures import Elsevier_Sizes
-import datetime
-import ICIW_Plots.colors as ICIWcolors
-from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
-from ICIW_Plots import make_square_ax, cm2inch
 from ICIW_Plots import make_rect_ax
+from ICIW_Plots import make_square_subplots
+
 plt.style.use("ICIWstyle")
-fig = plt.figure(figsize=(Elsevier_Sizes.single_column["in"], 12 * cm2inch))
-ax = make_rect_ax(
-    fig,
-    ax_width=7.3 * cm2inch,
-    ax_height=5 * cm2inch,
-    # left_h=0.2,  # These arguments control the spacing of the axis
-    # bottom_v=0.2, # not supplying them wil place the axes in the middle of the figure
-    xlabel=r"$t$ / $s$",
-    ylabel=r"$E$ / $1$"
-)
-ax.plot(t_1_in_reshaped, c_1_in_reshaped, label=r"$x_{0(t)}$",color=ICIWcolors.CERULEAN)
-ax.plot(t_conv[0, 0, :].squeeze().numpy(), c_out_adl.squeeze().numpy(), label=r"$x_{1(t)}$",color=ICIWcolors.DRAB)
-ax.plot(t_conv_reshaped, c_conv_reshaped, label="$\hat{x}_{1(t)}$",color="purple",linestyle="--")
-ax.plot(t_out_ch.squeeze().numpy(), c_conv_2.detach().squeeze().numpy(), label=r"$x_{2(t)}$", color=ICIWcolors.FLAME)
-ax.plot(t_out_ch.squeeze().numpy(), c_conv_2.detach().squeeze().numpy(), label="$\hat{x}_{2(t)}$", color="black", linestyle="--")
-ax.legend(loc='best')
-ax.set_xlim((0, 30))
-ax.set_ylim((-0.1, 1.1))
-current_date = datetime.datetime.now().strftime("%Y%m%d")
-#plt.savefig(f"2nd_Layer_Chh_Profiles{current_date}.png", dpi=300)
-plt.show()
-E_Adler_normalized = E_Adler / np.max(E_Adler)
-# E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
-# #E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
-# E_learned_1 /= np.max(E_learned_1)
-#E_learned_2 /= np.max(E_learned_2)
-t_learned_1 = np.linspace(0, t_e, len(E))
-t_learned_2 = np.linspace(0, t_e_2, len(E_2))
-plt.figure(figsize=(10, 6))
-plt.plot(t_learned_1, E, label="$E_1$", color="black")
-plt.plot(t_learned_2, E_2, label="$E_2$", color="red")
-plt.xlabel("Time")
-plt.ylabel("E")
-plt.legend()
-plt.show()
-import ICIW_Plots.colors as ICIWcolors
-from ICIW_Plots.figures import Elsevier_Sizes
-import datetime
-import ICIW_Plots.colors as ICIWcolors
-from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
-from ICIW_Plots import make_square_ax, cm2inch
-from ICIW_Plots import make_rect_ax
-
 fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 25 * cm2inch))  # Increased figure height for better spacing
 axs = make_square_subplots(
     fig=fig,
@@ -480,51 +517,57 @@ axs = make_square_subplots(
     h_sep=1.3 * cm2inch,  
     v_sep=1 * cm2inch, 
     sharex=True,
-    sharey=False,
+    sharey=True,
     xlabel=[r"$t$ / $s$", r"$t$ / $s$"], 
     ylabel=
         [r"$C$ / $1$"
     ])
 
 axs[0, 0].plot(t_1_in_reshaped, c_1_in_reshaped, label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
-
+axs[0, 0].plot(
+    t_conv_reshaped,  # Ensure this is 1D
+    c_out_adl.squeeze().numpy(),
+    label=r"$C_1(t)$",
+    color=ICIWcolors.DRAB
+)
 axs[0, 0].plot(
     t_conv_reshaped,
     c_conv_reshaped,
     label=r"$\hat{C}_1(t)$",
-   color="purple"
-)
-axs[0, 0].plot(
-    t_conv_reshaped,  # Ensure this is 1D
-    c_out_l_reshaped,
-    label=r"$C_1(t)$",
-    color=ICIWcolors.DRAB,
+   color="purple",
     linestyle="--"
 )
 
 axs[0, 0].plot(
-    t_out_l_a.squeeze().numpy(),  # Ensure this is 1D
-    c_out_l_a.squeeze().numpy(),
+    t_out_ch.squeeze().numpy(),  # Ensure this is 1D
+    c_out_ch.squeeze().numpy(),
     label=r"$C_2(t)$",
     color=ICIWcolors.FLAME)
 
 axs[0, 0].plot(
-    t_out_l_a.squeeze().numpy(),
+    t_out_ch.squeeze().numpy(),
     c_conv_2.detach().squeeze().numpy(),
     label=r"$\hat{C}_2(t)$",
    color="black",
     linestyle="--"
 )
-
 axs[0, 1].plot(
     t_learned_1,  # Ensure this is also 1D
-    E_learned_1, label=r"$\hat{E}_1(t)$", color="purple"
+    E_Adler_normalized_out_p, label=r"$E_1(t)$", color=ICIWcolors.DRAB
+)
+axs[0, 1].plot(
+    t_learned_1,  # Ensure this is also 1D
+    E_learned_1, label=r"$\hat{E}_1(t)$", color="purple",linestyle="--"
 )
 axs[0, 1].plot(
     t_learned_2,  # Ensure this is also 1D
-    E_learned_2,label=r"$\hat{E}_2(t)$", color=ICIWcolors.FLAME, linestyle="--"
+    E_c_normalized_pp,label=r"$E_2(t)$", color=ICIWcolors.FLAME
 )
-####
+
+axs[0, 1].plot(
+    t_learned_2,  # Ensure this is also 1D
+    E_learned_2,label=r"$\hat{E}_2(t)$", color="black",linestyle="--"
+)
 
 
 axs[0, 0].set_xlim((0, 35)) 

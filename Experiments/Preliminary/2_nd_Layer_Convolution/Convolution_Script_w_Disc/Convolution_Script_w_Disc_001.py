@@ -525,10 +525,10 @@ axs[0, 1].plot(
     t_learned_2,  # Ensure this is also 1D
     E_learned_2,label=r"$\hat{E}_2(t)$", color="black",linestyle="--"
 )
-axs[0, 1].plot(
-    t_plot,  # Ensure this is also 1D
-    E_expected_p,label=r"$\hat{E}_2(t)$", color="purple",linestyle="--"
-)
+# axs[0, 1].plot(
+#     t_plot,  # Ensure this is also 1D
+#     E_expected_p,label=r"$\hat{E}_2(t)$", color="purple",linestyle="--"
+# )
 
 
 
