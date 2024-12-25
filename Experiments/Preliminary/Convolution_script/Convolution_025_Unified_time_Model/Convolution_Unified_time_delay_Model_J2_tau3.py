@@ -2,14 +2,12 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-module_path = os.path.expanduser("lib")
-sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
@@ -236,9 +234,11 @@ plt.show()
 predicted_E = E
 predicted_time = t_E.numpy()                                 
 expected_time = t_conv
+c_conv=c_conv.detach().numpy()
 np.save(os.path.join(save_dir, 'E_predicted_J2_tau_3.npy'), E_expected)
 np.save(os.path.join(save_dir, 't_E_predicted_J2_tau_3.npy'), predicted_time)
 np.save(os.path.join(save_dir, 'E_expected_J2_tau_3.npy'), E_expected)
 np.save(os.path.join(save_dir, 't_E_expected_J2_tau_3.npy'), expected_time)
+np.save(os.path.join(save_dir, 'c_conv_in_j2_3.npy'),c_conv )
 
 print("saved under:", save_dir)

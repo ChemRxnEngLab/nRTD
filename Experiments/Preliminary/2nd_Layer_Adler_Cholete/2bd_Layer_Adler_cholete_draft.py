@@ -556,18 +556,5 @@ current_date = datetime.datetime.now().strftime("%Y%m%d")
 #plt.savefig(f"2nd_Layer_Ch_E{current_date}.png", dpi=300)
 plt.show()
 
-# #Plotting the test/loss
-# y_1 = [1.11e-7, 9.077e-6]
-# x_1 = [50, 200]
-# y_2 = [4.64e-7, 1.23e-5]
-# x_2 = [50, 200]
 
-# plt.figure(figsize=(10, 6))
-# plt.scatter(x_1, y_1, color="black", label="Case 1")
-# plt.scatter(x_2, y_2, color="red", label="Case 2")
-
-# plt.xlabel('Number of Discretization')
-# plt.ylabel('Test/Loss')
-# plt.legend()
-# plt.show()
 

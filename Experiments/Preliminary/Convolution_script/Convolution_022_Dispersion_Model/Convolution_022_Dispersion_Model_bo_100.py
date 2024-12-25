@@ -35,7 +35,7 @@ sys.path.append(module_path)
 tau_5_dir =r'D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Dispersion_Model\Bo_100_50'
 #tau_5_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Dispersion_Model/Bo_100_50'
 
-epoch=10000
+epoch=30000
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )

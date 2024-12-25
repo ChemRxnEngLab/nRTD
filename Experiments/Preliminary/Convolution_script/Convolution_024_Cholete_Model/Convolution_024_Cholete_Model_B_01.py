@@ -260,7 +260,7 @@ print("E_c_e_normalized",E_c_e_normalized.shape)
 
 predicted_E = E
 predicted_time = t_E.numpy()               
-expected_E = E_c_e_normalized                   
+expected_E = E_c_e_normalized/E_c_e_normalized.max()                 
 expected_time = t_conv_e
 c_conv=c_conv.detach().numpy()
 save_dir =r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_024_Cholete_Model"

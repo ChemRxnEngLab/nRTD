@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-# module_path = r"D:\Tuana\nRTD\lib"
-# sys.path.append(module_path)
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
@@ -29,7 +29,7 @@ coefficients = {
     'alpha_val': 0.2}
 
 epoch_1=15000
-epoch_2=15000
+epoch_2=50000
 epoch_3=epoch_1
 learning_rate=1e-3
 disc_n_1_out=200

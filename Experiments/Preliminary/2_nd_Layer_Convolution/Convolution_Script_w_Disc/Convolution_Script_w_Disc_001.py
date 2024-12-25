@@ -32,8 +32,10 @@ coefficients = {
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2}
 
-epoch_1=15000
+epoch_1=17000
 epoch_2=250000
+#epoch_1=1
+#epoch_2=2
 learning_rate=1e-2
 learning_rate_2=1e-2
 
@@ -356,6 +358,104 @@ t_adler = t_values_Adler if isinstance(t_values_Adler, np.ndarray) else t_values
 t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
 t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
 
+def laminarflow_p(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
+    E_laminar = np.zeros_like(t)
+    E_laminar[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
+    return E_laminar
+t_l_p = np.linspace(0, t_e_1, n_1_E, endpoint=True)  
+c_0_l = np.zeros_like(t_l_p)
+c_0_l[t_l_p > 5] = 1  
+E_laminar = laminarflow(t_l_p, tau_l)
+E_laminar_p = E_laminar / E_laminar.max()
+c_out_l_full = np.convolve(c_0_l, E_laminar / np.sum(E_laminar), mode="full")
+t_conv_l_full = np.linspace(t_l_p[0] + t_l_p[0], t_l_p[-1] + t_l_p[-1], len(c_out_l_full))
+valid_indices = t_conv_l_full <= t_e_1
+
+def compute_inverse_laplace(coefficients, t_values):
+    s, t = sp.symbols('s t')
+    alpha = coefficients['alpha_val']
+    results = []  
+    for tau_a_val in coefficients['tau_a_val']:  
+        for tau_p_val in coefficients['tau_p_val']:
+            for beta_val in coefficients['beta_val']:
+                tau_m_val = (beta_val * (1 - alpha)) / alpha
+                F_s = (sp.exp(-tau_p_val * s)) / (1 + beta_val + tau_a_val * s - (beta_val / (1 + tau_m_val * s)))
+                f_t = sp.inverse_laplace_transform(F_s, s, t)
+                f_t_numeric = sp.lambdify(t, f_t, modules="numpy")
+                E_t = f_t_numeric(t_values)
+                results.append({
+                    'tau_a_val': tau_a_val,
+                    'tau_p_val': tau_p_val,
+                    'tau_m_val': tau_m_val,
+                    'beta_val': beta_val,
+                    'E_t': E_t
+                })
+    return results
+
+t_values_Adler_p = np.linspace(0, t_e_2, n_e_2, endpoint=True)
+results = compute_inverse_laplace(coefficients, t_values_Adler)
+adler_dir = os.path.join(base_dir, f'Adler_tau_a')
+os.makedirs(adler_dir, exist_ok=True)
+
+for result in results:
+    tau_a_val = result['tau_a_val']
+    tau_p_val = result['tau_p_val']
+    tau_m_val = result['tau_m_val']
+    beta_val = result['beta_val']
+    
+    E_Adler = result['E_t']
+    if E_Adler.shape[0] != t_values_Adler_p.shape[0]:
+        if E_Adler.shape[0] > t_values_Adler_p.shape[0]:
+            E_Adler = E_Adler[:len(t_values_Adler_p)]
+        else:
+            E_Adler = np.pad(E_Adler, (0, len(t_values_Adler_p) - len(E_Adler)), 'constant')
+        E_Adler_p=E_Adler/E_Adler.max()
+    E_Adler_normalized_p=E_Adler_p/np.sum(E_Adler_p)
+    # print(f"Shape of E_Adler_normalized: {E_Adler_normalized.shape}")
+
+def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
+    E_laminar_a = np.zeros_like(t)
+    E_laminar_a[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
+    return E_laminar_a
+t_l_a = np.linspace(0, t_adl, n_2_out, endpoint=True)  
+c_0_l_a = np.zeros_like(t_l_a)
+c_0_l_a[t_l_a > 5] = 1  
+E_laminar_a = laminarflow(t_l_a, tau_l)
+E_laminar_a = E_laminar_a / E_laminar_a.max()
+
+def compute_inverse_laplace(coefficients, t_values):
+    s, t = sp.symbols('s t', real=True, positive=True)
+    alpha = coefficients['alpha_val']
+    results = []  
+    for tau_a_val in coefficients['tau_a_val']:
+        for tau_p_val in coefficients['tau_p_val']:
+            for beta_val in coefficients['beta_val']:
+                tau_m_val = (beta_val * (1 - alpha)) / alpha
+                # Laplace transform equation
+                F_s = (sp.exp(-tau_p_val * s)) / (1 + beta_val + tau_a_val * s - (beta_val / (1 + tau_m_val * s)))
+                f_t = sp.inverse_laplace_transform(F_s, s, t)
+                f_t_numeric = sp.lambdify(t, f_t, modules="numpy")
+                E_t = f_t_numeric(t_values)
+                results.append({
+                    'tau_a_val': tau_a_val,
+                    'tau_p_val': tau_p_val,
+                    'tau_m_val': tau_m_val,
+                    'beta_val': beta_val,
+                    'E_t': E_t
+                })
+    return results
+coefficients = {
+    'tau_a_val': np.array([1]),
+    'tau_p_val': np.array([2]), #####check!
+    'beta_val': np.array([0.1]),
+    'alpha_val': 0.2
+}
+t_plot = np.linspace(0, t_e_2,n_e_2)
+inverse_laplace_results = compute_inverse_laplace(coefficients, t_plot)
+E_expected = inverse_laplace_results[0]['E_t']
+E_expected_p =E_expected /E_expected.max()
+
+
 
 plt.style.use("ICIWstyle")
 import ICIW_Plots.colors as ICIWcolors
@@ -408,15 +508,30 @@ axs[0, 0].plot(
    color="black",
     linestyle="--"
 )
-
 axs[0, 1].plot(
     t_learned_1,  # Ensure this is also 1D
-    E_learned_1, label=r"$\hat{E}_1(t)$", color="purple"
+    E_laminar_p, label=r"$E_1(t)$", color=ICIWcolors.DRAB
+)
+axs[0, 1].plot(
+    t_learned_1,  # Ensure this is also 1D
+    E_learned_1, label=r"$\hat{E}_1(t)$", color="purple",linestyle="--"
 )
 axs[0, 1].plot(
     t_learned_2,  # Ensure this is also 1D
-    E_learned_2,label=r"$\hat{E}_2(t)$", color=ICIWcolors.FLAME
+    E_Adler_p,label=r"$E_2(t)$", color=ICIWcolors.FLAME
 )
+
+axs[0, 1].plot(
+    t_learned_2,  # Ensure this is also 1D
+    E_learned_2,label=r"$\hat{E}_2(t)$", color="black",linestyle="--"
+)
+axs[0, 1].plot(
+    t_plot,  # Ensure this is also 1D
+    E_expected_p,label=r"$\hat{E}_2(t)$", color="purple",linestyle="--"
+)
+
+
+
 ####
 
 
@@ -424,24 +539,14 @@ axs[0, 0].set_xlim((0, 35))
 axs[0, 1].set_xlim((0, 20)) 
 axs[0, 0].legend(loc="best")
 axs[0, 1].legend(loc="best")
-plt.savefig(os.path.join(base_dir, f"Lam_adl_1.png"), dpi=300)
+plt.savefig(os.path.join(base_dir, f"Lam_adl_comparasion.png"), dpi=300)
 plt.show()
 
 
 
 ####
-fig, ax1 = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
-ax1.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), label="Input Signal", color="blue", linestyle="--")
-ax1.plot(t_out_l_a.squeeze().numpy(), c_out_l_a.squeeze().numpy(), label="Expected Output", color="green")
-ax1.plot(t_out_l_a.squeeze().numpy(), c_conv_2.detach().squeeze().numpy(), label="Predicted Output", color="red", linestyle="--")
-ax1.plot(t_E_2, E_2, label="E_predict", color="purple", linestyle="--")
-print(t_E_2.shape)
-print(E_2.shape)
-ax1.set_xlim((0, 30))
-ax1.set_ylim((0, 1.1))
-ax1.set_ylabel('Concentration')
-ax1.set_xlabel('Time')
-ax1.legend()
+
+
 
 plt.style.use("ICIWstyle")
 import ICIW_Plots.colors as ICIWcolors
@@ -451,6 +556,7 @@ import ICIW_Plots.colors as ICIWcolors
 from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
 from ICIW_Plots import make_square_ax, cm2inch
 from ICIW_Plots import make_rect_ax
+
 fig = plt.figure(figsize=(Elsevier_Sizes.single_column["in"], 12 * cm2inch))
 ax = make_rect_ax(
     fig,

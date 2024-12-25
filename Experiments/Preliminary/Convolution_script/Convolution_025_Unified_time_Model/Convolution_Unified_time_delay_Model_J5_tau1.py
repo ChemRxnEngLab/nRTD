@@ -242,7 +242,7 @@ plt.show()
 
 predicted_E = E
 predicted_time = t_E.numpy()               
-expected_E = E_c_e_normalized                   
+expected_E = E_expected                   
 expected_time = t_conv_e
 c_conv=c_conv.detach().numpy()
 save_dir =r"D:\Tuana\nRTD\Experiments\Preliminary\Convolution_script\Convolution_025_Unified_time_Model"

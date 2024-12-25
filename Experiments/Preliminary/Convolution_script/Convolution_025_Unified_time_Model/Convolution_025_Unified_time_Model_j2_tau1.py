@@ -9,8 +9,10 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
 from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
@@ -18,6 +20,12 @@ import os
 import datetime
 import sympy as sp
 from sympy import ceiling
+import matplotlib.pyplot as plt
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
+from ICIW_Plots import make_square_ax, cm2inch
+from ICIW_Plots import make_rect_ax
+import datetime
 
 if wandb.run is not None:
     wandb.finish()
@@ -251,9 +259,10 @@ plt.show()
 predicted_E = E
 predicted_time = t_E.numpy()                                 
 expected_time = t_conv
+c_conv=c_conv.detach().numpy()
 np.save(os.path.join(save_dir, 'E_predicted_J2_tau_1.npy'), E_expected)
 np.save(os.path.join(save_dir, 't_E_predicted_J2_tau_1.npy'), predicted_time)
 np.save(os.path.join(save_dir, 'E_expected_J2_tau_1.npy'), E_expected)
 np.save(os.path.join(save_dir, 't_E_expected_J2_tau_1.npy'), expected_time)
-
+np.save(os.path.join(save_dir, 'c_conv_in_J2_t1.npy'),c_conv )
 print("saved under:", save_dir)
