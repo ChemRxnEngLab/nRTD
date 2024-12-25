@@ -19,8 +19,11 @@ import datetime
 import sympy as sp
 from sympy import ceiling
 from ICIW_Plots import make_square_ax, cm2inch
+from ICIW_Plots import make_square_subplots
 
 
+if wandb.run is not None:
+    wandb.finish()
 #Parameters
 tau_l = 5.0
 coefficients = {
@@ -30,7 +33,7 @@ coefficients = {
     'alpha_val': 0.2}
 
 epoch_1=15000
-epoch_2=200000
+epoch_2=250000
 learning_rate=1e-2
 learning_rate_2=1e-2
 
@@ -344,6 +347,89 @@ c_conv_2 = model_2(c_2_in)
 c_conv_2_results[n_2_out] = c_conv_2.detach().numpy()
 #E = model_2.net.E[0]
 ####Plotting
+E_Adler_normalized = E_Adler / np.max(E_Adler)
+E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
+E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
+E_learned_1 /= np.max(E_learned_1)
+E_learned_2 /= np.max(E_learned_2)
+t_adler = t_values_Adler if isinstance(t_values_Adler, np.ndarray) else t_values_Adler.numpy()
+t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
+t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
+
+
+plt.style.use("ICIWstyle")
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes
+import datetime
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
+from ICIW_Plots import make_square_ax, cm2inch
+from ICIW_Plots import make_rect_ax
+fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 25 * cm2inch))  # Increased figure height for better spacing
+axs = make_square_subplots(
+    fig=fig,
+    ax_width=7 * cm2inch,#dimension of the plots
+    ax_layout=(1, 2),  
+    h_sep=1.3 * cm2inch,  
+    v_sep=1 * cm2inch, 
+    sharex=True,
+    sharey=True,
+    xlabel=[r"$t$ / $s$", r"$t$ / $s$"], 
+    ylabel=
+        [r"$C$ / $1$"
+    ])
+
+axs[0, 0].plot(t_1_in_reshaped, c_1_in_reshaped, label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
+axs[0, 0].plot(
+    t_conv_reshaped,  # Ensure this is 1D
+    c_out_l_reshaped,
+    label=r"$C_1(t)$",
+    color=ICIWcolors.DRAB
+)
+axs[0, 0].plot(
+    t_conv_reshaped,
+    c_conv_reshaped,
+    label=r"$\hat{C}_1(t)$",
+   color="purple",
+    linestyle="--"
+)
+
+
+axs[0, 0].plot(
+    t_out_l_a.squeeze().numpy(),  # Ensure this is 1D
+    c_out_l_a.squeeze().numpy(),
+    label=r"$C_2(t)$",
+    color=ICIWcolors.FLAME)
+
+axs[0, 0].plot(
+    t_out_l_a.squeeze().numpy(),
+    c_conv_2.detach().squeeze().numpy(),
+    label=r"$\hat{C}_2(t)$",
+   color="black",
+    linestyle="--"
+)
+
+axs[0, 1].plot(
+    t_learned_1,  # Ensure this is also 1D
+    E_learned_1, label=r"$\hat{E}_1(t)$", color="purple"
+)
+axs[0, 1].plot(
+    t_learned_2,  # Ensure this is also 1D
+    E_learned_2,label=r"$\hat{E}_2(t)$", color=ICIWcolors.FLAME
+)
+####
+
+
+axs[0, 0].set_xlim((0, 35)) 
+axs[0, 1].set_xlim((0, 20)) 
+axs[0, 0].legend(loc="best")
+axs[0, 1].legend(loc="best")
+plt.savefig(os.path.join(base_dir, f"Lam_adl_1.png"), dpi=300)
+plt.show()
+
+
+
+####
 fig, ax1 = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
 ax1.plot(t_2_in.squeeze().numpy(), c_2_in.squeeze().numpy(), label="Input Signal", color="blue", linestyle="--")
 ax1.plot(t_out_l_a.squeeze().numpy(), c_out_l_a.squeeze().numpy(), label="Expected Output", color="green")
@@ -357,6 +443,7 @@ ax1.set_ylabel('Concentration')
 ax1.set_xlabel('Time')
 ax1.legend()
 
+plt.style.use("ICIWstyle")
 import ICIW_Plots.colors as ICIWcolors
 from ICIW_Plots.figures import Elsevier_Sizes
 import datetime
@@ -364,7 +451,6 @@ import ICIW_Plots.colors as ICIWcolors
 from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
 from ICIW_Plots import make_square_ax, cm2inch
 from ICIW_Plots import make_rect_ax
-plt.style.use("ICIWstyle")
 fig = plt.figure(figsize=(Elsevier_Sizes.single_column["in"], 12 * cm2inch))
 ax = make_rect_ax(
     fig,
