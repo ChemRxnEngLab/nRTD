@@ -178,14 +178,6 @@ plt.show()
 
 
 
-
-
-
-
-
-
-
-
 LR=[10,1,1e-1,1e-2,1e-3,1e-4,1e-5]
 error_2=[7.4647e-8,7.46e-8,7.4541e-8,7.4523e-8,7.4537e-8,1.1904e-7,0.00067261]#7.5e-8
 
@@ -270,7 +262,46 @@ axs[0, 1].plot(selected_values, train_loss_values_63,color=ICIWcolors.KELLYGREEN
 axs[0, 1].set_yscale('log')
 plt.savefig(os.path.join(save_dir, f"epoch_1512.png"), dpi=300)
 plt.show()
+#########
 
+LR_2=[10,1,1e-1,1e-2,1e-3,1e-4,1e-5]
+error_LR_2=[8.2e-9,8.4e-9,8.5e-9,8.1e-9,8.7e-9,8.3e-9,9.5e-9]
+epoch_2=[10000,50000,100000,150000,200000,230000,250000]
+error_epoch_2=[0.0000092,8.1e-7,8.3e-8,1.9e-8,9.2e-9,8.6e-9,8.3e-9]
+plt.style.use("ICIWstyle")
+fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 10 * cm2inch))  # Increased figure height for better spacing
+axs = make_square_subplots(
+    fig=fig,
+    ax_width=7 * cm2inch,#dimension of the plots
+    ax_layout=(1, 2),  
+    h_sep=1.39 * cm2inch,  
+    v_sep=1 * cm2inch, 
+    sharex=False,
+    sharey=False,
+    xlabel=["$Epoch/1$","$Epoch/1$"], 
+    ylabel=
+        [["$Test/loss$","$Train/loss$"]]
+    
+)
+
+axs[0, 1].plot(
+    epoch_2,
+    error_epoch_2,'o-',
+    color=ICIWcolors.FLAME,
+)
+
+axs[0, 1].set_yscale('log')
+axs[0, 0].plot(LR_2, error_LR_2,'o-',color=ICIWcolors.KELLYGREEN)
+#axs[0, 1].set_yscale('log')
+axs[0, 0].set_xscale('log')
+#axs[0, 0].set_yscale('log')
+axs[0, 0].set_xticks(LR)
+axs[0, 0].set_xticklabels([r'$10^{%d}$' % int(np.log10(x)) if x != 1 else '1' for x in LR])
+axs[0, 0].set_xlim(min(LR) * 0.5, max(LR) * 2)
+
+
+plt.savefig(os.path.join(save_dir, f"2nd_hypo.png"), dpi=300)
+plt.show()
 
 
 
