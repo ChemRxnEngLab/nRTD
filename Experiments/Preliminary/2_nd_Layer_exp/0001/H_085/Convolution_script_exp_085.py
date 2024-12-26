@@ -9,10 +9,10 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
-# module_path = r"D:\Tuana\nRTD\lib"
-# sys.path.append(module_path)
 from nRTD.rtd_fitting_3 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
@@ -34,7 +34,7 @@ if wandb.run is not None:
     
 save_dir=r"D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_exp\0001\H_085"
 
-learning_rate=1e-3
+learning_rate=1e-2
 n_in_1, n_out_1, n_out_2, n_e_1, n_e_2 = sp.symbols("n_in_1 n_out_1 n_out_2 n_e_1 n_e_2", positive=True, real=True)
 t_1, t_lam, t_adl, t_e_1, t_e_2 = sp.symbols("t_1, t_lam, t_adl, t_e_1, t_e_2", positive=True, real=True)
 equations = [
@@ -127,10 +127,10 @@ t_conv_list = []
 
 
 for i, file_num in enumerate(file_numbers):
-    t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc.npy"
-    c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc.npy"
-    # t_conv_path= rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc.npy"
-    # c_out_path =rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc.npy"
+    #t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc.npy"
+    #c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc.npy"
+    t_conv_path= rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc.npy"
+    c_out_path =rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc.npy"
     
     print(f"Processing files: {t_conv_path}, {c_out_path}")
 
@@ -196,7 +196,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=1,
+    max_epochs=6500,
     logger=wandb_logger, deterministic=True
 )
 trainer.fit(model, dl)
@@ -223,7 +223,7 @@ plt.plot(
     label="Predicted",
     color="red",
 )
-plt.plot(t_E, E, label="E", color="orange")
+plt.plot(t_E, E/E.max(), label="E", color="orange")
 plt.xlim((0, 10))
 plt.legend()
 wandb.finish()
@@ -247,10 +247,10 @@ print("c_in",c_out.shape)
 print(E.shape)
 
 for i, file_num in enumerate(file_numbers):
-    t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2/TOA_MGA_20231020_012_{file_num:06d}_t_processed_conc.npy"
-    c_out_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2/TOA_MGA_20231020_012_{file_num:06d}_x_processed_conc.npy"
-    #t_conv_path_2= rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_t_processed_500.npy"
-    # c_out_path_2 =rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_x_processed_500.npy"
+    #t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2/TOA_MGA_20231020_012_{file_num:06d}_t_processed_conc.npy"
+    #c_out_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2/TOA_MGA_20231020_012_{file_num:06d}_x_processed_conc.npy"
+    t_conv_path_2= rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_t_processed_conc.npy"
+    c_out_path_2 =rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_x_processed_conc.npy"
 
     print(f"Processing files: {t_conv_path_2}, {c_out_path_2}")
 
@@ -285,7 +285,7 @@ dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=1,
+    max_epochs=2500,
     logger=wandb_logger,
     deterministic=True,
 )

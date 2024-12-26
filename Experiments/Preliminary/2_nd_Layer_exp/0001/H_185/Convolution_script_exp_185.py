@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-module_path = os.path.expanduser("lib")
+
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
@@ -187,7 +188,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=2,
+    max_epochs=20000,
     logger=wandb_logger, deterministic=True
 )
 trainer.fit(model, dl)
@@ -275,7 +276,7 @@ dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=2,
+    max_epochs=100000,
     logger=wandb_logger,
     deterministic=True,
 )

@@ -33,11 +33,11 @@ coefficients = {
     'alpha_val': 0.2}
 
 epoch_1=17000
-epoch_2=900000
+epoch_2=270000
 #epoch_1=1
 #epoch_2=2
 learning_rate=1e-2
-learning_rate_2=1e-2
+learning_rate_2=0.005
 
 
 base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_Convolution'

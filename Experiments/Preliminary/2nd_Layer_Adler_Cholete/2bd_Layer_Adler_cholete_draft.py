@@ -2,16 +2,16 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-module_path = os.path.expanduser("lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
-sys.path.append(module_path)
-from nRTD.rtd_fitting_2 import RTDModule
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
+from nRTD.rtd_fitting_3 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
 import os
@@ -29,12 +29,10 @@ coefficients = {
     'tau_p_val': np.array([2]), 
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2}
-# epoch_1=30000
-# epoch_2=20000
-epoch_1=2
-epoch_2=2
+epoch_1=35000
+epoch_2=900000
 epoch_3=epoch_1
-learning_rate=1e-3
+learning_rate=1e-2
 disc_n_1_out=200
 
 # base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
@@ -574,7 +572,7 @@ axs[0, 0].set_xlim((0, 35))
 axs[0, 1].set_xlim((0, 35)) 
 axs[0, 0].legend(loc="best")
 axs[0, 1].legend(loc="best")
-plt.savefig(os.path.join(base_dir, f"Lam_adl_1.png"), dpi=300)
+plt.savefig(os.path.join(base_dir, f"ad_ch.png"), dpi=300)
 plt.show()
 
 
