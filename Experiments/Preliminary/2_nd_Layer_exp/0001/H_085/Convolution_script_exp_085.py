@@ -9,8 +9,8 @@ from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
-#sys.path.append(module_path)
+# module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+# sys.path.append(module_path)
 module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 from nRTD.rtd_fitting_3 import RTDModule
@@ -32,7 +32,7 @@ from ICIW_Plots import make_rect_ax
 if wandb.run is not None:
     wandb.finish()
     
-save_dir=r"D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_exp\0001\H_085"
+#save_dir=r"D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_exp\0001\H_085"
 
 learning_rate=1e-2
 n_in_1, n_out_1, n_out_2, n_e_1, n_e_2 = sp.symbols("n_in_1 n_out_1 n_out_2 n_e_1 n_e_2", positive=True, real=True)
@@ -127,8 +127,8 @@ t_conv_list = []
 
 
 for i, file_num in enumerate(file_numbers):
-    #t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc.npy"
-    #c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc.npy"
+    # t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc.npy"
+    # c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc.npy"
     t_conv_path= rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc.npy"
     c_out_path =rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc.npy"
     
@@ -196,7 +196,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=6500,
+    max_epochs=15000,
     logger=wandb_logger, deterministic=True
 )
 trainer.fit(model, dl)
@@ -247,8 +247,8 @@ print("c_in",c_out.shape)
 print(E.shape)
 
 for i, file_num in enumerate(file_numbers):
-    #t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2/TOA_MGA_20231020_012_{file_num:06d}_t_processed_conc.npy"
-    #c_out_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2/TOA_MGA_20231020_012_{file_num:06d}_x_processed_conc.npy"
+    # t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2/TOA_MGA_20231020_012_{file_num:06d}_t_processed_conc.npy"
+    # c_out_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2/TOA_MGA_20231020_012_{file_num:06d}_x_processed_conc.npy"
     t_conv_path_2= rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_t_processed_conc.npy"
     c_out_path_2 =rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_x_processed_conc.npy"
 
@@ -360,36 +360,85 @@ ax.plot(t_conv_2[0, 0, :].numpy(),
 
 plt.legend()
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-# plt.savefig(os.path.join(save_dir, f"2nd_085_fitting_3{current_date}.png"), dpi=300)
 plt.show()
-
-
-# E_Adler_normalized = E_Adler / np.max(E_Adler)
 E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
 E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
-# E_learned_1 /= np.max(E_learned_1)
-# E_learned_2 /= np.max(E_learned_2)
-# t_adler = t_values_Adler if isinstance(t_values_Adler, np.ndarray) else t_values_Adler.numpy()
 t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
 t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
-
+j=8
+base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_exp'
+#base_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_exp"
 plt.style.use("ICIWstyle")
-fig = plt.figure(figsize=(Elsevier_Sizes.single_column["in"], 12 * cm2inch))
-ax = make_rect_ax(
-     fig,
-     ax_width=7.3 * cm2inch,
-     ax_height=5 * cm2inch,
-      left_h=0.2,  # These arguments control the spacing of the axis
-      bottom_v=0.2, # not supplying them wil place the axes in the middle of the figure
-     xlabel=r"$t$ / $s$",
-     ylabel=r"$E$ / $1$"
- )
-ax.plot(t_learned_1, E_learned_1, label="$\hat{E}_{1(t)}$", color="purple")
-ax.plot(t_learned_2, E_learned_2, label="$\hat{E}_{2(t)}$", color=ICIWcolors.FLAME)
-ax.set_xlim((0, 15))
-ax.set_ylim((-0.1, 0.2))
-plt.legend()
-current_date = datetime.datetime.now().strftime("%Y%m%d")
-# plt.savefig(os.path.join(save_dir, f"2nd_085_E_fitting_3{current_date}.png"), dpi=300)
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes
+import datetime
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
+from ICIW_Plots import make_square_ax, cm2inch
+from ICIW_Plots import make_rect_ax
+from ICIW_Plots import make_square_subplots
+fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 25 * cm2inch))  # Increased figure height for better spacing
+axs = make_square_subplots(
+    fig=fig,
+    ax_width=7 * cm2inch,#dimension of the plots
+    ax_layout=(1, 2),  
+    h_sep=1.3 * cm2inch,  
+    v_sep=1 * cm2inch, 
+    sharex=True,
+    sharey=True,
+    xlabel=[r"$t$ / $s$", r"$t$ / $s$"], 
+    ylabel=
+        [r"$C$ / $1$"
+    ])
 
+axs[0, 0].plot(t_input, c_in[0, 0, :].numpy(), label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
+
+axs[0, 0].plot(
+    t_conv[j, i, :].numpy(),
+    c_out[j, i, :].numpy(),
+    label=r"$C_1(t)$",
+   color=ICIWcolors.DRAB,
+)
+axs[0, 0].plot(
+    t_conv[0, 0, :].numpy(),
+    c_conv[0, 0, :].detach().numpy(),
+    label=r"$\hat{C}_1(t)$",
+   color="purple",
+    linestyle="--"
+)
+
+axs[0, 0].plot(
+    t_conv_2[0, i, :].numpy(),
+    c_out_2[0, i, :].detach().numpy(),
+    label=r"$C_2(t)$",
+   color=ICIWcolors.FLAME,
+)
+axs[0, 0].plot(
+    t_conv_2[0, 0, :].numpy(),
+    c_conv_2[0, 0, :].detach().numpy(),
+    label=r"$\hat{C}_2(t)$",
+   color="black",
+    linestyle="--"
+)
+
+axs[0, 1].plot(
+    t_learned_1,  # Ensure this is also 1D
+    E_learned_1/E_learned_1.max(), label=r"$\hat{E}_1(t)$", color=ICIWcolors.DRAB,
+)
+axs[0, 1].plot(
+    t_learned_2,  # Ensure this is also 1D
+    E_learned_2/E_learned_2.max(),label=r"$\hat{E}_2(t)$", color=ICIWcolors.FLAME
+)
+
+
+
+####
+
+
+axs[0, 0].set_xlim((0, 20)) 
+axs[0, 1].set_xlim((0, 10)) 
+axs[0, 0].legend(loc="best")
+axs[0, 1].legend(loc="best")
+plt.savefig(os.path.join(base_dir, f"Exp_2ndLAyer_085.png"), dpi=300)
 plt.show()
+
