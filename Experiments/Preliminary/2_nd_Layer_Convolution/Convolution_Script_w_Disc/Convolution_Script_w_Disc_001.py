@@ -37,7 +37,7 @@ epoch_2=450000
 #epoch_1=1
 #epoch_2=2
 learning_rate=1e-2
-learning_rate_2=1e-5
+learning_rate_2=10
 
 
 base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_Convolution'

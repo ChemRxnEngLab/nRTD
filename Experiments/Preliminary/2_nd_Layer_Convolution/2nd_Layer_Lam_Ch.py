@@ -2,15 +2,15 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-# module_path = r"D:\Tuana\nRTD\lib"
-# sys.path.append(module_path)
+module_path = r"D:\Tuana\nRTD\lib"
+sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
-sys.path.append(module_path)
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
 from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
@@ -26,7 +26,7 @@ from ICIW_Plots import make_square_ax, cm2inch
 tau_l = 5.0
 
 epoch_1=17000
-epoch_2=600000
+epoch_2=800000
 epoch_3=epoch_1
 learning_rate=1e-2
 disc_n_1_out=200
