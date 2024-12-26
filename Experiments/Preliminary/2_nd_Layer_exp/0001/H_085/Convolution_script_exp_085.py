@@ -155,7 +155,7 @@ print(t_conv)
 model = RTDModule(
     kernel_sizes=[n_e_1],
     kernel_times=[(0.0, t_e_1)],
-    learning_rate=1e-3,
+    learning_rate=learning_rate,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
@@ -196,7 +196,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=15000,
+    max_epochs=2500,
     logger=wandb_logger, deterministic=True
 )
 trainer.fit(model, dl)
@@ -439,6 +439,6 @@ axs[0, 0].set_xlim((0, 20))
 axs[0, 1].set_xlim((0, 10)) 
 axs[0, 0].legend(loc="best")
 axs[0, 1].legend(loc="best")
-plt.savefig(os.path.join(base_dir, f"Exp_2ndLAyer_085.png"), dpi=300)
+plt.savefig(os.path.join(base_dir, f"Exp_2ndLAyer_085_rtd2.png"), dpi=300)
 plt.show()
 
