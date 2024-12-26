@@ -24,15 +24,11 @@ from ICIW_Plots import make_square_ax, cm2inch
 #     wandb.finish()
 #Parameters
 tau_l = 5.0
-coefficients = {
-    'tau_a_val': np.array([1]),   
-    'tau_p_val': np.array([2]), 
-    'beta_val': np.array([0.1]), 
-    'alpha_val': 0.2}
+
 epoch_1=17000
-epoch_2=260000
+epoch_2=600000
 epoch_3=epoch_1
-learning_rate=1e-3
+learning_rate=1e-2
 disc_n_1_out=200
 
 # base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_Convolution'
