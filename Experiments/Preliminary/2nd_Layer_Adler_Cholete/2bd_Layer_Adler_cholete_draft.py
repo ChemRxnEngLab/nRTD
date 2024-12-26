@@ -11,7 +11,7 @@ import numpy as np
 import wandb
 #module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 #sys.path.append(module_path)
-from nRTD.rtd_fitting_3 import RTDModule
+from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
 import os

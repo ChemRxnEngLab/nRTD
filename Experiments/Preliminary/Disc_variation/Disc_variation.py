@@ -2,14 +2,14 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-module_path = os.path.expanduser("lib")
-sys.path.append(module_path)
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+#sys.path.append(module_path)
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 from nRTD.rtd_fitting_3 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
@@ -23,10 +23,10 @@ from ICIW_Plots import make_square_ax, cm2inch
 if wandb.run is not None:
     wandb.finish()
 
-epoch=14000
-t_e_1=30
+epoch=17000
+t_e_1=50
 ## Data Simulation for the 1st model
-base_dir = r"D:\Tuana\nRTD\Experiments\Prelimina\/Disc_variation'
+base_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Disc_variation"
 def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
     E_laminar = np.zeros_like(t)
     E_laminar[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
@@ -37,14 +37,14 @@ tau_l = 5.0
 discretization_Laminar = [51,101,151,201,251]
 
 for disc in discretization_Laminar:
-    t_l = np.linspace(0, 30, disc, endpoint=True)  
+    t_l = np.linspace(0, 50, disc, endpoint=True)  
     c_0_l = np.zeros_like(t_l)
     c_0_l[t_l > 5] = 1  
     E_laminar = laminarflow(t_l, tau_l)
     E_laminar = E_laminar / E_laminar.max()
     c_out_l_full = np.convolve(c_0_l, E_laminar / np.sum(E_laminar), mode="full")
     t_conv_l_full = np.linspace(t_l[0] + t_l[0], t_l[-1] + t_l[-1], len(c_out_l_full))
-    valid_indices = t_conv_l_full <= 30
+    valid_indices = t_conv_l_full <= 50
     t_conv_l = t_conv_l_full[valid_indices]
     c_out_l = c_out_l_full[valid_indices]
 
@@ -109,7 +109,7 @@ for n_disc_o, kernel_size, n_disc in discretization_confg_second:
     t_conv= torch.tensor(data_time_out[:n_disc_o], dtype=torch.float32).unsqueeze(0).unsqueeze(0)
     c_out = torch.tensor(data_concentration_out[:n_disc_o], dtype=torch.float32).unsqueeze(0).unsqueeze(0)
    
-    t_input = torch.linspace(0, 30, n_disc)
+    t_input = torch.linspace(0, 50, n_disc)
     c_in = torch.zeros((1, 1, n_disc))
     c_in[:, :, t_input > 5] = 1
     c_out_list = [c_out]

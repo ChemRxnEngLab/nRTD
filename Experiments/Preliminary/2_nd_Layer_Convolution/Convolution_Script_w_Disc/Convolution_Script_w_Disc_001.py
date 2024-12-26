@@ -33,11 +33,11 @@ coefficients = {
     'alpha_val': 0.2}
 
 epoch_1=17000
-epoch_2=900000
+epoch_2=450000
 #epoch_1=1
 #epoch_2=2
 learning_rate=1e-2
-learning_rate_2=1e-2
+learning_rate_2=1e-5
 
 
 base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_Convolution'
@@ -303,7 +303,7 @@ wandb.finish()
 ###Second CNN
 wandb_logger = pl_loggers.WandbLogger(
     project="nRTD",
-    log_model=True,name=f'learning_rate_{learning_rate}_2nd',
+    log_model=True,name=f'learning_rate_{learning_rate_2}_2nd',
     reinit=True
 )
 c_conv_2_results = {}
