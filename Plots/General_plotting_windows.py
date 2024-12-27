@@ -3,8 +3,6 @@ import sys
 import os
 import torch
 import numpy as np
-
-# Update the module path for Windows
 module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 
@@ -14,8 +12,6 @@ from ICIW_Plots import make_square_ax, cm2inch
 import ICIW_Plots.colors as ICIWcolors
 from ICIW_Plots import make_square_subplots
 from ICIW_Plots.figures import Elsevier_Sizes
-
-# Save directory
 save_dir = r"D:\Tuana\nRTD\Plots"
 
 # Directory for tau_5
