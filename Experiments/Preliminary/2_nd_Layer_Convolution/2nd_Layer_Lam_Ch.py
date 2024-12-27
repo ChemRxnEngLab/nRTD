@@ -26,7 +26,7 @@ from ICIW_Plots import make_square_ax, cm2inch
 tau_l = 5.0
 
 epoch_1=17000
-epoch_2=800000
+epoch_2=200000
 epoch_3=epoch_1
 learning_rate=1e-2
 disc_n_1_out=200
@@ -118,15 +118,15 @@ def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float6
     E_laminar = np.zeros_like(t)
     E_laminar[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
     return E_laminar
-t_lam=t_adl
-t_l = np.linspace(0, t_lam, n_1_out, endpoint=True)  
+#t_lam=t_adl
+t_l = np.linspace(0, t_adl, n_1_out, endpoint=True)  
 c_0_l = np.zeros_like(t_l)
 c_0_l[t_l > 5] = 1  
 E_laminar = laminarflow(t_l, tau_l)
 E_laminar = E_laminar / E_laminar.max()
 c_out_l_full = np.convolve(c_0_l, E_laminar / np.sum(E_laminar), mode="full")
 t_conv_l_full = np.linspace(t_l[0] + t_l[0], t_l[-1] + t_l[-1], len(c_out_l_full))
-valid_indices = t_conv_l_full <= t_lam
+valid_indices = t_conv_l_full <= t_adl
 t_conv_l = t_conv_l_full[valid_indices]
 c_out_l = c_out_l_full[valid_indices]
 t_conv_Adler_out = t_conv_l
@@ -152,8 +152,8 @@ valid_indices = t_conv_l_full_2 <= t_ch
 t_conv_l_2 = t_conv_l_full_2[valid_indices]
 c_out_l_2 = c_out_l_full_2[valid_indices]
 
-t_conv_Adler = t_conv_l
-c_out_Adler = c_out_l
+t_conv_Adler = t_conv_l_2
+c_out_Adler = c_out_l_2
 
 def Cholete(t: npt.NDArray[np.float64], alpha: float, beta: float, tau: float, g: float) -> npt.NDArray[np.float64]: 
     print(f"tau = {tau}")
@@ -492,7 +492,7 @@ axs[0, 0].set_xlim((0, 35))
 axs[0, 1].set_xlim((0, 35)) 
 axs[0, 0].legend(loc="best")
 axs[0, 1].legend(loc="best")
-plt.savefig(os.path.join(base_dir, f"ad_ch.png"), dpi=300)
+plt.savefig(os.path.join(base_dir, f"ad_ch_E0.png"), dpi=300)
 plt.show()
 
 
