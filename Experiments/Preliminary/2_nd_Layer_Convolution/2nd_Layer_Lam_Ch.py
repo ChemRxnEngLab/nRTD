@@ -26,7 +26,7 @@ from ICIW_Plots import make_square_ax, cm2inch
 tau_l = 5.0
 
 epoch_1=17000
-epoch_2=200000
+epoch_2=900000
 epoch_3=epoch_1
 learning_rate=1e-2
 disc_n_1_out=200

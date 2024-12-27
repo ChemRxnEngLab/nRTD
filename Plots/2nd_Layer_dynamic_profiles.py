@@ -36,14 +36,14 @@ import os
 save_dir = r"D:\Tuana\nRTD\Plots"
 file_path = r"D:\Tuana\nRTD\Plots\wandb_export_2024-12-27T01_42_23.467+01_00.csv"
 #file_path="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Plots/wandb_export_2024-12-27T01_42_23.467+01_00.csv"
-save_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Plots"
+#save_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Plots"
 
 df=pd.read_csv(file_path,delimiter=",",usecols=[0,4,10])
 print(df.head())
 
 #epoch,"Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000_RTD2 - _step","Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000_RTD2 - _step__MIN","Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000_RTD2 - _step__MAX","","Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000_RTD2 - train/loss__MIN","Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000_RTD2 - train/loss__MAX","Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000 - _step","Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000 - _step__MIN","Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000 - _step__MAX","Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000 - train/loss","Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000 - train/loss__MIN","Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000 - train/loss__MAX"
 ##################################
-
+plt.style.use("ICIWstyle")
 fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 25 * cm2inch))  # Increased figure height for better spacing
 ax = make_rect_ax(
     fig,

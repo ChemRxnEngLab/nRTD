@@ -31,7 +31,8 @@ from ICIW_Plots import make_rect_ax
 
 if wandb.run is not None:
     wandb.finish()
-    
+
+learning_rate_2=1e-1   
 #save_dir=r"D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_exp\0001\H_085"
 
 learning_rate=1e-2
@@ -273,7 +274,7 @@ print(c_2_in.shape)
 model_2 = RTDModule(
     kernel_sizes=[n_e_2],
     kernel_times=[(0.0, t_e_2)],
-    learning_rate=learning_rate,
+    learning_rate=learning_rate_2,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
