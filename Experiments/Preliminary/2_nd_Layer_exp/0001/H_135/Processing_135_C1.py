@@ -33,7 +33,7 @@ def process_data(file_num):
     print(x_evel)
 
     # Save processed data
-    np.save(PWD / f"TOA_MGA_20231020_010_{file_num:06d}_t_processed_2nd_Layer_concnpy", t_pretty)
+    np.save(PWD / f"TOA_MGA_20231020_010_{file_num:06d}_t_processed_2nd_Layer_conc.npy", t_pretty)
     np.save(PWD / f"TOA_MGA_20231020_010_{file_num:06d}_x_processed_2nd_Layer_conc.npy", x_evel)
 
     # Plot results
