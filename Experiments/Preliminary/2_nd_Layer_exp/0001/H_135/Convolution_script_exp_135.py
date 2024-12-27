@@ -119,8 +119,8 @@ t_conv_list = []
 for i, file_num in enumerate(file_numbers):
     # t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1/TOA_MGA_20231020_010_{file_num:06d}_t_processed_2nlayer_200.npy"
     # c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_135_C1/S_010_C1/TOA_MGA_20231020_010_{file_num:06d}_x_processed_2nlayer_200.npy"
-    t_conv_path= r"D:\Tuana\nRTD\Experiments\Data\0001\C_001\H_135_C1\S_010_C1\TOA_MGA_20231020_010_{file_num:06d}_t_processed_2nlayer_200.npy"
-    c_out_path =r"D:\Tuana\nRTD\Experiments\Data\0001\C_001\H_135_C1\S_010_C1\TOA_MGA_20231020_010_{file_num:06d}_x_processed_2nlayer_200.npy"
+    t_conv_path= r"D:\Tuana\nRTD\Experiments\Data\0001\C_001\H_135_C1\S_010_C1\TOA_MGA_20231020_010_{file_num:06d}_t_processed_2nlayer_conc.npy"
+    c_out_path =r"D:\Tuana\nRTD\Experiments\Data\0001\C_001\H_135_C1\S_010_C1\TOA_MGA_20231020_010_{file_num:06d}_x_processed_2nlayer_conc.npy"
     
     print(f"Processing files: {t_conv_path}, {c_out_path}")
 
@@ -239,8 +239,8 @@ print("c_in",c_out.shape)
 for i, file_num in enumerate(file_numbers):
     # t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_t_processed.npy"
     # c_out_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_x_processed.npy"
-    t_conv_path_2= r"D:\Tuana\nRTD\Experiments\Data\0001\C_002\H_135_C2\S_013_C2\TOA_MGA_20231020_013_{file_num:06d}_t_processed.npy"
-    c_out_path_2 =r"D:\Tuana\nRTD\Experiments\Data\0001\C_002\H_135_C2\S_013_C2\TOA_MGA_20231020_013_{file_num:06d}_x_processed.npy"
+    t_conv_path_2= r"D:\Tuana\nRTD\Experiments\Data\0001\C_002\H_135_C2\S_013_C2\TOA_MGA_20231020_013_{file_num:06d}_t_processed_conc.npy"
+    c_out_path_2 =r"D:\Tuana\nRTD\Experiments\Data\0001\C_002\H_135_C2\S_013_C2\TOA_MGA_20231020_013_{file_num:06d}_x_processed_conc.npy"
     
     print(f"Processing files: {t_conv_path_2}, {c_out_path_2}")
 
