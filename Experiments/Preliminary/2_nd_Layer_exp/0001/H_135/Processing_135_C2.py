@@ -20,7 +20,7 @@ def process_data(file_num):
     f = sc.interpolate.interp1d(t, x[0, :])
     t_n = t[-1]
     t_b = t_n - 51
-    t_evel = np.linspace(t_b, t_n, 485)
+    t_evel = np.linspace(t_b, t_n, 377)
     t_pretty = t_evel - t_b
     x_evel_1 = f(t_evel)
     x_evel_2=x_evel_1/224
