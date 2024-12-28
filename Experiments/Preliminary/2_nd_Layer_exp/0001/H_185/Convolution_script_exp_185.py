@@ -118,10 +118,10 @@ t_conv_list = []
 
 
 for i, file_num in enumerate(file_numbers):
-    t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_185_C1/S_007_C1_001/TOA_MGA_20231013_007_{file_num:06d}_t_processed.npy"
-    c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_185_C1/S_007_C1_001/TOA_MGA_20231013_007_{file_num:06d}_x_processed.npy"
-    #t_conv_path= r"D:\Tuana\nRTD\Experiments\Data\0001\C_001\H_185_C1\S_007_C1_001\TOA_MGA_20231013_007_{file_num:06d}_t_processed_2nlayer_200.npy"
-    #c_out_path =r"D:\Tuana\nRTD\Experiments\Data\0001\C_001\H_138_C1\S_007_C1_001\TOA_MGA_20231013_007_{file_num:06d}_x_processed_2nlayer_200.npy"
+    #t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_185_C1/S_007_C1_001/TOA_MGA_20231013_007_{file_num:06d}_t_processed.npy"
+    #c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_185_C1/S_007_C1_001/TOA_MGA_20231013_007_{file_num:06d}_x_processed.npy"
+    t_conv_path= r"D:\Tuana\nRTD\Data\0001\C_001\H_185_C1\S_007_C1_001\TOA_MGA_20231013_007_{file_num:06d}_t_processed.npy"
+    c_out_path =r"D:\Tuana\nRT\Data\0001\C_001\H_185_C1\S_007_C1_001\TOA_MGA_20231013_007_{file_num:06d}_x_processed.npy"
     
     print(f"Processing files: {t_conv_path}, {c_out_path}")
 
