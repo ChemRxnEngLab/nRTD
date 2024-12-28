@@ -44,8 +44,8 @@ def process_data(file_num):
     # x_evel = f(t_evel)
 
 
-    np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc.npy", t_pretty)
-    np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc.npy", x_evel)
+    #np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc.npy", t_pretty)
+    #np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc.npy", x_evel)
 
 
     plt.plot(t_pretty, x_evel, label=file_num)
@@ -59,9 +59,8 @@ def main():
 
 
     for file_num in range(start_file_num, end_file_num + 1):
-         #if file_num in [12,7]:
-             #continue
-    #for file_num in [7,17]:
+        #if file_num in [12,7]:
+         #  continue
         process_data(file_num)
 
 
