@@ -32,7 +32,7 @@ from ICIW_Plots import make_rect_ax
 if wandb.run is not None:
     wandb.finish()
 
-learning_rate_2=10   
+learning_rate_2=1e-1
 #save_dir=r"D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_exp\0001\H_085"
 
 learning_rate=1e-3
@@ -73,10 +73,10 @@ sub_dict = {
     n_out_1: 200,
     # n_e_1,
     # n_e_2,
-    t_1:14,
+    t_1:10,
     # t_lam,
     t_adl:51,
-    t_e_1:13,
+    t_e_1:11,
     #t_e_2,
 }
 result_dict = {}
@@ -200,7 +200,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=2500,
+    max_epochs=8000,
     logger=wandb_logger, deterministic=True
 )
 trainer.fit(model, dl)
@@ -253,8 +253,8 @@ print(E.shape)
 for i, file_num in enumerate(filtered_file_numbers):
     # t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2/TOA_MGA_20231020_012_{file_num:06d}_t_processed_conc.npy"
     # c_out_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_085_C2/S_012_C2/TOA_MGA_20231020_012_{file_num:06d}_x_processed_conc.npy"
-    t_conv_path_2= rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_t_processed_conc_377.npy"
-    c_out_path_2 =rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_x_processed_conc_377.npy"
+    t_conv_path_2= rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_t_processed_conc.npy"
+    c_out_path_2 =rf"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2\TOA_MGA_20231020_012_{file_num:06d}_x_processed_conc.npy"
 
     print(f"Processing files: {t_conv_path_2}, {c_out_path_2}")
 
@@ -289,7 +289,7 @@ dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=2500,
+    max_epochs=15000,
     logger=wandb_logger,
     deterministic=True,
 )
@@ -369,7 +369,7 @@ E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else mode
 E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
 t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
 t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
-j=2
+j=0
 base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_exp'
 #base_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_exp"
 plt.style.use("ICIWstyle")

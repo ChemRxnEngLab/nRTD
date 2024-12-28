@@ -300,5 +300,62 @@ axs[0, 0].legend(loc="best")
 axs[0, 1].legend(loc="best")
 axs[1,0].legend(loc="best")
 axs[1, 1].legend(loc="best")
-plt.savefig(os.path.join(save_dir, f"lit_models_2.png"), dpi=300)
+#plt.savefig(os.path.join(save_dir, f"lit_models_2.png"), dpi=300)
+plt.show()
+
+
+t10 = np.load(r"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1_001\TOA_MGA_20231020_009_000001_t_processed.npy")
+x10 = np.load(r"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1_001\TOA_MGA_20231020_009_000001_x_processed.npy")
+x10 /= 224
+x10_p = x10 / x10.max()
+
+t11 = np.load(r"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2_001\TOA_MGA_20231020_012_000001_t_processed.npy")
+x11 = np.load(r"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2_001\TOA_MGA_20231020_012_000001_x_processed.npy")
+x11 /= 224
+x11_p = x11 / x11.max()
+
+t4 = np.load(r"D:\Tuana\nRTD\Data\0001\C_002\H_085_C2\S_012_C2_001\TOA_MGA_20231020_012_000001_t_processed.npy")
+t5 = np.load(r"D:\Tuana\nRTD\Data\0001\C_002\H_135_C2\S_013_C2_001\TOA_MGA_20231020_013_000001_t_processed.npy")
+
+plt.style.use("ICIWstyle")
+
+fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 25 * cm2inch))  # Increased figure height for better spacing
+axs = make_square_subplots(
+    fig=fig,
+    ax_width=8 * cm2inch,#dimension of the plots
+    ax_layout=(1, 1),  
+    h_sep=1.3 * cm2inch,  
+    v_sep=1 * cm2inch, 
+    sharex=True,
+    sharey=False,
+    xlabel= "$t/s$",
+    ylabel=[
+        "$C/1$"
+    ]
+)
+#     sharex=True,
+#     sharey=True,
+#     xlabel=["$x_1$", "$x_2$"], 
+#     ylabel=[["$y_1$"],["$y_1$"],["$y_1$"]]
+         
+    
+# )
+
+axs[0, 0].plot(
+    t4, x10_p,
+    label=r"$(1)$",
+    color=ICIWcolors.KELLYGREEN,
+)
+axs[0, 0].plot(
+    t4, x11_p,
+    label=r"$(2)$",
+    color=ICIWcolors.FLAME,
+)
+# axs[0, 0].set_xscale('$Epoch$')
+# axs[0, 0].set_yscale('$test/loss$')
+# axs[0, 0].set_xticks(LR)
+# axs[0, 0].set_xticklabels([r'$10^{%d}$' % int(np.log10(x)) if x != 1 else '1' for x in LR])
+axs[0, 0].set_xlim(0,20)
+plt.legend()
+plt.savefig(os.path.join(save_dir, f"experimental.png"), dpi=300)
 plt.show()

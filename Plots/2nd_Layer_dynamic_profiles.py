@@ -54,13 +54,14 @@ ax = make_rect_ax(
         "$Train/loss$"
     
 )
-ax.plot(df["epoch"], df["Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000 - train/loss"],
-    label=r"$Case:1$",
-    color=ICIWcolors.FLAME,
-)
 ax.plot(df["epoch"], df["Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000_RTD2 - train/loss"],
-    label=r"$Case:2$",
+    label=r"$Case:1$",
     color=ICIWcolors.KELLYGREEN,
+)
+
+ax.plot(df["epoch"], df["Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_900000 - train/loss"],
+    label=r"$Case:2$",
+    color=ICIWcolors.FLAME,
 )
 
 plt.legend()
