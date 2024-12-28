@@ -15,7 +15,7 @@ def process_data(file_num):
     # Load _x.npy and _t.npy
     x = np.load(x_file_path)
     t = np.load(t_file_path)
-
+    print(t)
     # Interpolate data
     f = sc.interpolate.interp1d(t, x[0, :])
     t_n = t[-1]
@@ -23,11 +23,11 @@ def process_data(file_num):
     t_evel = np.linspace(t_b, t_n, 485)
     t_pretty = t_evel - t_b
     x_evel = f(t_evel)
-    print(x_evel.shape)
+    #print(x_evel.shape)
 
     # Save processed data
-    np.save(PWD / f"TOA_MGA_20231020_014_{file_num:06d}_t_processed.npy", t_pretty)
-    np.save(PWD / f"TOA_MGA_20231020_014_{file_num:06d}_x_processed.npy", x_evel)
+    #np.save(PWD / f"TOA_MGA_20231020_014_{file_num:06d}_t_processed.npy", t_pretty)
+    #np.save(PWD / f"TOA_MGA_20231020_014_{file_num:06d}_x_processed.npy", x_evel)
 
     # Plot results
     plt.plot(t_pretty, x_evel, label=file_num)

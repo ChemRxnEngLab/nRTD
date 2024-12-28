@@ -15,7 +15,7 @@ def process_data(file_num):
     # Load _x.npy and _t.npy
     x = np.load(x_file_path)
     t = np.load(t_file_path)
-
+    print(t)
     # Interpolate data
     f = sc.interpolate.interp1d(t, x[0, :])
     t_n = t[-1]
@@ -26,11 +26,11 @@ def process_data(file_num):
     x_evel_2=x_evel_1/224
     x_evel_2/= x_evel_2.max()
     x_evel=x_evel_2
-    print(x_evel)
+    #print(x_evel)
 
     # Save processed data
-    np.save(PWD / f"TOA_MGA_20231020_013_{file_num:06d}_t_processed_conc.npy", t_pretty)
-    np.save(PWD / f"TOA_MGA_20231020_013_{file_num:06d}_x_processed_conc.npy", x_evel)
+    np.save(PWD / f"TOA_MGA_20231020_013_{file_num:06d}_t_processed_conc_377.npy", t_pretty)
+    np.save(PWD / f"TOA_MGA_20231020_013_{file_num:06d}_x_processed_conc_377.npy", x_evel)
 
     # Plot results
     plt.plot(t_pretty, x_evel, label=file_num)
@@ -45,8 +45,8 @@ def main():
     # Iterate over the file numbers and process each data file
     for file_num in range(start_file_num, end_file_num + 1):
     #for file_num in [7,18]:
-        #if file_num in [10,7]:
-           #continue
+        if file_num in [10,7]:
+           continue
         process_data(file_num)
 
     # Show the legend and plot

@@ -15,6 +15,7 @@ def process_data(file_num):
     # Load _x.npy and _t.npy
     x = np.load(x_file_path)
     t = np.load(t_file_path)
+    print(t)
 
     # Interpolate data
     f = sc.interpolate.interp1d(t, x[0, :])
@@ -28,15 +29,15 @@ def process_data(file_num):
     x_evel=x_evel_2
 
     # Save processed data
-    np.save(PWD / f"TOA_MGA_20231020_012_{file_num:06d}_t_processed_conc.npy", t_pretty)
-    np.save(PWD / f"TOA_MGA_20231020_012_{file_num:06d}_x_processed_conc.npy", x_evel)
+    #np.save(PWD / f"TOA_MGA_20231020_012_{file_num:06d}_t_processed_conc.npy", t_pretty)
+    #np.save(PWD / f"TOA_MGA_20231020_012_{file_num:06d}_x_processed_conc.npy", x_evel)
 
     # Plot results
     plt.plot(t_pretty, x_evel, label=file_num)
     plt.vlines(1.8, 0,0.04)
     plt.hlines(0.034, 0,60)
     
-    print(x_evel)
+    # print(x_evel)
 
 def main():
     # Specify the range of file numbers you want to process
