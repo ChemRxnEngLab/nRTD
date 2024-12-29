@@ -5,7 +5,7 @@ from pathlib import Path
 
 WD = Path("/Users/tuanaoyuncu/Documents/GitHub/nRTD")
 DATA = WD / "Data"
-PWD=DATA /"0001"/ "C_001" / "H_185_C1" / "S_007_C1_001"
+PWD=DATA /"0001"/ "C_001" / "H_185_C1" / "S_007_C1"
 
 def process_data(file_num):
     x_file_path = PWD / f"TOA_MGA_20231013_007_{file_num:06d}_x.npy"
@@ -23,8 +23,8 @@ def process_data(file_num):
     x_evel=x_evel_2
     
 
-    np.save(PWD / f"TOA_MGA_20231013_007_{file_num:06d}_t_processed_norm.npy", t_pretty)
-    np.save(PWD / f"TOA_MGA_20231013_007_{file_num:06d}_x_processed_norm.npy", x_evel)
+    np.save(PWD / f"TOA_MGA_20231013_007_{file_num:06d}_t_processed_norm_1.npy", t_pretty)
+    np.save(PWD / f"TOA_MGA_20231013_007_{file_num:06d}_x_processed_norm_1.npy", x_evel)
 
     plt.rcParams.update({
         'font.family': 'Times New Roman',
