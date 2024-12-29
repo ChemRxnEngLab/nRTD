@@ -29,7 +29,7 @@ def process_data(file_num):
     t_evel = np.linspace(t_start, t_end_2, 200)
     t_pretty = t_evel - t_start
     x_evel_1 = f(t_evel)
-    x_evel_2=x_evel_1/224
+    x_evel_2=(x_evel_1/22.4)*1000
     x_evel_2/= x_evel_2.max()
     x_evel=x_evel_2
     print(t_pretty)
@@ -44,8 +44,8 @@ def process_data(file_num):
     # x_evel = f(t_evel)
 
 
-    #np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc.npy", t_pretty)
-    #np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc.npy", x_evel)
+    np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc_norm.npy", t_pretty)
+    np.save(PWD / f"TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc_norm.npy", x_evel)
 
 
     plt.plot(t_pretty, x_evel, label=file_num)
