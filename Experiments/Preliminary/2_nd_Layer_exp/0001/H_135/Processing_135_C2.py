@@ -29,8 +29,8 @@ def process_data(file_num):
     #print(x_evel)
 
     # Save processed data
-    np.save(PWD / f"TOA_MGA_20231020_013_{file_num:06d}_t_processed_conc_norm.npy", t_pretty)
-    np.save(PWD / f"TOA_MGA_20231020_013_{file_num:06d}_x_processed_conc_norm.npy", x_evel)
+    np.save(PWD / f"TOA_MGA_20231020_013_{file_num:06d}_t_processed_conc_norm_1.npy", t_pretty)
+    np.save(PWD / f"TOA_MGA_20231020_013_{file_num:06d}_x_processed_conc_norm_1.npy", x_evel)
 
     # Plot results
     plt.plot(t_pretty, x_evel, label=file_num)
