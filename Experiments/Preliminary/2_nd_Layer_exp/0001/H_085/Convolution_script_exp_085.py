@@ -133,8 +133,8 @@ filtered_file_numbers = [num for num in file_numbers if num not in excluded_file
 for i, file_num in enumerate(filtered_file_numbers):
     # t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc.npy"
     # c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_085_C1/S_009_C1/TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc.npy"
-    t_conv_path= rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc_norm.npy"
-    c_out_path =rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc_norm.npy"
+    t_conv_path= rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_t_processed_2nlayer_conc.npy"
+    c_out_path =rf"D:\Tuana\nRTD\Data\0001\C_001\H_085_C1\S_009_C1\TOA_MGA_20231020_009_{file_num:06d}_x_processed_2nlayer_conc.npy"
     
     print(f"Processing files: {t_conv_path}, {c_out_path}")
 
@@ -431,7 +431,7 @@ axs[0, 1].plot(
 )
 axs[0, 1].plot(
     t_learned_2,  # Ensure this is also 1D
-    E_learned_2/E_learned_2.max(),label=r"$\hat{E}_2(t)$", color=ICIWcolors.FLAME
+    E_learned_2/E_learned_2.max(),label=r"$\hat{E}_2(t)$", color="black"
 )
 
 

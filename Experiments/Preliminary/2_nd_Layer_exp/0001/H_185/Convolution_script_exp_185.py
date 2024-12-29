@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-
 module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 import torch
@@ -24,8 +23,9 @@ from ICIW_Plots import make_square_ax, cm2inch
 if wandb.run is not None:
     wandb.finish()
     
-#save_dir=r"D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_exp\0001\H_185"
+save_dir=r"D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_exp\0001\H_185"
 learning_rate=1e-3
+learning_rate_2=1e-1
 n_in_1, n_out_1, n_out_2, n_e_1, n_e_2 = sp.symbols("n_in_1 n_out_1 n_out_2 n_e_1 n_e_2", positive=True, real=True)
 t_1, t_lam, t_adl, t_e_1, t_e_2 = sp.symbols("t_1, t_lam, t_adl, t_e_1, t_e_2", positive=True, real=True)
 equations = [
@@ -109,20 +109,22 @@ print("t_e_2 =", t_e_2)
 c_conv_results = {}
 n_disc = n_in_1
 t_input = torch.linspace(0, t_1, n_1_in)
-c_in = torch.zeros((20, 1, n_1_in))
-c_in[::2, :, t_input > 1] = 0.025
-c_in[1::2, :, t_input < 1] = 0.025
-file_numbers = range(1, 21)
+c_in = torch.zeros((18, 1, n_1_in))
+c_in[::2, :, t_input > 1] =1
+c_in[1::2, :, t_input < 1] =1
 c_out_list = []
 t_conv_list = []
+file_numbers = range(1, 21)
+excluded_files = {19,20}
+filtered_file_numbers = [num for num in file_numbers if num not in excluded_files]
 
 
-for i, file_num in enumerate(file_numbers):
+for i, file_num in enumerate(filtered_file_numbers):
     #t_conv_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_185_C1/S_007_C1_001/TOA_MGA_20231013_007_{file_num:06d}_t_processed.npy"
     #c_out_path = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_001/H_185_C1/S_007_C1_001/TOA_MGA_20231013_007_{file_num:06d}_x_processed.npy"
-    t_conv_path= r"D:\Tuana\nRTD\Data\0001\C_001\H_185_C1\S_007_C1_001\TOA_MGA_20231013_007_{file_num:06d}_t_processed.npy"
-    c_out_path =r"D:\Tuana\nRT\Data\0001\C_001\H_185_C1\S_007_C1_001\TOA_MGA_20231013_007_{file_num:06d}_x_processed.npy"
-    
+    t_conv_path= rf"D:\Tuana\nRTD\Data\0001\C_001\H_185_C1\S_007_C1\TOA_MGA_20231013_007_{file_num:06d}_t_processed_norm_1.npy"
+    c_out_path = rf"D:\Tuana\nRTD\Data\0001\C_001\H_185_C1\S_007_C1\TOA_MGA_20231013_007_{file_num:06d}_x_processed_norm_1.npy"
+
     print(f"Processing files: {t_conv_path}, {c_out_path}")
 
     t_conv = (
@@ -174,8 +176,6 @@ plt.plot(
 )
 plt.plot(t_E, E, label="E", color="orange")
 plt.legend()
-plt.xlim((0, 10))
-plt.ylim((0, 0.2))
 plt.show()
 
 print(model(c_in).size())
@@ -188,7 +188,7 @@ wandb_logger = pl_loggers.WandbLogger(
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=20000,
+    max_epochs=8000,
     logger=wandb_logger, deterministic=True
 )
 trainer.fit(model, dl)
@@ -237,11 +237,11 @@ t_2_in=torch.tensor(t_conv).float()
 c_2_in=torch.tensor(c_out).float()
 print("c_in",c_out.shape)
 
-for i, file_num in enumerate(file_numbers):
-    t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_185_C2/S_014_C2/TOA_MGA_20231020_014_{file_num:06d}_t_processed.npy"
-    c_out_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_185_C2/S_014_C2/TOA_MGA_20231020_014_{file_num:06d}_x_processed.npy"
-    # t_conv_path_2= r"D:\Tuana\nRTD\Experiments\Data\0001\C_002\H_185_C2\S_014_C2\TOA_MGA_20231020_014_{file_num:06d}_t_processed.npy"
-    # c_out_path_2 =r"D:\Tuana\nRTD\Experiments\Data\0001\C_002\H_185_C2\S_014_C2\TOA_MGA_20231020_014_{file_num:06d}_x_processed.npy"
+for i, file_num in enumerate(filtered_file_numbers):
+    #t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_185_C2/S_014_C2/TOA_MGA_20231020_014_{file_num:06d}_t_processed.npy"
+    #c_out_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_185_C2/S_014_C2/TOA_MGA_20231020_014_{file_num:06d}_x_processed.npy"
+    t_conv_path_2= rf"D:\Tuana\nRTD\Data\0001\C_002\H_185_C2\S_014_C2\TOA_MGA_20231020_014_{file_num:06d}_t_processed_norm.npy"
+    c_out_path_2 =rf"D:\Tuana\nRTD\Data\0001\C_002\H_185_C2\S_014_C2\TOA_MGA_20231020_014_{file_num:06d}_x_processed_norm.npy"
     
     print(f"Processing files: {t_conv_path_2}, {c_out_path_2}")
 
@@ -264,7 +264,7 @@ print(c_2_in.shape)
 model_2 = RTDModule(
     kernel_sizes=[n_e_2],
     kernel_times=[(0.0, t_e_2)],
-    learning_rate=learning_rate,
+    learning_rate=learning_rate_2,
     use_scheduler=True,
     scheduler_kwargs={"factor": 0.5, "patience": 80},
 )
@@ -276,7 +276,7 @@ dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=100000,
+    max_epochs=30000,
     logger=wandb_logger,
     deterministic=True,
 )
@@ -325,6 +325,132 @@ current_date = datetime.datetime.now().strftime("%Y%m%d")
 #plt.savefig(os.path.join(save_dir,f"Figure_C_002_H_185_C2{current_date}.png"), dpi=300)
 current_date = datetime.datetime.now().strftime("%Y%m%d")
 #plt.savefig(os.path.join(save_dir,f"Figure_C_002_H_185_C2{current_date}.png"), dpi=300)
+plt.show()
+plt.show()
+
+E_learned_1 = model.net.E[0] if isinstance(model.net.E[0], np.ndarray) else model.net.E[0].numpy()
+E_learned_2 = model_2.net.E[0] if isinstance(model_2.net.E[0], np.ndarray) else model_2.net.E[0].numpy()
+t_learned_1 = np.linspace(0, t_e, len(E_learned_1))
+t_learned_2 = np.linspace(0, t_e_2, len(E_learned_2))
+base_dir = r'D:\Tuana\nRTD\Experiments\Preliminary\2_nd_Layer_exp'
+#base_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/2_nd_Layer_exp"
+plt.style.use("ICIWstyle")
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes
+import datetime
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes, ACS_Sizes
+from ICIW_Plots import make_square_ax, cm2inch
+from ICIW_Plots import make_rect_ax
+from ICIW_Plots import make_square_subplots
+fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 25 * cm2inch))  # Increased figure height for better spacing
+axs = make_square_subplots(
+    fig=fig,
+    ax_width=7 * cm2inch,#dimension of the plots
+    ax_layout=(1, 2),  
+    h_sep=1.3 * cm2inch,  
+    v_sep=1 * cm2inch, 
+    sharex=True,
+    sharey=True,
+    xlabel=[r"$t$ / $s$", r"$t$ / $s$"], 
+    ylabel=
+        [r"$C$ / $1$"
+    ])
+
+axs[0, 0].plot(t_input, c_in[0, 0, :].numpy(), label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
+
+for i in range(c_out.size(1)):
+    axs[0, 0].plot(
+    t_conv[4, i, :].numpy(),
+    c_out[4, i, :].numpy(),
+    label=r"$C_1(t)$",
+    color=ICIWcolors.DRAB,
+)
+
+# for i in range(c_out.size(1)):
+#     axs[0, 0].plot(
+#         t_conv_2[0, i, :].numpy(),
+#         c_out_2[0, i, :].numpy(),
+#         label=f"Exp_{file_numbers[i]}",
+#         color="green",
+#     )
+
+
+axs[0, 0].plot(
+    t_conv[0, 0, :].numpy(),
+    c_conv[0, 0, :].detach().numpy(),
+    label=r"$\hat{C}_1(t)$",
+   color="purple",
+    linestyle="--"
+)
+
+axs[0, 0].plot(
+    t_conv_2[4, i, :].numpy(),
+    c_out_2[4, i, :].detach().numpy(),
+    label=r"$C_2(t)$",
+   color=ICIWcolors.FLAME,
+)
+axs[0, 0].plot(
+    t_conv_2[0, 0, :].numpy(),
+    c_conv_2[0, 0, :].detach().numpy(),
+    label=r"$\hat{C}_2(t)$",
+   color="black",
+    linestyle="--"
+)
+
+axs[0, 1].plot(
+    t_learned_1,  # Ensure this is also 1D
+    E_learned_1/E_learned_1.max(), label=r"$\hat{E}_1(t)$", color="purple",
+)
+axs[0, 1].plot(
+    t_learned_2,  # Ensure this is also 1D
+    E_learned_2/E_learned_2.max(),label=r"$\hat{E}_2(t)$", color="black"
+)
+
+####
+axs[0, 0].set_xlim((0, 20)) 
+axs[0, 1].set_xlim((0, 10)) 
+axs[0, 0].legend(loc="best")
+axs[0, 1].legend(loc="best")
+plt.savefig(os.path.join(base_dir, f"Exp_2ndLAyer_185_rtd2.png"), dpi=300)
+plt.show()
+
+
+
+
+
+fig, ax1 = plt.subplots(1, 1, sharex=True, figsize=(10, 8))
+plt.plot(
+    t_conv[0, 0, :].numpy(),
+    c_conv[0, 0, :].detach().numpy(),
+    label="Input",
+    color="orange",
+)
+for i in range(c_out.size(1)):
+    plt.plot(
+        t_conv_2[0, i, :].numpy(),
+        c_out_2[0, i, :].numpy(),
+        label=f"Exp_{file_numbers[i]}",
+        color="green",
+    )
+
+plt.plot(
+    t_conv_2[0, 0, :].numpy(),
+    c_conv_2[0, 0, :].detach().numpy(),
+    label="Predicted_2",
+    color="red",
+)
+ax1.plot(t_E_2, E_2, label="E_predict", color="purple", linestyle="--")
+print(t_E_2.shape)
+print(E_2.shape)
+
+
+ax1.set_ylabel('Concentration')
+ax1.set_xlabel('Time')
+#current_date = datetime.datetime.now().strftime("%Y%m%d")
+#plt.savefig(os.path.join(save_dir,f"Figure_C_002_H_135_C2{current_date}.png"), dpi=300)
+#current_date = datetime.datetime.now().strftime("%Y%m%d")
+plt.savefig(os.path.join(save_dir,"Figure_C_002_H_185_C2.png"), dpi=300)
 plt.show()
 plt.show()
 

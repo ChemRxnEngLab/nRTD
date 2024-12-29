@@ -238,8 +238,8 @@ print("c_in",c_out.shape)
 for i, file_num in enumerate(file_numbers):
     #t_conv_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_t_processed_conc.npy"
     #c_out_path_2 = f"/Users/tuanaoyuncu/Documents/GitHub/nRTD/Data/0001/C_002/H_135_C2/S_013_C2/TOA_MGA_20231020_013_{file_num:06d}_x_processed_conc.npy"
-    t_conv_path_2= rf"D:\Tuana\nRTD\Data\0001\C_002\H_135_C2\S_013_C2\TOA_MGA_20231020_013_{file_num:06d}_t_processed_conc_norm.npy"
-    c_out_path_2 =rf"D:\Tuana\nRTD\Data\0001\C_002\H_135_C2\S_013_C2\TOA_MGA_20231020_013_{file_num:06d}_x_processed_conc_norm.npy"
+    t_conv_path_2= rf"D:\Tuana\nRTD\Data\0001\C_002\H_135_C2\S_013_C2\TOA_MGA_20231020_013_{file_num:06d}_t_processed_conc_norm_1.npy"
+    c_out_path_2 =rf"D:\Tuana\nRTD\Data\0001\C_002\H_135_C2\S_013_C2\TOA_MGA_20231020_013_{file_num:06d}_x_processed_conc_norm_1.npy"
     
     print(f"Processing files: {t_conv_path_2}, {c_out_path_2}")
 
@@ -361,23 +361,19 @@ axs[0, 0].plot(
 
 axs[0, 1].plot(
     t_learned_1,  # Ensure this is also 1D
-    E_learned_1/E_learned_1.max(), label=r"$\hat{E}_1(t)$", color=ICIWcolors.DRAB,
+    E_learned_1/E_learned_1.max(), label=r"$\hat{E}_1(t)$", color="purple",
 )
 axs[0, 1].plot(
     t_learned_2,  # Ensure this is also 1D
-    E_learned_2/E_learned_2.max(),label=r"$\hat{E}_2(t)$", color=ICIWcolors.FLAME
+    E_learned_2/E_learned_2.max(),label=r"$\hat{E}_2(t)$", color="black"
 )
 
-
-
 ####
-
-
 axs[0, 0].set_xlim((0, 20)) 
 axs[0, 1].set_xlim((0, 10)) 
 axs[0, 0].legend(loc="best")
 axs[0, 1].legend(loc="best")
-#plt.savefig(os.path.join(base_dir, f"Exp_2ndLAyer_135_rtd2.png"), dpi=300)
+plt.savefig(os.path.join(base_dir, f"Exp_2ndLAyer_135_rtd2.png"), dpi=300)
 plt.show()
 
 
@@ -415,7 +411,7 @@ ax1.set_xlabel('Time')
 current_date = datetime.datetime.now().strftime("%Y%m%d")
 #plt.savefig(os.path.join(save_dir,f"Figure_C_002_H_135_C2{current_date}.png"), dpi=300)
 current_date = datetime.datetime.now().strftime("%Y%m%d")
-#plt.savefig(os.path.join(save_dir,f"Figure_C_002_H_135_C2{current_date}.png"), dpi=300)
+plt.savefig(os.path.join(base_dir,f"Figure_C_002_H_135_C2{current_date}.png"), dpi=300)
 plt.show()
 plt.show()
 
