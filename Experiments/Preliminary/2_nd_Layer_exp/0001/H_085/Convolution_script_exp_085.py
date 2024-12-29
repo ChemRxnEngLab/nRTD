@@ -289,7 +289,7 @@ dl_2 = DataLoader(ds_2, batch_size=1, shuffle=True)
 
 trainer = pl.Trainer(
     accelerator="auto",
-    max_epochs=15000,
+    max_epochs=30000,
     logger=wandb_logger,
     deterministic=True,
 )
@@ -443,6 +443,6 @@ axs[0, 0].set_xlim((0, 20))
 axs[0, 1].set_xlim((0, 10)) 
 axs[0, 0].legend(loc="best")
 axs[0, 1].legend(loc="best")
-plt.savefig(os.path.join(base_dir, f"Exp_2ndLAyer_085_rtd2.png"), dpi=300)
+plt.savefig(os.path.join(base_dir, f"Exp_2ndLAyer_085_rtd2_29_12.png"), dpi=300)
 plt.show()
 
