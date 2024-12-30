@@ -361,8 +361,8 @@ axs[0, 0].plot(t_input, c_in[0, 0, :].numpy(), label=r"$C_0(t)$", color=ICIWcolo
 
 for i in range(c_out.size(1)):
     axs[0, 0].plot(
-    t_conv[4, i, :].numpy(),
-    c_out[4, i, :].numpy(),
+    t_conv[8, i, :].numpy(),
+    c_out[8, i, :].numpy(),
     label=r"$C_1(t)$",
     color=ICIWcolors.DRAB,
 )
