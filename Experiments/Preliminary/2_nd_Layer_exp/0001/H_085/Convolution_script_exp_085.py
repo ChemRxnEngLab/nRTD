@@ -13,7 +13,7 @@ import wandb
 # sys.path.append(module_path)
 module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
-from nRTD.rtd_fitting_3 import RTDModule
+from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
 import os
@@ -443,6 +443,6 @@ axs[0, 0].set_xlim((0, 20))
 axs[0, 1].set_xlim((0, 10)) 
 axs[0, 0].legend(loc="best")
 axs[0, 1].legend(loc="best")
-plt.savefig(os.path.join(base_dir, f"Exp_2ndLAyer_085_rtd2_29_12.png"), dpi=300)
+plt.savefig(os.path.join(base_dir, f"Exp_2ndLAyer_085_rtd_E_unrestricted.png"), dpi=300)
 plt.show()
 

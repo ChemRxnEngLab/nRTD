@@ -42,12 +42,12 @@ def plot_all_files_in_subplots():
         ylabel=[r"$C$ / $1$", r"$C$ / $1$", r"$C$ / $1$"]   # Labels for y-axis (2 columns)
     )
     legend_labels = [
-r"$c_{1,1} = 2.23,molm^{-3}$", # First column, first row
-        r"$c_{1,2} = 2.23,molm^{-3}$",  # Second column, first row
-        r"$c_{2,1} = 1.49,molm^{-3}$",  # First column, second row
-        r"$c_{2,2} = 1.49,molm^{-3}$",  # Second column, second row
-        r"$c_{3,1} = 1.12,molm^{-3}$",  # First column, third row
-        r"$c_{3,2} = 1.12,molm^{-3}$"   # Second column, third row
+r"$c_{1,1} = 2.23\,mol\,m^{-3}$", # First column, first row
+        r"$c_{1,2} = 2.23\,mol\,m^{-3}$",  # Second column, first row
+        r"$c_{2,1} = 1.49\,mol\,m^{-3}$",  # First column, second row
+        r"$c_{2,2} = 1.49\,mol\,m^{-3}$",  # Second column, second row
+        r"$c_{3,1} = 1.12\,mol\,m^{-3}$",  # First column, third row
+        r"$c_{3,2} = 1.12\,mol\,m^{-3}$"   # Second column, third row
     ]
 
     # Loop through each path and prefix and plot in the corresponding subplot
@@ -66,8 +66,8 @@ r"$c_{1,1} = 2.23,molm^{-3}$", # First column, first row
             t_pretty = np.load(t_file_path)
             x_evel = np.load(x_file_path)
             ax.plot(t_pretty, x_evel, label=f"{t_file_path.stem}", color=ICIWcolors.CERULEAN)
-            ax.set_xlim([0, 5])
-            ax.legend([legend_labels[i]], loc='best')  # Add the custom legend for the current subplot
+            ax.set_xlim([0, 7])
+            ax.legend([legend_labels[i]], loc='upper right')  # Add the custom legend for the current subplot
 
             if i % 2 == 0:  # Left side column
                 ax.axvline(x=1, color="red", linestyle='--', label="x = 1")
@@ -77,6 +77,7 @@ r"$c_{1,1} = 2.23,molm^{-3}$", # First column, first row
     # Save the plot
     plt.savefig(os.path.join(base_dir, "exp.png"), dpi=300)
     plt.show()
+
 
 # Call the function to plot all files
 plot_all_files_in_subplots()

@@ -34,11 +34,11 @@ if wandb.run is not None:
 #os.chdir("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method")
 
 
-epoch=1
+epoch=17000
 t_e_1=50
 n_disc = 100
 t_input = torch.linspace(0, 50, n_disc)
-c_in = torch.zeros((100, 1, n_disc))
+c_in = torch.zeros((1000, 1, n_disc))
 c_in[:, :, t_input > 5] = 1
 
 # test_file ="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0_disc_200_100s"
@@ -87,7 +87,7 @@ test_ds = TensorDataset(c_in_test, c_out_test)
 test_dl = DataLoader(test_ds, batch_size=1, shuffle=False)
 
 
-train_file_configurations = [1,20,40,60,80,100]
+train_file_configurations = [400,500,600,700,800,900,1000]
 
 for num_train_files in train_file_configurations:
     train_file_numbers = range(1, num_train_files + 1)

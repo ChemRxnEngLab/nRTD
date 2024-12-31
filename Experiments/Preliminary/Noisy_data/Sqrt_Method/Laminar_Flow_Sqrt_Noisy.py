@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import datetime
 import numpy.typing as npt
 import sys
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 from nRTD import RTDModule
 import torch
@@ -19,9 +19,9 @@ import os
 tau_l = 5.0
 discretization_Laminar = [200]
 noise_level = 0.001
-num_datasets = 100
+num_datasets = 1000
 
-base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method'
+base_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Noisy_data\Sqrt_Method"
 def laminarflow(t: npt.NDArray[np.float64], tau: float) -> npt.NDArray[np.float64]:
     E_laminar = np.zeros_like(t)
     E_laminar[t >= tau / 2] = (tau**2) / (2 * (t[t >= tau / 2]**3))
