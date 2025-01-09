@@ -515,11 +515,9 @@ axs = make_square_subplots(
     h_sep=1.3 * cm2inch,  
     v_sep=1 * cm2inch, 
     sharex=True,
-    sharey=True,
+    sharey=False,
     xlabel=[r"$t$ / $s$", r"$t$ / $s$"], 
-    ylabel=
-        [r"$C$ / $1$"
-    ])
+    ylabel=[[r"$C$ / $1$", r"$E$ / $1$"]] )
 
 axs[0, 0].plot(t_1_in_reshaped, c_1_in_reshaped, label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
 axs[0, 0].plot(
@@ -574,6 +572,7 @@ axs[0, 0].legend(loc="best")
 axs[0, 1].legend(loc="best")
 plt.savefig(os.path.join(base_dir, f"ad_ch_uncut.png"), dpi=300)
 plt.show()
+
 
 
 
