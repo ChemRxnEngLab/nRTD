@@ -27,6 +27,7 @@ save_dir = r"D:\Tuana\nRTD\Plots"
 #LR
 LR=[10,1,1e-1,1e-2,1e-3,1e-4,1e-5]
 error_2=[7.4647e-8,7.46e-8,7.4541e-8,7.4523e-8,7.4537e-8,1.1904e-7,0.00067261]#7.5e-8
+plt.style.use("ICIWstyle")
 fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 25 * cm2inch))  # Increased figure height for better spacing
 ax = make_rect_ax(
     fig,
@@ -44,10 +45,10 @@ ax.plot(LR, error_2,'o-',
 
 ax.set_yscale('log')
 ax.set_xscale('log')
-ax.text(0.01, 1.075, 'Y-axis and X-axis : Logarithmic Scale', transform=ax.transAxes,verticalalignment='top')
+#ax.text(0.01, 1.075, 'Y-axis and X-axis : Logarithmic Scale', transform=ax.transAxes,verticalalignment='top')
 # axs[0, 1].plot(selected_values, train_loss_values_63,color=ICIWcolors.KELLYGREEN)
 
-#plt.savefig(os.path.join(save_dir, f"LR.png"), dpi=300)
+plt.savefig(os.path.join(save_dir, f"LR_Fig_1_0701.png"), dpi=300)
 plt.show()
 ##############################2ndlayer
 

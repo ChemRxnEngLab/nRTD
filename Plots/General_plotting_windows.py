@@ -225,7 +225,9 @@ plt.show()
 plt.style.use("ICIWstyle")
 
 #######################################
-
+arrow_time = 5
+arrow_start = 0  # Starting y-coordinate of the arrow
+arrow_end = 1.05 
 fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 25 * cm2inch))  # Increased figure height for better spacing
 axs = make_square_subplots(
     fig=fig,
@@ -294,13 +296,22 @@ axs[1, 1].plot(
 label=r"$\hat{E}_{Unified}(t)$", color="black", linestyle="--"
 )
 
+
+# Add arrow
+axs[0, 0].annotate(
+    "", 
+    xy=(arrow_time, arrow_end),
+    xytext=(arrow_time, arrow_start), 
+    arrowprops=dict(facecolor="red", edgecolor="red", arrowstyle="->", linewidth=1.5,),
+)
+
 axs[1, 0].set_xlim((0, 15)) 
 axs[1, 1].set_xlim((0, 15)) 
 axs[0, 0].legend(loc="best")
 axs[0, 1].legend(loc="best")
 axs[1,0].legend(loc="best")
 axs[1, 1].legend(loc="best")
-#plt.savefig(os.path.join(save_dir, f"lit_models_2.png"), dpi=300)
+plt.savefig(os.path.join(save_dir, f"lit_models_0801.png"), dpi=300)
 plt.show()
 
 

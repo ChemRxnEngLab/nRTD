@@ -67,8 +67,8 @@ ax.plot(df["epoch"], df["Layer_2_CH_n_1_out_200_LC_learning_rate_0.01_2nd_epoch_
 plt.legend()
 
 ax.set_yscale('log')
-ax.text(0.01, 1.075, 'Y-axis: Logarithmic Scale', transform=ax.transAxes,verticalalignment='top')
+#ax.text(0.01, 1.075, 'Y-axis: Logarithmic Scale', transform=ax.transAxes,verticalalignment='top')
 # axs[0, 1].plot(selected_values, train_loss_values_63,color=ICIWcolors.KELLYGREEN)
 
-plt.savefig(os.path.join(save_dir, f"dynamic_profiles_2nlayer.png"), dpi=300)
+plt.savefig(os.path.join(save_dir, f"dynamic_profiles_2nlayer_0801.png"), dpi=300)
 plt.show()

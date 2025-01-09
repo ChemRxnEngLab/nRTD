@@ -30,7 +30,7 @@ coefficients = {
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2}
 epoch_1=35000
-epoch_2=900000
+epoch_2=100000
 epoch_3=epoch_1
 learning_rate=1e-2
 disc_n_1_out=200
@@ -572,7 +572,7 @@ axs[0, 0].set_xlim((0, 35))
 axs[0, 1].set_xlim((0, 35)) 
 axs[0, 0].legend(loc="best")
 axs[0, 1].legend(loc="best")
-plt.savefig(os.path.join(base_dir, f"ad_ch.png"), dpi=300)
+plt.savefig(os.path.join(base_dir, f"ad_ch_uncut.png"), dpi=300)
 plt.show()
 
 

@@ -87,7 +87,7 @@ test_ds = TensorDataset(c_in_test, c_out_test)
 test_dl = DataLoader(test_ds, batch_size=1, shuffle=False)
 
 
-train_file_configurations = [400,500,600,700,800,900,1000]
+train_file_configurations = [1]
 
 for num_train_files in train_file_configurations:
     train_file_numbers = range(1, num_train_files + 1)
