@@ -34,7 +34,7 @@ if wandb.run is not None:
 #os.chdir("/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Noisy_data/Sqrt_Method")
 
 
-epoch=17000
+epoch=1
 t_e_1=50
 n_disc = 100
 t_input = torch.linspace(0, 50, n_disc)

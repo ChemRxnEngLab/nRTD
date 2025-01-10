@@ -2,14 +2,13 @@ import matplotlib.pyplot as plt
 import numpy.typing as npt
 import sys
 import os
-module_path = os.path.expanduser("lib")
-sys.path.append(module_path)
+
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import lightning.pytorch as pl
 import numpy as np
 import wandb
-module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
+module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
 from nRTD.rtd_fitting_2 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
@@ -32,7 +31,7 @@ from ICIW_Plots import make_square_subplots
 if wandb.run is not None:
     wandb.finish()
 
-epoch=1
+epoch=17000
 t_e_1=30
 ## Data Simulation for the 1st model
 base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Disc_variation'
@@ -62,6 +61,7 @@ for disc in discretization_Laminar:
 
     np.save(os.path.join(tau_l_dir, f'Tau_{tau_l}_Laminar_Flow_Model_Disc_{disc}_time.npy'), t_conv_l)
     np.save(os.path.join(tau_l_dir, f'Tau_{tau_l}_Laminar_Flow_Model_Disc_{disc}_concentration.npy'), c_out_l)
+ 
 
     # fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
     # ax1.plot(t_l, E_laminar, label=f'Tau {tau_l}')
@@ -242,63 +242,64 @@ plt.show()
 
 
 
+from ICIW_Plots import make_square_ax, cm2inch
+import ICIW_Plots.colors as ICIWcolors
+from ICIW_Plots.figures import Elsevier_Sizes
+import datetime
+from sympy import ceiling
+from ICIW_Plots import make_square_ax, cm2inch
 
-
-
-fig = plt.figure(figsize=(30, 20))  # Increase figure size for larger subplots
+fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 25 * cm2inch))  # Increased figure height for better spacing
 axs = make_square_subplots(
     fig=fig,
-    ax_width=10 * cm2inch,
-    ax_layout=(2, 3),
-    h_sep=6 * cm2inch,
-    v_sep=1 * cm2inch,  # Vertical separation remains the same
+    ax_width=7 * cm2inch,
+    ax_layout=(3, 3),  # 3x3 grid for 9 subplots
+    h_sep=1.3 * cm2inch,  
+    v_sep=1 * cm2inch, 
     sharex=True,
-    sharey=True,
-    sharelabel=True,
-    xlabel="Time",
-    ylabel="E",
-)
+    sharey=False,
+    xlabel=[r"$t$ / $s$", r"$t$ / $s$", r"$t$ / $s$"], 
+    ylabel=[
+        [r"$C$ / $1$", r"$E$ / $1$"],
+        [r"$C$ / $1$", r"$E$ / $1$"],
+        [r"$C$ / $1$", r"$E$ / $1$"]
+    ])
 
-# Data for the logarithmic plot in the last subplot
-y = [1.17e-6, 9.1083e-7, 4.544e-6, 8.293e-6, 1.8712e-4]
-x = [100, 200, 300, 400, 500]
-discs = [100, 200, 300, 400, 500]
-base_dir = '/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Disc_variation/CNN_1st'
 
-for i, disc in enumerate(discs[:5]):  # Adjust index for make_square_subplots
+
+for i, disc in enumerate(discs[:num_plots], start=1):
     disc_dir = os.path.join(base_dir, f'Disc_{disc}')
     t_expected_path = os.path.join(disc_dir, f't_E_expected_first_layer_{disc}.npy')
     t_predicted_path = os.path.join(disc_dir, f't_E_predicted_first_layer_{disc}.npy')
     E_expected_path = os.path.join(disc_dir, f'E_expected_first_layer_{disc}.npy')
     E_predicted_path = os.path.join(disc_dir, f'E_predicted_first_layer_{disc}.npy')
-
     if all(os.path.exists(path) for path in [t_expected_path, t_predicted_path, E_expected_path, E_predicted_path]):
         t_expected = np.load(t_expected_path)
         t_predicted = np.load(t_predicted_path)
         E_expected = np.load(E_expected_path)
         E_predicted = np.load(E_predicted_path)
-
-        axs.flat[i].plot(t_expected, E_expected, label=fr'$E(t) \, @n_{{o,1}} = {disc}$', color='blue')
-        axs.flat[i].plot(t_predicted, E_predicted, label=fr'$\hat{{E}}(t) \, @n_{{o,1}} = {disc}$', color='purple', linestyle='--')
-        axs.flat[i].set_xlim(0, 30)
-        axs.flat[i].legend()
+        row, col = divmod(i, 3)
+        
+        axs[row, col].plot(t_expected, E_expected, label=fr'$E_{{expected}} \, @n_{{o,1}} = {disc}$', color='blue')
+        axs[row, col].plot(t_predicted, E_predicted, label=fr'$E_{{predicted}} \, @n_{{o,1}} = {disc}$', color='purple', linestyle='--')
+        #axs[row, col].set_title(f'Disc {disc}')
+        axs[row, col].set_xlabel('Time')
+        axs[row, col].set_ylabel('E')
+        axs[row, col].legend()
+        axs[row, col].set_xlim(0, 30)
     else:
-        print(f"Data for disc {disc} not found. Skipping...")
+        print("Skipping...")
 
-# Logarithmic plot in the final subplot
-axs.flat[-1].loglog(x, y, color='green', marker='o')  # Log scale
-axs.flat[-1].set_xlabel(r"Number of Discretization")
-axs.flat[-1].set_ylabel("Test/Loss")
-axs.flat[-1].text(
-    0.03, 0.95, 'Logarithmic Scale',
-    transform=axs.flat[-1].transAxes,
-    fontsize=8, color='black', 
-    ha='left', va='top'
-)
-
-# Adjust layout manually
-fig.subplots_adjust(left=0.9, right=0.95, top=0.92, bottom=0.1, wspace=0.4, hspace=0.3)
-
-# Save and show the figure
-plt.savefig(os.path.join(base_dir, "subplots_disc_variation_with_custom_layout.png"), dpi=300)
+axs[2, 1].loglog(x, y, color='green', marker='o')  # Log scale only on x-axis
+axs[2, 1].set_xlabel('Number of Discretization')
+axs[2, 1].set_ylabel('Test/Loss')
+# axs[2, 1].ticklabel_format(style='sci', axis='y', scilimits=(-8, -8))
+# axs[2, 1].set_xticks([100, 200, 300, 400, 500])  
+# axs[2, 1].get_xaxis().set_major_formatter(plt.ScalarFormatter())  # Format x-axis labels in standard notation
+plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+axs[2, 1].text(0.03, 0.95, 'Logarithmic Scale',  # Place it near the top
+               transform=axs[2, 1].transAxes,  # Use axis-relative coordinates (0 to 1)
+               fontsize=8, color='Black', 
+               ha='left', va='top', rotation=0)  # No rotation, top alignment
+plt.savefig(os.path.join(base_dir, "subplots_disc_variation.png"), dpi=300)
 plt.show()

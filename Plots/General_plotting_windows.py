@@ -296,8 +296,8 @@ axs[1, 1].plot(
 label=r"$\hat{E}_{Unified}(t)$", color="black", linestyle="--"
 )
 axs[1, 1].plot([0, 0], [0, 1], color='green', linewidth=2)
-axs[1, 1].annotate('', xy=(0, 1), xytext=(0, 0),
-                   arrowprops=dict(facecolor='green', edgecolor='green', 
+axs[1, 1].annotate('', xy=(0, 1.04), xytext=(0, 0),
+                   arrowprops=dict(color=ICIWcolors.KELLYGREEN, edgecolor='green', 
                                    width=2, headwidth=8, headlength=10))
 
 
