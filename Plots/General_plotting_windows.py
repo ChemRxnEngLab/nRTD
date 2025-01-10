@@ -295,15 +295,11 @@ axs[1, 1].plot(
     predicted_E_Unified,
 label=r"$\hat{E}_{Unified}(t)$", color="black", linestyle="--"
 )
+axs[1, 1].plot([0, 0], [0, 1], color='green', linewidth=2)
+axs[1, 1].annotate('', xy=(0, 1), xytext=(0, 0),
+                   arrowprops=dict(facecolor='green', edgecolor='green', 
+                                   width=2, headwidth=8, headlength=10))
 
-
-# Add arrow
-axs[0, 0].annotate(
-    "", 
-    xy=(arrow_time, arrow_end),
-    xytext=(arrow_time, arrow_start), 
-    arrowprops=dict(facecolor="red", edgecolor="red", arrowstyle="->", linewidth=1.5,),
-)
 
 axs[1, 0].set_xlim((0, 15)) 
 axs[1, 1].set_xlim((0, 15)) 
