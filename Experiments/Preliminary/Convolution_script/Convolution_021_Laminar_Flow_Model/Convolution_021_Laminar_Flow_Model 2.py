@@ -30,12 +30,8 @@ if wandb.run is not None:
 tau_5_dir = r"D:\Tuana\nRTD\Experiments\Preliminary\Litrature\Laminar_Flow_Model\tau_5.0_disc_200_100s"
 #tau_5_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Experiments/Preliminary/Litrature/Laminar_Flow_Model/tau_5.0_disc_200_100s"
 
-
-<<<<<<< Updated upstream
 epoch=17000
-=======
-epoch=15000
->>>>>>> Stashed changes
+
 n_in_1, n_out_1, n_e_1, = sp.symbols(
     "n_in_1 n_out_1 n_e_1 ", positive=True, real=True
 )
