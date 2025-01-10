@@ -214,7 +214,7 @@ for i, disc in enumerate(discs[:num_plots], start=1):
         E_predicted = np.load(E_predicted_path)
         row, col = divmod(i - 1, 2)
         
-        axs[row, col].plot(t_expected, E_expected, label=f'$E(t), @n_{{o,1}} = {disc}$', color='gray')
+        axs[row, col].plot(t_expected, E_expected, label=f'$E(t), @n_{{o,1}} = {disc}$', color='green')
         axs[row, col].plot(t_predicted, E_predicted, label=f'$Ê(t), @n_{{o,1}} = {disc}$', color='purple', linestyle='--')
          #axs[row, col].set_title(f'Disc {disc}')
         axs[row, col].grid(True, linestyle='--', alpha=0.7)
@@ -225,7 +225,7 @@ for i, disc in enumerate(discs[:num_plots], start=1):
     else:
         print("Skipping...")
 
-axs[2, 1].loglog(x, y, color='green', marker='o')  # Log scale only on x-axis
+axs[2, 1].loglog(x, y, color='black', marker='o')  # Log scale only on x-axis
 axs[2, 1].set_xlabel('Number of Discretization')
 axs[2, 1].set_ylabel('Test/Loss')
 # axs[2, 1].ticklabel_format(style='sci', axis='y', scilimits=(-8, -8))
@@ -277,7 +277,7 @@ for i, disc in enumerate(discs[:num_plots], start=1):
         E_predicted = np.load(E_predicted_path)
         row, col = divmod(i, 3)
         
-        axs[row, col].plot(t_expected, E_expected, label=fr'$E_{{expected}} \, @n_{{o,1}} = {disc}$', color='blue')
+        axs[row, col].plot(t_expected, E_expected, label=fr'$E_{{expected}} \, @n_{{o,1}} = {disc}$', color='green')
         axs[row, col].plot(t_predicted, E_predicted, label=fr'$E_{{predicted}} \, @n_{{o,1}} = {disc}$', color='purple', linestyle='--')
         #axs[row, col].set_title(f'Disc {disc}')
         axs[row, col].set_xlabel('Time')
@@ -287,7 +287,7 @@ for i, disc in enumerate(discs[:num_plots], start=1):
     else:
         print("Skipping...")
 
-axs[2, 1].loglog(x, y, color='green', marker='o')  # Log scale only on x-axis
+axs[2, 1].loglog(x, y, color='black', marker='o')  # Log scale only on x-axis
 axs[2, 1].set_xlabel('Number of Discretization')
 axs[2, 1].set_ylabel('Test/Loss')
 # axs[2, 1].ticklabel_format(style='sci', axis='y', scilimits=(-8, -8))
