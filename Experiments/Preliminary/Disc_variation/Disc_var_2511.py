@@ -61,8 +61,7 @@ for disc in discretization_Laminar:
 
     np.save(os.path.join(tau_l_dir, f'Tau_{tau_l}_Laminar_Flow_Model_Disc_{disc}_time.npy'), t_conv_l)
     np.save(os.path.join(tau_l_dir, f'Tau_{tau_l}_Laminar_Flow_Model_Disc_{disc}_concentration.npy'), c_out_l)
- 
-
+    
     # fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12))
     # ax1.plot(t_l, E_laminar, label=f'Tau {tau_l}')
     # ax2.plot(t_conv_l, c_out_l, label=f'Tau {tau_l}')
@@ -215,11 +214,12 @@ for i, disc in enumerate(discs[:num_plots], start=1):
         E_predicted = np.load(E_predicted_path)
         row, col = divmod(i - 1, 2)
         
-        axs[row, col].plot(t_expected, E_expected, label=fr'$E_{{expected}} \, @n_{{o,1}} = {disc}$', color='blue')
-        axs[row, col].plot(t_predicted, E_predicted, label=fr'$E_{{predicted}} \, @n_{{o,1}} = {disc}$', color='purple', linestyle='--')
-        #axs[row, col].set_title(f'Disc {disc}')
-        axs[row, col].set_xlabel('Time')
-        axs[row, col].set_ylabel('E')
+        axs[row, col].plot(t_expected, E_expected, label=f'$E(t), @n_{{o,1}} = {disc}$', color='gray')
+        axs[row, col].plot(t_predicted, E_predicted, label=f'$Ê(t), @n_{{o,1}} = {disc}$', color='purple', linestyle='--')
+         #axs[row, col].set_title(f'Disc {disc}')
+        axs[row, col].grid(True, linestyle='--', alpha=0.7)
+        axs[row, col].set_xlabel('t/s')
+        axs[row, col].set_ylabel('E/1')
         axs[row, col].legend()
         axs[row, col].set_xlim(0, 30)
     else:
@@ -232,10 +232,7 @@ axs[2, 1].set_ylabel('Test/Loss')
 # axs[2, 1].set_xticks([100, 200, 300, 400, 500])  
 # axs[2, 1].get_xaxis().set_major_formatter(plt.ScalarFormatter())  # Format x-axis labels in standard notation
 plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-axs[2, 1].text(0.03, 0.95, 'Logarithmic Scale',  # Place it near the top
-               transform=axs[2, 1].transAxes,  # Use axis-relative coordinates (0 to 1)
-               fontsize=8, color='Black', 
-               ha='left', va='top', rotation=0)  # No rotation, top alignment
+axs[2, 1].grid(True, linestyle='--', alpha=0.7)  # Add grid
 plt.savefig(os.path.join(base_dir, "subplots_disc_variation.png"), dpi=300)
 plt.show()
 
