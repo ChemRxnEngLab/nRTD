@@ -281,8 +281,9 @@ import numpy as np
 import ICIW_Plots.colors as ICIWcolors
 from ICIW_Plots.figures import Elsevier_Sizes
 import datetime
-
+plt.style.use("ICIWstyle")
 fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 12 * cm2inch))
+plt.style.use("ICIWstyle")
 ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
 for i in range(c_out.size(1)):
     ax1.plot(
@@ -293,7 +294,7 @@ for i in range(c_out.size(1)):
     )
 ax1.plot(
     t_conv[0, 0, :].numpy(),
-    c_conv[0, 0, :],
+    c_conv[0, 0, :].detach().numpy(),
     label=r"$\hat{C}{(t)}$",
     color="purple",
     linestyle="--"

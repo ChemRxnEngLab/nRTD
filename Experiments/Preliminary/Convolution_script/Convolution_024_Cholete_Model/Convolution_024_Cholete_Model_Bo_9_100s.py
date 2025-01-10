@@ -279,7 +279,7 @@ for i in range(c_out.size(1)):
     )
 ax1.plot(
     t_conv[0, 0, :].numpy(),
-    c_conv[0, 0, :].detach().numpy(),
+    c_conv[0, 0, :],
     label=r"$\hat{C}(t)$",
     color="purple",
     linestyle="--"

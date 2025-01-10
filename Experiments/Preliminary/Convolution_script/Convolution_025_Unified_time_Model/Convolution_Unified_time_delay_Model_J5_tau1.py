@@ -210,22 +210,23 @@ E_expected = E_expected / E_expected.max()
 plt.style.use("ICIWstyle")
 
 fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(Elsevier_Sizes.double_column["in"], 12 * cm2inch))
-ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
+plt.style.use("ICIWstyle")
+ax1.plot(t_input.numpy(), c_in[0, 0, :].numpy(), label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
 for i in range(c_out.size(1)):
     ax1.plot(
         t_conv[0, i, :].numpy(),
         c_out[0, i, :].numpy(),
-        label=r"$x(t)$",
+        label=r"$C(t)$",
         color=ICIWcolors.DRAB
     )
 ax1.plot(
     t_conv[0, 0, :].numpy(),
     c_conv[0, 0, :].detach().numpy(),
-    label=r"$\hat{x}(t)$",
+    label=r"$\hat{C}(t)$",
     color="purple",
     linestyle="--"
 )
-ax1.set_ylabel(r"$x$ / $1$", )
+ax1.set_ylabel(r"$C$ / $1$", )
 ax1.legend(loc='best')
 ax1.set_xlim((0, 20))  
 ax1.set_ylim((-0.1, 1.1))  
