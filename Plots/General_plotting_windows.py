@@ -280,7 +280,7 @@ axs[1, 0].plot(
     linestyle="--")
 
 
-axs[1, 0].plot(t_input_Unified, c_in_Unified[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
+axs[1, 0].plot(t_input_Unified, c_in_Unified[0, 0, :].numpy(), label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
 
 
 
@@ -295,8 +295,8 @@ axs[1, 1].plot(
     predicted_E_Unified,
 label=r"$\hat{E}_{Unified}(t)$", color="black", linestyle="--"
 )
-axs[1, 1].plot([0, 0], [0, 1], color='green', linewidth=2)
-axs[1, 1].annotate('', xy=(0, 1.04), xytext=(0, 0),
+axs[0, 1].plot([0, 0], [0, 1], color='green', linewidth=2)
+axs[0, 1].annotate('', xy=(0, 1.05), xytext=(0, 0),
                    arrowprops=dict(color=ICIWcolors.KELLYGREEN, edgecolor='green', 
                                    width=2, headwidth=8, headlength=10))
 

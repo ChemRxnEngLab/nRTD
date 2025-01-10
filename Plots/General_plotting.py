@@ -274,6 +274,12 @@ axs[0, 1].plot(
     predicted_time_Cholete,  # Ensure this is also 1D
     predicted_E_Cholete,label=r"$\hat{E}_{Cholete}(t)$", color="black", linestyle="--"
 )
+axs[0, 1].annotate(
+    '',  # No text for the annotation
+    xy=(0, 1.08),  # Arrowhead location
+    xytext=(-0.5, 1.5),  # Starting point of the arrow
+    arrowprops=dict(facecolor='green', edgecolor='green', arrowstyle="->"),
+)
 ####
 axs[1, 0].plot(
     t_conv_Unified,
@@ -289,7 +295,7 @@ axs[1, 0].plot(
     linestyle="--")
 
 
-axs[1, 0].plot(t_input_Unified, c_in_Unified[0, 0, :].numpy(), label=r"$x_0(t)$", color=ICIWcolors.CERULEAN)
+axs[1, 0].plot(t_input_Unified, c_in_Unified[0, 0, :].numpy(), label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
 
 
 
