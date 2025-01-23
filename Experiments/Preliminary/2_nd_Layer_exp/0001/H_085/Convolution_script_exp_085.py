@@ -13,7 +13,7 @@ import wandb
 # sys.path.append(module_path)
 module_path = r"D:\Tuana\nRTD\lib"
 sys.path.append(module_path)
-from nRTD.rtd_fitting_2 import RTDModule
+from nRTD.rtd_fitting_3 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
 import os
@@ -389,11 +389,9 @@ axs = make_square_subplots(
     h_sep=1.3 * cm2inch,  
     v_sep=1 * cm2inch, 
     sharex=True,
-    sharey=True,
+    sharey=False,
     xlabel=[r"$t$ / $s$", r"$t$ / $s$"], 
-    ylabel=
-        [r"$C$ / $1$"
-    ])
+    ylabel=[[r"$C$ / $1$", r"$E$ / $1$"]] )
 
 axs[0, 0].plot(t_input, c_in[0, 0, :].numpy(), label=r"$C_0(t)$", color=ICIWcolors.CERULEAN)
 

@@ -11,7 +11,7 @@ import numpy as np
 import wandb
 #module_path = os.path.expanduser("~/Documents/GitHub/nRTD/lib")
 #sys.path.append(module_path)
-from nRTD.rtd_fitting_2 import RTDModule
+from nRTD.rtd_fitting_3 import RTDModule
 from nRTD.rtd_net_4 import RTDNet
 from lightning.pytorch import loggers as pl_loggers
 import os
@@ -29,8 +29,9 @@ coefficients = {
     'tau_p_val': np.array([2]), 
     'beta_val': np.array([0.1]), 
     'alpha_val': 0.2}
+
 epoch_1=35000
-epoch_2=100000
+epoch_2=750000
 epoch_3=epoch_1
 learning_rate=1e-2
 disc_n_1_out=200
@@ -510,7 +511,7 @@ plt.style.use("ICIWstyle")
 fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 25 * cm2inch))  # Increased figure height for better spacing
 axs = make_square_subplots(
     fig=fig,
-    ax_width=7 * cm2inch,#dimension of the plots
+    ax_width=6 * cm2inch,#dimension of the plots
     ax_layout=(1, 2),  
     h_sep=1.3 * cm2inch,  
     v_sep=1 * cm2inch, 
