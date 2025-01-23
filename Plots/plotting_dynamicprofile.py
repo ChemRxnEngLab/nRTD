@@ -30,7 +30,6 @@ print(df.head())
 ##################################
 plt.style.use("ICIWstyle")
 fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 25 * cm2inch))  # Increased figure height for better spacing
-plt.style.use("ICIWstyle")
 ax = make_rect_ax(
     fig,
     ax_width=16 * cm2inch,#dimension of the plots
@@ -74,10 +73,10 @@ ax.plot(df["epoch"], df["twilight-mountain-1759 - train/loss"],
 plt.legend()
 
 ax.set_yscale('log')
-#ax.text(0.01, 1.075, 'Y-axis: Logarithmic Scale', transform=ax.transAxes,verticalalignment='top')
+ax.text(0.01, 1.075, 'Y-axis: Logarithmic Scale', transform=ax.transAxes,verticalalignment='top')
 # axs[0, 1].plot(selected_values, train_loss_values_63,color=ICIWcolors.KELLYGREEN)
 
-plt.savefig(os.path.join(save_dir, f"dynamic_profiles_0701.png"), dpi=300)
+#plt.savefig(os.path.join(save_dir, f"dynamic_profiles_1512.png"), dpi=300)
 plt.show()
 
 ##############################
@@ -108,12 +107,12 @@ ax.text(0.01, 1.075, 'Y-axis and X-axis : Logarithmic Scale', transform=ax.trans
 plt.show()
 ##############################2ndlayer
 
-LR_2=[1,1e-1,1e-2,1e-3,1e-4]
-error_LR_2=[7.7e-9,7.8e-9,7.5e-9,7.6e-9,7.7e-9]
+LR_2=[10,1,1e-1,1e-2,1e-3,1e-4,1e-5]
+error_LR_2=[7.6,7.7,7.8,7.5,7.6,7.7,7.53]
 epoch_2=[10000,50000,100000,200000,300000,400000,430000]
 error_epoch_2=[8.2e-7,9.8e-8,9.45e-9,7.7e-9,7.5e-9,7.54e-9,7.54e-9]
 plt.style.use("ICIWstyle")
-fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 10 * cm2inch))  # Increased figure height for better spacing
+fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 12 * cm2inch))  # Increased figure height for better spacing
 axs = make_square_subplots(
     fig=fig,
     ax_width=7 * cm2inch,#dimension of the plots
@@ -141,6 +140,7 @@ axs[0, 0].plot(LR_2, error_LR_2,'o-',color=ICIWcolors.KELLYGREEN)
 axs[0, 0].set_xscale('log')
 #axs[0, 0].set_yscale('log')
 axs[0, 0].set_xticks(LR)
+axs[0,0].text(0.4, 4.23, 'Scale: $10^{-9}$', transform=ax.transAxes,verticalalignment='top')
 #axs[0, 0].set_xticklabels([r'$10^{%d}$' % int(np.log10(x)) if x != 1 else '1' for x in LR])
 #axs[0, 0].set_xlim(min(LR) * 0.5, max(LR) * 2)
 plt.savefig(os.path.join(save_dir, f"2nd_hypo.png"), dpi=300)

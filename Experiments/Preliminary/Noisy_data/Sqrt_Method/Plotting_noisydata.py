@@ -132,9 +132,9 @@ axs = make_square_subplots(
     v_sep=1 * cm2inch, 
     sharex=False,
     sharey=False,
-    xlabel=["$Epoch/1$","$t/1$"], 
+    xlabel=["$Training\,data\,set/1$","$t\,/\,s$"], 
     ylabel=
-        [["$Test/loss$","$C/1$"]]
+        [["$Test\,/l\,oss$","$C\,/\,1$"]]
     
 )
 
@@ -143,27 +143,27 @@ axs[0, 0].plot(files, error,'o-', color=ICIWcolors.FLAME)
 axs[0, 1].plot(
     t_conv_tau_1d,
     c_out_tau_1d,
-    label=r"$x(t)$",
+    label=r"$C(t)$",
     color="purple",
     )
 axs[0, 1].plot(
     t_conv_tau_1d,  # Ensure this is 1D
     predicted_c_1d,
-    label=r"$\hat{x}(t)$",
+    label=r"$\hat{C}(t)$",
     color=ICIWcolors.KELLYGREEN,linestyle="--",
 )
 
 axs[0, 1].plot(
     t_conv_tau_1d,  # Ensure this is also 1D
     c_conv_1_1d,
-    label=r"$\hat{x}_{noisy,1}(t)$",
+    label=r"$\hat{C}_{noisy,1}(t)$",
     color=ICIWcolors.FLAME,linestyle="--",
 )
 
 axs[0, 1].plot(
     t_conv_tau_1d,  # Ensure this is also 1D
     c_conv_100_first_config,
-    label=r"$\hat{x}_{noisy,100}(t)$",
+    label=r"$\hat{C}_{noisy,100}(t)$",
     color="#A0CFCF",linestyle="--",
 )
 
@@ -173,7 +173,7 @@ axs[0, 0].set_yscale('log')
 
 #ax.plot()
 axs[0, 1].legend(loc="best")  # For the second subplot
-plt.savefig(os.path.join(save_dir, f"noisy.png"), dpi=300)
+plt.savefig(os.path.join(save_dir, f"noisy_08_01.png"), dpi=300)
 plt.show()
 
 

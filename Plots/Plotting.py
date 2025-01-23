@@ -19,8 +19,8 @@ import datetime
 from sympy import ceiling
 from ICIW_Plots import make_square_ax, cm2inch
 import os
-#save_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Plots"
-save_dir = r"D:\Tuana\nRTD\Plots"
+save_dir="/Users/tuanaoyuncu/Documents/GitHub/nRTD/Plots"
+#save_dir = r"D:\Tuana\nRTD\Plots"
 
 
 ##############################
@@ -118,7 +118,7 @@ axs = make_square_subplots(
         [["$Test\, \,/\, \,loss$","$Test\, \,/\, \,loss$"]]
     
 )
-axs[0, 0].text(1.4, 1.05, r'Scale : $\times10^{4}$', 
+axs[0, 0].text(1.4, 1.05, r'Scale : $\times10^{-4}$', 
                transform=axs[0, 0].transAxes,
                horizontalalignment='center',
                verticalalignment='bottom')
@@ -161,7 +161,7 @@ axs = make_square_subplots(
         [["$Test\, \,/\, \,loss$","$Test\, \,/\, \,loss$"]]
     
 )
-axs[0, 0].text(1.5, 1.05, r'Scale : $\times10^{4}$', 
+axs[0, 0].text(1.5, 1.05, r'Scale : $\times10^{-4}$', 
                transform=axs[0, 0].transAxes,
                horizontalalignment='center',
                verticalalignment='bottom')
