@@ -384,7 +384,7 @@ from ICIW_Plots import make_square_subplots
 fig = plt.figure( figsize=(Elsevier_Sizes.double_column["in"], 25 * cm2inch))  # Increased figure height for better spacing
 axs = make_square_subplots(
     fig=fig,
-    ax_width=7 * cm2inch,#dimension of the plots
+    ax_width=8 * cm2inch,#dimension of the plots
     ax_layout=(1, 2),  
     h_sep=1.3 * cm2inch,  
     v_sep=1 * cm2inch, 
