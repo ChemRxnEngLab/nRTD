@@ -1,6 +1,6 @@
 # nRTD
 
-The folder belongs to the study, "The Residence Time Distribution Analysis via Convolutional Neural Networks: A Promising Approach" which is written by Tuana Oyuncu and supported by M.Sc. Hannes Stagge and M.Sc. Max Gäßler.
+The folder belongs to the study, "The Residence Time Distribution Analysis via Convolutional Neural Networks: A Promising Approach" and "Deconvolution of Residence Time Distributions for Compartment Models via Convolutional Neural Networks" which was written by Tuana Oyuncu and supported by M.Sc. Hannes Stagge and M.Sc. Max Gäßler.
 
 This repository contains code and resources related to the study, focusing on the analysis of residence time distributions using convolutional neural networks (CNNs). The aim is to eliminate the steps of conventional RTD methodology and its drawbacks by introducing convolutional neural networks (CNNs) into RTD analysis, taking advantage of the learning capabilities of neural networks.
 
@@ -13,19 +13,37 @@ Feel free to explore the code and data provided here, and report for detailed in
  
 Folders:
 
-### DATA
-Inside of this folder, the all experimental data with specified eliminated files seperately can be found :0001,0002,0003, Eliminated data. Numbers represent the attempts
-Also, the evaluation script of the each data set as seperately can be found inside of this folder. The reason is that the structure of the exported data was differening. ,
+Note ! The previous study/work folders involve trial studies till the latest version of the scripts.
 
-### Experiments
-Inside of this folder, the implementation of the convolution neural network and the parameter variation can be found.
+# DATA
+Inside this folder, all experimental data with specified eliminated files can be found separately found:0001,0002,0003, Eliminated data. Numbers represent the attempts
+Also, the evaluation script of the each data set separately can be found inside of this folder. The reason is that the structure of the exported data was different. 
+000X = X represents the experiment trail number
+C_00X = represents the position of the capillary
+H_0YY_CX = The volumetric flowrate of Hydrogen
+C_0TT= TT the trail number
+C_0TT_LL= LL the backup data
 
-### lib
-Inside of this library the modules which are necessary for the convolution neural network implementation are present.
+# Plots
+It involves related plotting in the report.
 
-### Report
-Scientific report and supporting material can be found in this section.
+# Experiments
+##Preliminary
 
-Thank you.
+###2_nd_Layer_exp
+The folder involves experimental data's evaluation and convolution scripts
+####0001 
+#####H_0YY = The volumetric flowrate of Hydrogen
+Processing_C_X_0YY
+Convolution_script_exp_0YY
 
+###
+
+# lib
+The folder involves a related library for the model.
+
+# Report
+The folder includes the RI report and thesis.
+
+### Data_Scripts_Evaluation
 
