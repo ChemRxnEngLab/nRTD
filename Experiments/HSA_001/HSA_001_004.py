@@ -1,0 +1,153 @@
+import sys
+
+sys.path.append(r"D:\Users\Hannes\Documents\Python Code\nRTD\lib")
+from pathlib import Path
+import argparse
+
+import numpy as np
+import torch
+import torch.utils
+import torch.utils.data
+import wandb
+import lightning.pytorch as pl
+from lightning.pytorch.loggers.wandb import WandbLogger
+
+torch.set_default_dtype(torch.float64)
+
+from nRTD.rtd_fitting_5 import RTDModule, RTDDataModule
+from SweepRunner import Sweeper
+
+argparser = argparse.ArgumentParser()
+argparser.add_argument("--n_workers", type=int, default=4)
+
+### Constants
+# givens
+t_out = (0, 45)
+n_out = 181  # 4/s * 45s +1
+delta_t_out = (t_out[1] - t_out[0]) / (n_out - 1)
+
+switching_periods = np.array(
+    [
+        45.15,
+        45.06,
+        44.96,
+        45.05,
+        45.05,
+        45.05,
+        45.21,
+        45.11,
+        45.08,
+        45.06,
+    ]
+)
+switching_times = np.flip(np.cumsum(-switching_periods))
+switching_times = np.append(switching_times, 0)
+
+
+def train():
+    run = wandb.init()
+
+    t_kernel = (0, wandb.config.t_kernel_max)
+    n_kernel = int(((t_kernel[1] - t_kernel[0]) / delta_t_out) + 1)
+    t_in = (0, t_out[1] - t_kernel[1])
+    n_in = int(((t_in[1] - t_in[0]) / delta_t_out) + 1)
+
+    wandb.config.update(
+        {
+            "t_out": t_out,
+            "n_out": n_out,
+            "delta_t_out": delta_t_out,
+            "t_in": t_in,
+            "n_in": n_in,
+            "t_kernel": t_kernel,
+            "n_kernel": n_kernel,
+        },
+    )
+
+    data = RTDDataModule(
+        batch_size=16,
+        data_file=Path(
+            r"D:\Users\Hannes\Documents\Python Code\nRTD\Experiments\HSA_001\data\MGA-E-05032025_75ml-min_Analytik_MS.npz"
+        ),
+        switching_times=switching_times,
+        t_range_in=t_in,
+        n_in=n_in,
+        t_range_out=t_out,
+        n_out=n_out,
+        switch_delay=0.7,
+    )
+    model = RTDModule(
+        kernel_sizes=[n_kernel],
+        kernel_times=[t_kernel],
+        learning_rate=wandb.config["learning_rate"],
+        use_scheduler=True,
+        scheduler_kwargs={
+            "factor": wandb.config["lrscheduler_factor"],
+            "patience": wandb.config["lrscheduler_patience"],
+        },
+    )
+    my_logger = WandbLogger(log_model=True)
+
+    trainer = pl.Trainer(
+        accelerator="cpu",
+        max_epochs=10000,
+        logger=my_logger,
+        enable_progress_bar=False,
+    )
+    trainer.fit(model, data)
+    trainer.test(model, data)
+
+    # np.savez(
+    #     r"D:\Users\Hannes\Documents\Python Code\nRTD\Experiments\HSA_001\data\MGA-E-05032025_75ml-min_Analytik_MS_E_nRTD.npz",
+    #     E=model.net.E[0],
+    #     t=model.net.conv_layers[0].t_kernel.detach().numpy(),
+    # )
+
+
+def main(args):
+    this_file = Path(__file__)
+
+    wandb.setup()
+
+    sweep_config = {
+        "method": "bayes",
+        "name": this_file.stem,
+        "metric": {"goal": "minimize", "name": "test/loss"},
+        "parameters": {
+            "t_kernel_max": {
+                "value": 25,
+            },
+            "learning_rate": {
+                "distribution": "log_uniform",
+                "min": -6,
+                "max": -1,
+            },
+            "lrscheduler_factor": {
+                "distribution": "log_uniform_values",
+                "min": 1e-4,
+                "max": 0.99,
+            },
+            "lrscheduler_patience": {
+                "distribution": "uniform",
+                "min": 40,
+                "max": 200,
+            },
+        },
+    }
+
+    project_str = "HSA_MGA_nRTD"
+    sweep_id = wandb.sweep(sweep=sweep_config, entity="ice_ulm", project=project_str)
+
+    sweeper = Sweeper(
+        project_str=project_str,
+        sweep_id=sweep_id,
+        train_fn=train,
+        n_workers=args.n_workers,
+    )
+
+    sweeper.start()
+
+
+args = argparser.parse_args()
+if __name__ == "__main__":
+    main(args)

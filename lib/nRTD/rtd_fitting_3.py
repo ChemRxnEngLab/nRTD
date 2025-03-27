@@ -53,7 +53,7 @@ class RTDModule(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         X, y = batch
         ### just a test for clamping the E
-        self.net.fn[0].weight.data.clamp_(min=0)
+        self.net.conv_stack[0].weight.data.clamp_(min=0)
         y_hat = self(X)
         loss = torch.nn.functional.mse_loss(y_hat, y)
         self.log("train/loss", loss)
