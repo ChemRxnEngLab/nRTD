@@ -48,9 +48,11 @@ class RTDDataModule(pl.LightningDataModule):
         self.switch_delay = (
             switch_delay  # delay between the button click and the actual pshhht
         )
+        self.is_setup = False
 
     def setup(self, stage: str):
-        print("Setup")
+        if self.is_setup:
+            return False
         # load the raw data from disc
         with np.load(self.data_file) as data:
             n_dot = data["n_dot"]
@@ -154,6 +156,11 @@ class RTDDataModule(pl.LightningDataModule):
         t_out = torch.tensor(t_out)
         self.t_in = torch.tile(t_in, (2 * len(self.intervals), 1))
         self.t_out = torch.tile(t_out, (2 * len(self.intervals), 1))
+        self.initialize_data_sets()
+        self.is_setup = True
+        return True
+
+    def initialize_data_sets(self):
         self.data_set = torch.utils.data.TensorDataset(self.x, self.t_in, self.y)
         self.train_set, self.test_set = torch.utils.data.random_split(
             self.data_set,
