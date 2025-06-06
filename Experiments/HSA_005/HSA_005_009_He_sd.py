@@ -16,7 +16,7 @@ from lightning.pytorch.callbacks import LearningRateMonitor
 
 torch.set_default_dtype(torch.float64)
 
-from nRTD.rtd_fitting_5 import RTDModule, RTDDataModule
+from nRTD.rtd_fitting import RTDModule, RTDDataModule
 from SweepRunner import Sweeper
 import matplotlib.pyplot as plt
 
@@ -171,7 +171,7 @@ data_cap = RTDDataModule(
 )
 
 
-def fake_setup(self, stage: str):
+def patch_setup(self, stage: str):
     import scipy
 
     if self.is_setup:
@@ -310,7 +310,7 @@ def fake_setup(self, stage: str):
     return True
 
 
-data_cap.setup = MethodType(fake_setup, data_cap)
+data_cap.setup = MethodType(patch_setup, data_cap)
 data_cap.setup("fit")
 data_cap.x = data_cap.x[3::4, ...]
 data_cap.t_in = data_cap.t_in[3::4, ...]

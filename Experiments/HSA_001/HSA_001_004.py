@@ -14,7 +14,7 @@ from lightning.pytorch.loggers.wandb import WandbLogger
 
 torch.set_default_dtype(torch.float64)
 
-from nRTD.rtd_fitting_5 import RTDModule, RTDDataModule
+from nRTD.rtd_fitting import RTDModule, RTDDataModule
 from SweepRunner import Sweeper
 
 argparser = argparse.ArgumentParser()

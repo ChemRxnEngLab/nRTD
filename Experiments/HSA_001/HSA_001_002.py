@@ -5,8 +5,8 @@ import torch.utils
 import torch.utils.data
 
 sys.path.append(r"D:\Users\Hannes\Documents\Python Code\nRTD\lib")
-from nRTD.rtd_net_5 import RTDNet
-from nRTD.rtd_fitting_5 import RTDModule
+from nRTD.rtd_net import RTDNet
+from nRTD.rtd_fitting import RTDModule
 import lightning.pytorch as pl
 from pathlib import Path
 import numpy as np
