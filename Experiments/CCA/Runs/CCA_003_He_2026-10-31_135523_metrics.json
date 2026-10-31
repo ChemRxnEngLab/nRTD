@@ -1,0 +1,116 @@
+{
+  "metrics": {
+    "cap": {
+      "all": {
+        "max_abs_dF": 0.025381079538571355,
+        "rms_dF": 0.00914130405892893,
+        "repeat_std_max": 0.11861967668497772,
+        "n_rows": 10
+      },
+      "He rise": {
+        "max_abs_dF": 0.049238383969611874,
+        "rms_dF": 0.019920568226305953,
+        "repeat_std_max": 0.1404815293891936,
+        "n_rows": 5
+      },
+      "He fall": {
+        "max_abs_dF": 0.06978309842690203,
+        "rms_dF": 0.012373526747894789,
+        "repeat_std_max": 0.06795949567502503,
+        "n_rows": 5
+      }
+    },
+    "upstream": {
+      "all": {
+        "max_abs_dF": 0.041895119063529634,
+        "rms_dF": 0.005518834467750873,
+        "repeat_std_max": 0.04163551206011091,
+        "n_rows": 24
+      },
+      "He rise": {
+        "max_abs_dF": 0.038463520150351704,
+        "rms_dF": 0.008862464628500571,
+        "repeat_std_max": 0.04388196096669291,
+        "n_rows": 12
+      },
+      "He fall": {
+        "max_abs_dF": 0.04532671797670759,
+        "rms_dF": 0.007057200884277034,
+        "repeat_std_max": 0.04004764155776829,
+        "n_rows": 12
+      }
+    },
+    "total": {
+      "all": {
+        "max_abs_dF": 0.0325065396769485,
+        "rms_dF": 0.013976796518511728,
+        "repeat_std_max": 0.069322138313335,
+        "n_rows": 24
+      },
+      "He rise": {
+        "max_abs_dF": 0.04671484127837688,
+        "rms_dF": 0.01843460050779882,
+        "repeat_std_max": 0.05363883788885186,
+        "n_rows": 12
+      },
+      "He fall": {
+        "max_abs_dF": 0.06105008538081744,
+        "rms_dF": 0.021643118719988395,
+        "repeat_std_max": 0.055301066540536355,
+        "n_rows": 12
+      }
+    },
+    "E_sum_dt": {
+      "up": 0.999609845780091,
+      "down": 0.9850953899746383,
+      "cap": 1.0020407560075157
+    },
+    "E_mean_t_s": {
+      "up": 0.9367595169132921,
+      "down": 22.24790714561458,
+      "cap": 1.954825523204757
+    },
+    "E_at_t0": {
+      "up": 0.0,
+      "down": -0.0010838997324257983,
+      "cap": 0.006441483047998693
+    }
+  },
+  "settings": {
+    "epochs_per_section": 20000,
+    "seed": 0,
+    "lr": 0.004,
+    "accelerator": "cpu",
+    "switch_delay": 1.0,
+    "kernel_times": [
+      [
+        0.0,
+        20.0
+      ],
+      [
+        0.0,
+        45.0
+      ],
+      [
+        0.0,
+        20.0
+      ]
+    ],
+    "tracers": "He",
+    "edges": "rise + fall",
+    "rows": "deviation from level before the step",
+    "start_kernel": "sin^2(pi t/T) normalized, set before the section's own stage; others at direct response",
+    "wall_s": {
+      "cap": 44.40197170904139,
+      "upstream": 50.648575110011734,
+      "total": 53.23044008202851
+    }
+  },
+  "versions": {
+    "nRTD": "31b36ceaf493d8ad9478f814a875b779aa48f7c2 (dirty)",
+    "python": "3.12.3",
+    "torch": "2.14.1+cu130",
+    "lightning": "2.6.6",
+    "numpy": "2.5.4"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "metrics": {
+    "cap": {
+      "all": {
+        "max_abs_dF": 0.01754768663234174,
+        "rms_dF": 0.002231729860953745,
+        "repeat_std_max": 0.11887622652982563,
+        "n_rows": 10
+      },
+      "Ar rise": {
+        "max_abs_dF": 0.07882677339801203,
+        "rms_dF": 0.005874603120206001,
+        "repeat_std_max": 0.04835153063689445,
+        "n_rows": 5
+      },
+      "Ar fall": {
+        "max_abs_dF": 0.043731400133328546,
+        "rms_dF": 0.0047435378534479425,
+        "repeat_std_max": 0.13748146989503401,
+        "n_rows": 5
+      }
+    },
+    "upstream": {
+      "all": {
+        "max_abs_dF": 0.020189351192515415,
+        "rms_dF": 0.0017900041722999796,
+        "repeat_std_max": 0.04323678553942701,
+        "n_rows": 24
+      },
+      "Ar rise": {
+        "max_abs_dF": 0.06245432481633506,
+        "rms_dF": 0.00491205251835105,
+        "repeat_std_max": 0.009821021485477926,
+        "n_rows": 12
+      },
+      "Ar fall": {
+        "max_abs_dF": 0.04648092507692142,
+        "rms_dF": 0.0037698421655609116,
+        "repeat_std_max": 0.01217804702894369,
+        "n_rows": 12
+      }
+    },
+    "total": {
+      "all": {
+        "max_abs_dF": 0.002668625609759223,
+        "rms_dF": 0.000997804419816228,
+        "repeat_std_max": 0.03499937269846854,
+        "n_rows": 24
+      },
+      "Ar rise": {
+        "max_abs_dF": 0.03156699879706998,
+        "rms_dF": 0.005336248226612552,
+        "repeat_std_max": 0.009475403278621392,
+        "n_rows": 12
+      },
+      "Ar fall": {
+        "max_abs_dF": 0.0348880835971524,
+        "rms_dF": 0.0057594751587415624,
+        "repeat_std_max": 0.013390451976029815,
+        "n_rows": 12
+      }
+    },
+    "E_sum_dt": {
+      "up": 0.9961450871933553,
+      "down": 1.0002901523530927,
+      "cap": 1.0034709137713762
+    },
+    "E_mean_t_s": {
+      "up": 0.8835242944781425,
+      "down": 23.144531995101502,
+      "cap": 2.045215299421583
+    },
+    "E_at_t0": {
+      "up": 0.0032035175608923906,
+      "down": 0.0029725417579451233,
+      "cap": 0.0009976521448522967
+    }
+  },
+  "settings": {
+    "epochs_per_section": 20000,
+    "seed": 0,
+    "lr": 0.004,
+    "accelerator": "cpu",
+    "switch_delay": 1.0,
+    "kernel_times": [
+      [
+        0.0,
+        20.0
+      ],
+      [
+        0.0,
+        45.0
+      ],
+      [
+        0.0,
+        20.0
+      ]
+    ],
+    "tracers": "Ar",
+    "edges": "rise + fall",
+    "rows": "deviation from level before the step",
+    "start_kernel": "sin^2(pi t/T) normalized, set before the section's own stage; others at direct response",
+    "wall_s": {
+      "cap": 47.604344427993055,
+      "upstream": 47.777043229027186,
+      "total": 51.61569977999898
+    }
+  },
+  "versions": {
+    "nRTD": "31b36ceaf493d8ad9478f814a875b779aa48f7c2 (dirty)",
+    "python": "3.12.3",
+    "torch": "2.14.1+cu130",
+    "lightning": "2.6.6",
+    "numpy": "2.5.4"
+  }
+}

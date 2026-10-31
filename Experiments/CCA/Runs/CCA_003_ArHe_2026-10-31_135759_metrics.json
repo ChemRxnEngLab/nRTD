@@ -1,0 +1,152 @@
+{
+  "metrics": {
+    "cap": {
+      "all": {
+        "max_abs_dF": 0.011884370749985107,
+        "rms_dF": 0.0038158399408503886,
+        "repeat_std_max": 0.11880158292117088,
+        "n_rows": 20
+      },
+      "Ar rise": {
+        "max_abs_dF": 0.06959643646633351,
+        "rms_dF": 0.005606764327817308,
+        "repeat_std_max": 0.04835153063689445,
+        "n_rows": 5
+      },
+      "Ar fall": {
+        "max_abs_dF": 0.052961737065007064,
+        "rms_dF": 0.006770518247680221,
+        "repeat_std_max": 0.13748146989503401,
+        "n_rows": 5
+      },
+      "He rise": {
+        "max_abs_dF": 0.049238383969611874,
+        "rms_dF": 0.019505956631362276,
+        "repeat_std_max": 0.1404815293891936,
+        "n_rows": 5
+      },
+      "He fall": {
+        "max_abs_dF": 0.058969791596212795,
+        "rms_dF": 0.01124025292439454,
+        "repeat_std_max": 0.06795949567502503,
+        "n_rows": 5
+      }
+    },
+    "upstream": {
+      "all": {
+        "max_abs_dF": 0.030011205408673525,
+        "rms_dF": 0.00723110576840241,
+        "repeat_std_max": 0.04677049356829499,
+        "n_rows": 48
+      },
+      "Ar rise": {
+        "max_abs_dF": 0.04356852761218899,
+        "rms_dF": 0.007736898491020839,
+        "repeat_std_max": 0.009821021485477926,
+        "n_rows": 12
+      },
+      "Ar fall": {
+        "max_abs_dF": 0.06061384557463165,
+        "rms_dF": 0.008521811935299998,
+        "repeat_std_max": 0.01217804702894369,
+        "n_rows": 12
+      },
+      "He rise": {
+        "max_abs_dF": 0.07047189324308134,
+        "rms_dF": 0.01053235105217958,
+        "repeat_std_max": 0.04388196096669291,
+        "n_rows": 12
+      },
+      "He fall": {
+        "max_abs_dF": 0.06041877916128158,
+        "rms_dF": 0.009823128519590378,
+        "repeat_std_max": 0.04004764155776829,
+        "n_rows": 12
+      }
+    },
+    "total": {
+      "all": {
+        "max_abs_dF": 0.014352567418730477,
+        "rms_dF": 0.0060579220337788255,
+        "repeat_std_max": 0.0981471016372086,
+        "n_rows": 48
+      },
+      "Ar rise": {
+        "max_abs_dF": 0.05966676104163371,
+        "rms_dF": 0.013048683049876865,
+        "repeat_std_max": 0.009475403278621392,
+        "n_rows": 12
+      },
+      "Ar fall": {
+        "max_abs_dF": 0.11408307423277242,
+        "rms_dF": 0.01647260711637311,
+        "repeat_std_max": 0.013390451976029815,
+        "n_rows": 12
+      },
+      "He rise": {
+        "max_abs_dF": 0.10557130889127309,
+        "rms_dF": 0.023678026653898766,
+        "repeat_std_max": 0.05363883788885186,
+        "n_rows": 12
+      },
+      "He fall": {
+        "max_abs_dF": 0.13884290129215132,
+        "rms_dF": 0.026231295555642135,
+        "repeat_std_max": 0.055301066540536355,
+        "n_rows": 12
+      }
+    },
+    "E_sum_dt": {
+      "up": 1.002397558684264,
+      "down": 0.9902526106885312,
+      "cap": 1.004748325461204
+    },
+    "E_mean_t_s": {
+      "up": 1.0072030113526684,
+      "down": 22.64086018811927,
+      "cap": 1.983623188324592
+    },
+    "E_at_t0": {
+      "up": 0.00044023694144284907,
+      "down": -0.00014337175975299578,
+      "cap": 0.020580198847296793
+    }
+  },
+  "settings": {
+    "epochs_per_section": 20000,
+    "seed": 0,
+    "lr": 0.004,
+    "accelerator": "cpu",
+    "switch_delay": 1.0,
+    "kernel_times": [
+      [
+        0.0,
+        20.0
+      ],
+      [
+        0.0,
+        45.0
+      ],
+      [
+        0.0,
+        20.0
+      ]
+    ],
+    "tracers": "Ar+He",
+    "edges": "rise + fall",
+    "rows": "deviation from level before the step",
+    "start_kernel": "sin^2(pi t/T) normalized, set before the section's own stage; others at direct response",
+    "wall_s": {
+      "cap": 49.76618826499907,
+      "upstream": 96.74852591298986,
+      "total": 76.15289300697623
+    }
+  },
+  "versions": {
+    "nRTD": "31b36ceaf493d8ad9478f814a875b779aa48f7c2 (dirty)",
+    "python": "3.12.3",
+    "torch": "2.14.1+cu130",
+    "lightning": "2.6.6",
+    "numpy": "2.5.4"
+  }
+}
