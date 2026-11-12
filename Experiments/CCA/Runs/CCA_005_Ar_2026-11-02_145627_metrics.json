@@ -1,0 +1,259 @@
+{
+  "metrics": {
+    "BU": {
+      "cap": {
+        "all": {
+          "max_abs_dF": 0.014166158029261966,
+          "rms_dF": 0.004109913151347158,
+          "repeat_std_max": 0.04835153063689445,
+          "n_rows": 5
+        },
+        "Ar rise": {
+          "max_abs_dF": 0.014166158029261966,
+          "rms_dF": 0.004109913151347158,
+          "repeat_std_max": 0.04835153063689445,
+          "n_rows": 5
+        }
+      },
+      "upstream": {
+        "all": {
+          "max_abs_dF": 0.008636860621839215,
+          "rms_dF": 0.0018815382150610253,
+          "repeat_std_max": 0.009821021485477926,
+          "n_rows": 12
+        },
+        "Ar rise": {
+          "max_abs_dF": 0.008636860621839215,
+          "rms_dF": 0.0018815382150610253,
+          "repeat_std_max": 0.009821021485477926,
+          "n_rows": 12
+        }
+      },
+      "total": {
+        "all": {
+          "max_abs_dF": 0.004809458720966275,
+          "rms_dF": 0.001525785618886058,
+          "repeat_std_max": 0.009475403278621392,
+          "n_rows": 12
+        },
+        "Ar rise": {
+          "max_abs_dF": 0.004809458720966275,
+          "rms_dF": 0.001525785618886058,
+          "repeat_std_max": 0.009475403278621392,
+          "n_rows": 12
+        }
+      }
+    },
+    "BU kernels on BT": {
+      "cap": {
+        "all": {
+          "max_abs_dF": 0.1083920155020785,
+          "rms_dF": 0.008324259648216812,
+          "repeat_std_max": 0.13748146989503401,
+          "n_rows": 5
+        },
+        "Ar fall": {
+          "max_abs_dF": 0.1083920155020785,
+          "rms_dF": 0.008324259648216812,
+          "repeat_std_max": 0.13748146989503401,
+          "n_rows": 5
+        }
+      },
+      "upstream": {
+        "all": {
+          "max_abs_dF": 0.08263632085095945,
+          "rms_dF": 0.007610990392312558,
+          "repeat_std_max": 0.01217804702894369,
+          "n_rows": 12
+        },
+        "Ar fall": {
+          "max_abs_dF": 0.08263632085095945,
+          "rms_dF": 0.007610990392312558,
+          "repeat_std_max": 0.01217804702894369,
+          "n_rows": 12
+        }
+      },
+      "total": {
+        "all": {
+          "max_abs_dF": 0.06502963500687103,
+          "rms_dF": 0.010763509447497122,
+          "repeat_std_max": 0.013390451976029815,
+          "n_rows": 12
+        },
+        "Ar fall": {
+          "max_abs_dF": 0.06502963500687103,
+          "rms_dF": 0.010763509447497122,
+          "repeat_std_max": 0.013390451976029815,
+          "n_rows": 12
+        }
+      }
+    },
+    "BT": {
+      "cap": {
+        "all": {
+          "max_abs_dF": 0.02909363662764375,
+          "rms_dF": 0.002095699970198733,
+          "repeat_std_max": 0.13748146989503401,
+          "n_rows": 5
+        },
+        "Ar fall": {
+          "max_abs_dF": 0.02909363662764375,
+          "rms_dF": 0.002095699970198733,
+          "repeat_std_max": 0.13748146989503401,
+          "n_rows": 5
+        }
+      },
+      "upstream": {
+        "all": {
+          "max_abs_dF": 0.0033582955245621063,
+          "rms_dF": 0.0008055007489487256,
+          "repeat_std_max": 0.01217804702894369,
+          "n_rows": 12
+        },
+        "Ar fall": {
+          "max_abs_dF": 0.0033582955245621063,
+          "rms_dF": 0.0008055007489487256,
+          "repeat_std_max": 0.01217804702894369,
+          "n_rows": 12
+        }
+      },
+      "total": {
+        "all": {
+          "max_abs_dF": 0.004185797812072331,
+          "rms_dF": 0.0010906327853945094,
+          "repeat_std_max": 0.013390451976029815,
+          "n_rows": 12
+        },
+        "Ar fall": {
+          "max_abs_dF": 0.004185797812072331,
+          "rms_dF": 0.0010906327853945094,
+          "repeat_std_max": 0.013390451976029815,
+          "n_rows": 12
+        }
+      }
+    },
+    "BT kernels on BU": {
+      "cap": {
+        "all": {
+          "max_abs_dF": 0.15165181015898427,
+          "rms_dF": 0.011475998505346719,
+          "repeat_std_max": 0.04835153063689445,
+          "n_rows": 5
+        },
+        "Ar rise": {
+          "max_abs_dF": 0.15165181015898427,
+          "rms_dF": 0.011475998505346719,
+          "repeat_std_max": 0.04835153063689445,
+          "n_rows": 5
+        }
+      },
+      "upstream": {
+        "all": {
+          "max_abs_dF": 0.08387282273041508,
+          "rms_dF": 0.007949506453339654,
+          "repeat_std_max": 0.009821021485477926,
+          "n_rows": 12
+        },
+        "Ar rise": {
+          "max_abs_dF": 0.08387282273041508,
+          "rms_dF": 0.007949506453339654,
+          "repeat_std_max": 0.009821021485477926,
+          "n_rows": 12
+        }
+      },
+      "total": {
+        "all": {
+          "max_abs_dF": 0.06459999300545977,
+          "rms_dF": 0.010779812045275668,
+          "repeat_std_max": 0.009475403278621392,
+          "n_rows": 12
+        },
+        "Ar rise": {
+          "max_abs_dF": 0.06459999300545977,
+          "rms_dF": 0.010779812045275668,
+          "repeat_std_max": 0.009475403278621392,
+          "n_rows": 12
+        }
+      }
+    },
+    "E_sum_dt": {
+      "BU": {
+        "up": 0.9999999999999999,
+        "down": 1.0000000000000002,
+        "cap": 1.0
+      },
+      "BT": {
+        "up": 1.0000000000000002,
+        "down": 1.0000000000000002,
+        "cap": 1.0
+      }
+    },
+    "E_mean_t_s": {
+      "BU": {
+        "up": 1.0037924006381338,
+        "down": 23.331767511356066,
+        "cap": 1.8635843529120153
+      },
+      "BT": {
+        "up": 0.8674275490933724,
+        "down": 22.941584791213398,
+        "cap": 2.131320476095753
+      }
+    },
+    "E_at_t0": {
+      "BU": {
+        "up": 0.06941315432191475,
+        "down": 1.335861155765525e-13,
+        "cap": 2.4502638878705356e-12
+      },
+      "BT": {
+        "up": 2.9781632075901645e-11,
+        "down": 1.4652075583227604e-13,
+        "cap": 5.888193278179396e-12
+      }
+    }
+  },
+  "settings": {
+    "epochs_per_section": 20000,
+    "seed": 0,
+    "lr": 0.03,
+    "adam_eps": 1e-16,
+    "positivity": "softmax",
+    "floor": 1e-12,
+    "accelerator": "cpu",
+    "switch_delay": 1.0,
+    "kernel_times": [
+      [
+        0.0,
+        20.0
+      ],
+      [
+        0.0,
+        45.0
+      ],
+      [
+        0.0,
+        20.0
+      ]
+    ],
+    "tracers": "Ar",
+    "edges": "one kernel set per direction: BU (even windows), BT (odd windows)",
+    "rows": "deviation from level before the step",
+    "start_kernel": "sin^2(pi t/T) normalized, set before the section's own stage; others at direct response",
+    "wall_s": {
+      "BU cap": 41.50310980697395,
+      "BU upstream": 46.03165066294605,
+      "BU total": 36.822376350988634,
+      "BT cap": 51.16300831903936,
+      "BT upstream": 44.19180111098103,
+      "BT total": 57.637437365949154
+    }
+  },
+  "versions": {
+    "nRTD": "46c4c20a26e46b7bfcd3aa3173c6995cacfbffc4 (dirty)",
+    "python": "3.14.4",
+    "torch": "2.15.0+cu132",
+    "lightning": "2.6.6",
+    "numpy": "2.5.4"
+  }
+}
